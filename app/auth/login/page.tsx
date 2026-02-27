@@ -34,26 +34,26 @@ export default function LoginPage() {
 
   return (
     <form onSubmit={handleLogin} className="space-y-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 space-y-4 shadow-sm">
         <div>
-          <label className="block text-sm text-zinc-400 mb-1.5">Email</label>
+          <label className="block text-sm text-[#6B7280] mb-1.5 font-medium">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 text-base"
+            className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] text-base transition-colors"
             placeholder="seu@email.com"
             required
             autoComplete="email"
           />
         </div>
         <div>
-          <label className="block text-sm text-zinc-400 mb-1.5">Senha</label>
+          <label className="block text-sm text-[#6B7280] mb-1.5 font-medium">Senha</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 text-base"
+            className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] text-base transition-colors"
             placeholder="Sua senha"
             required
             autoComplete="current-password"
@@ -61,7 +61,7 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+          <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
             {error}
           </p>
         )}
@@ -69,15 +69,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-700 disabled:text-zinc-500 text-black font-semibold rounded-lg transition-colors text-base"
+          className="w-full h-11 bg-[#B8860B] hover:brightness-110 disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] text-white font-semibold rounded-lg transition-all text-base"
         >
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
       </div>
 
-      <p className="text-center text-sm text-zinc-500">
+      <p className="text-center text-sm text-[#6B7280]">
         Novo por aqui?{' '}
-        <Link href="/auth/register" className="text-amber-500 hover:text-amber-400">
+        <Link href="/auth/register" className="text-[#B8860B] hover:text-[#DAA520] font-medium">
           Criar conta
         </Link>
       </p>

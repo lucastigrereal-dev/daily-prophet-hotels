@@ -30,47 +30,51 @@ export default function AdminPage() {
     load()
   }, [])
 
-  if (loading) return <div className="flex justify-center py-20"><div className="animate-spin w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full" /></div>
+  if (loading) return (
+    <div className="flex justify-center py-20">
+      <div className="animate-spin w-8 h-8 border-2 border-[#B8860B] border-t-transparent rounded-full" />
+    </div>
+  )
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold">Admin</h1>
+      <h1 className="text-xl font-bold text-[#1A1D26]">Admin</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">Total Hoteis</p>
-          <p className="text-2xl font-bold text-white">{stats.hoteis}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">Total Hotéis</p>
+          <p className="text-3xl font-bold text-[#1A1D26] mt-1">{stats.hoteis}</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">Ativos</p>
-          <p className="text-2xl font-bold text-green-400">{stats.ativos}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">Ativos</p>
+          <p className="text-3xl font-bold text-emerald-700 mt-1">{stats.ativos}</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">Leads</p>
-          <p className="text-2xl font-bold text-blue-400">{stats.leads}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">Leads</p>
+          <p className="text-3xl font-bold text-blue-700 mt-1">{stats.leads}</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">Collabs Ativas</p>
-          <p className="text-2xl font-bold text-amber-400">{stats.collabs}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">Collabs Ativas</p>
+          <p className="text-3xl font-bold text-[#B8860B] mt-1">{stats.collabs}</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">MRR</p>
-          <p className="text-2xl font-bold text-emerald-400">R${stats.mrr.toLocaleString()}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">MRR</p>
+          <p className="text-3xl font-bold text-emerald-700 mt-1">R${stats.mrr.toLocaleString('pt-BR')}</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">Posts Gerados</p>
-          <p className="text-2xl font-bold text-purple-400">{stats.posts}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">Posts Gerados</p>
+          <p className="text-3xl font-bold text-purple-700 mt-1">{stats.posts}</p>
         </div>
       </div>
 
       <div className="space-y-3">
-        <Link href="/admin/hoteis" className="block bg-zinc-900 border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-colors">
-          <h3 className="font-medium text-white">Pipeline de Hoteis</h3>
-          <p className="text-sm text-zinc-400">Ver todos os hoteis por status</p>
+        <Link href="/admin/hoteis" className="block bg-white border border-[#E5E7EB] rounded-2xl p-4 hover:border-[#D1D5DB] hover:shadow-md transition-all duration-200">
+          <h3 className="font-semibold text-[#1A1D26]">Pipeline de Hotéis</h3>
+          <p className="text-sm text-[#6B7280]">Ver todos os hotéis por status</p>
         </Link>
-        <Link href="/admin/financeiro" className="block bg-zinc-900 border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-colors">
-          <h3 className="font-medium text-white">Financeiro</h3>
-          <p className="text-sm text-zinc-400">Receita, collabs e pagamentos</p>
+        <Link href="/admin/financeiro" className="block bg-white border border-[#E5E7EB] rounded-2xl p-4 hover:border-[#D1D5DB] hover:shadow-md transition-all duration-200">
+          <h3 className="font-semibold text-[#1A1D26]">Financeiro</h3>
+          <p className="text-sm text-[#6B7280]">Receita, collabs e pagamentos</p>
         </Link>
       </div>
     </div>

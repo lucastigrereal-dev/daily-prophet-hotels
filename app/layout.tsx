@@ -1,16 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-jakarta",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +19,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0a0a0a",
+  themeColor: "#FAFBFC",
 };
 
 export default function RootLayout({
@@ -34,16 +29,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white`}
-      >
+      <body className={`${jakarta.variable} antialiased bg-[#FAFBFC] text-[#1A1D26]`}>
         {children}
         <Toaster
           position="top-center"
           richColors
-          theme="dark"
+          theme="light"
           toastOptions={{
-            style: { background: "#1a1a2e", border: "1px solid #2a2a4a" },
+            style: { background: "#FFFFFF", border: "1px solid #E5E7EB" },
           }}
         />
       </body>

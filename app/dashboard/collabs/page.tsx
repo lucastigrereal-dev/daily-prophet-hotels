@@ -26,42 +26,46 @@ export default function CollabsPage() {
 
   const totalMRR = collabs.reduce((acc, c) => acc + (c.valor_mensal || 0), 0)
 
-  if (loading) return <div className="flex justify-center py-20"><div className="animate-spin w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full" /></div>
+  if (loading) return (
+    <div className="flex justify-center py-20">
+      <div className="animate-spin w-8 h-8 border-2 border-[#B8860B] border-t-transparent rounded-full" />
+    </div>
+  )
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold">Collabs</h1>
+      <h1 className="text-xl font-bold text-[#1A1D26]">Collabs</h1>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">Collabs ativas</p>
-          <p className="text-2xl font-bold text-green-400">{collabs.length}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">Collabs ativas</p>
+          <p className="text-3xl font-bold text-emerald-700 mt-1">{collabs.length}</p>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-          <p className="text-xs text-zinc-500">MRR</p>
-          <p className="text-2xl font-bold text-amber-400">R${totalMRR.toLocaleString()}</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs text-[#9CA3AF] font-medium uppercase tracking-wide">MRR</p>
+          <p className="text-3xl font-bold text-[#B8860B] mt-1">R${totalMRR.toLocaleString('pt-BR')}</p>
         </div>
       </div>
 
       {collabs.length === 0 ? (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center">
-          <p className="text-zinc-400">Nenhuma collab ativa</p>
-          <p className="text-sm text-zinc-500 mt-1">Cadastre hoteis e feche parcerias</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center shadow-sm">
+          <p className="text-[#6B7280]">Nenhuma collab ativa</p>
+          <p className="text-sm text-[#9CA3AF] mt-1">Cadastre hotéis e feche parcerias</p>
         </div>
       ) : (
         <div className="space-y-3">
           {collabs.map(c => (
-            <div key={c.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <div key={c.id} className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-medium text-white">{c.responsavel_hotel_nome || 'Hotel'}</h3>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  c.status_pagamento === 'em_dia' ? 'bg-green-500/10 text-green-400' :
-                  c.status_pagamento === 'atrasado' ? 'bg-red-500/10 text-red-400' :
-                  'bg-amber-500/10 text-amber-400'
+                <h3 className="font-semibold text-[#1A1D26]">{c.responsavel_hotel_nome || 'Hotel'}</h3>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                  c.status_pagamento === 'em_dia' ? 'bg-emerald-50 text-emerald-700' :
+                  c.status_pagamento === 'atrasado' ? 'bg-red-50 text-red-600' :
+                  'bg-[#FFF8E7] text-[#B8860B]'
                 }`}>{c.status_pagamento}</span>
               </div>
-              <p className="text-sm text-zinc-400">{c.tipo_pacote} — R${c.valor_mensal}/mes</p>
-              <p className="text-xs text-zinc-500 mt-1">{c.posts_mes_contratados} posts/mes | {(c.perfis_instagram || []).join(', ')}</p>
+              <p className="text-sm text-[#6B7280]">{c.tipo_pacote} — R${c.valor_mensal}/mês</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">{c.posts_mes_contratados} posts/mês | {(c.perfis_instagram || []).join(', ')}</p>
             </div>
           ))}
         </div>

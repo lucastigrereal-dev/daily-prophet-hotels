@@ -38,70 +38,111 @@ export default function HotelCalendarioPage() {
     toast.success(`Post ${newStatus}`)
   }
 
-  if (loading) return <div className="flex justify-center py-20"><div className="animate-spin w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full" /></div>
+  if (loading) return (
+    <div className="flex justify-center py-20">
+      <div className="animate-spin w-8 h-8 border-2 border-[#B8860B] border-t-transparent rounded-full" />
+    </div>
+  )
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Link href={`/dashboard/hoteis/${hotelId}`} className="text-zinc-400 hover:text-white">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        <Link href={`/dashboard/hoteis/${hotelId}`} className="text-[#6B7280] hover:text-[#1A1D26] transition-colors">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
         </Link>
-        <h1 className="text-xl font-bold">Calendario</h1>
+        <h1 className="text-xl font-bold text-[#1A1D26]">Calendário do Hotel</h1>
       </div>
 
       {posts.length === 0 ? (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center">
-          <p className="text-zinc-400 mb-2">Nenhum post gerado ainda</p>
-          <p className="text-sm text-zinc-500">Use o Gerador IA para criar o calendario deste hotel</p>
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center shadow-sm">
+          <p className="text-[#6B7280] mb-2">Nenhum post gerado ainda</p>
+          <p className="text-sm text-[#9CA3AF]">Use o Gerador IA para criar o calendário deste hotel</p>
         </div>
       ) : (
         <div className="space-y-3">
           {posts.map(post => (
-            <div key={post.id} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+            <div key={post.id} className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden shadow-sm">
               <button onClick={() => setExpandedId(expandedId === post.id ? null : post.id)}
-                className="w-full p-4 text-left flex items-center justify-between">
+                className="w-full p-4 text-left flex items-center justify-between hover:bg-[#F3F4F6] transition-colors">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs text-zinc-500">{new Date(post.data_post + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span>
+                    <span className="text-xs text-[#9CA3AF]">
+                      {new Date(post.data_post + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                    </span>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      post.tipo === 'feed' ? 'bg-blue-500/10 text-blue-400' :
-                      post.tipo === 'reel' ? 'bg-red-500/10 text-red-400' :
-                      'bg-purple-500/10 text-purple-400'
+                      post.tipo === 'feed' ? 'bg-blue-50 text-blue-700' :
+                      post.tipo === 'reel' ? 'bg-red-50 text-red-600' :
+                      'bg-purple-50 text-purple-700'
                     }`}>{post.tipo}</span>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      post.status === 'aprovado' ? 'bg-green-500/10 text-green-400' :
-                      post.status === 'publicado' ? 'bg-emerald-500/10 text-emerald-400' :
-                      post.status === 'reprovado' ? 'bg-red-500/10 text-red-400' :
-                      'bg-zinc-500/10 text-zinc-400'
+                      post.status === 'aprovado' ? 'bg-emerald-50 text-emerald-700' :
+                      post.status === 'publicado' ? 'bg-green-50 text-green-700' :
+                      post.status === 'reprovado' ? 'bg-red-50 text-red-600' :
+                      'bg-[#F3F4F6] text-[#6B7280]'
                     }`}>{post.status}</span>
                   </div>
-                  <p className="text-sm text-white truncate">{post.hook || post.categoria || 'Sem hook'}</p>
+                  <p className="text-sm text-[#1A1D26] truncate">{post.hook || post.categoria || 'Sem hook'}</p>
                 </div>
-                <svg className={`w-5 h-5 text-zinc-400 transition-transform ${expandedId === post.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-5 h-5 text-[#9CA3AF] transition-transform ${expandedId === post.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {expandedId === post.id && (
-                <div className="px-4 pb-4 space-y-3 border-t border-zinc-800 pt-3">
-                  {post.hook && <div><p className="text-xs text-zinc-500 mb-1">Hook</p><p className="text-sm text-amber-400">{post.hook}</p></div>}
-                  {post.legenda_completa && <div><p className="text-xs text-zinc-500 mb-1">Legenda</p><p className="text-sm text-zinc-300 whitespace-pre-line">{post.legenda_completa}</p></div>}
-                  {post.cta && <div><p className="text-xs text-zinc-500 mb-1">CTA</p><p className="text-sm text-green-400">{post.cta}</p></div>}
+                <div className="px-4 pb-4 space-y-3 border-t border-[#E5E7EB] pt-3">
+                  {post.hook && (
+                    <div>
+                      <p className="text-xs text-[#9CA3AF] mb-1 font-medium uppercase tracking-wide">Hook</p>
+                      <p className="text-sm text-[#B8860B] font-medium">{post.hook}</p>
+                    </div>
+                  )}
+                  {post.legenda_completa && (
+                    <div>
+                      <p className="text-xs text-[#9CA3AF] mb-1 font-medium uppercase tracking-wide">Legenda</p>
+                      <p className="text-sm text-[#374151] whitespace-pre-line">{post.legenda_completa}</p>
+                    </div>
+                  )}
+                  {post.cta && (
+                    <div>
+                      <p className="text-xs text-[#9CA3AF] mb-1 font-medium uppercase tracking-wide">CTA</p>
+                      <p className="text-sm text-emerald-700 font-medium">{post.cta}</p>
+                    </div>
+                  )}
                   {post.hashtags && post.hashtags.length > 0 && (
-                    <div><p className="text-xs text-zinc-500 mb-1">Hashtags</p><p className="text-xs text-zinc-400">{post.hashtags.join(' ')}</p></div>
+                    <div>
+                      <p className="text-xs text-[#9CA3AF] mb-1 font-medium uppercase tracking-wide">Hashtags</p>
+                      <p className="text-xs text-[#6B7280]">{post.hashtags.join(' ')}</p>
+                    </div>
                   )}
                   <div className="flex gap-2 pt-2">
                     {post.status === 'rascunho' && (
                       <>
-                        <button onClick={() => updateStatus(post.id, 'aprovado')} className="flex-1 py-2.5 bg-green-500/20 text-green-400 rounded-lg text-sm font-medium hover:bg-green-500/30">Aprovar</button>
-                        <button onClick={() => updateStatus(post.id, 'reprovado')} className="flex-1 py-2.5 bg-red-500/20 text-red-400 rounded-lg text-sm font-medium hover:bg-red-500/30">Reprovar</button>
+                        <button onClick={() => updateStatus(post.id, 'aprovado')}
+                          className="flex-1 py-2.5 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition-colors">
+                          Aprovar
+                        </button>
+                        <button onClick={() => updateStatus(post.id, 'reprovado')}
+                          className="flex-1 py-2.5 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                          Reprovar
+                        </button>
                       </>
                     )}
                     {post.status === 'aprovado' && (
-                      <button onClick={() => updateStatus(post.id, 'publicado')} className="flex-1 py-2.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm font-medium hover:bg-emerald-500/30">Marcar Publicado</button>
+                      <button onClick={() => updateStatus(post.id, 'publicado')}
+                        className="flex-1 py-2.5 bg-green-50 text-green-700 rounded-lg text-sm font-medium hover:bg-green-100 transition-colors">
+                        Marcar Publicado
+                      </button>
                     )}
-                    <button onClick={() => { navigator.clipboard.writeText(`${post.hook}\n\n${post.legenda_completa}\n\n${post.cta}\n\n${(post.hashtags || []).join(' ')}`); toast.success('Copiado!') }}
-                      className="px-4 py-2.5 bg-zinc-800 text-zinc-400 rounded-lg text-sm hover:bg-zinc-700">Copiar</button>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${post.hook}\n\n${post.legenda_completa}\n\n${post.cta}\n\n${(post.hashtags || []).join(' ')}`)
+                        toast.success('Copiado!')
+                      }}
+                      className="px-4 py-2.5 bg-[#F3F4F6] text-[#6B7280] rounded-lg text-sm hover:bg-[#E5E7EB] transition-colors">
+                      Copiar
+                    </button>
                   </div>
                 </div>
               )}

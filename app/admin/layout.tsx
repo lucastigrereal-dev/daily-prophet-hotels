@@ -6,7 +6,7 @@ import MobileNav from '@/components/layout/MobileNav'
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-[#0a0a0a]">
+      <div className="min-h-screen bg-[#FAFBFC]">
         <div className="flex">
           <Sidebar />
           <div className="flex-1 flex flex-col min-h-screen">
