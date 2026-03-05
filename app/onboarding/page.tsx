@@ -24,6 +24,12 @@ interface M4 { pacotes: string[]; objetivo_principal: string; prazo: string }
 // ─────────────────────────────────────────────
 // CONSTANTS
 // ─────────────────────────────────────────────
+const REGIAO_TO_ESTADO: Record<string, string> = {
+  'Interior SP': 'SP', 'Litoral SP': 'SP', 'Rio de Janeiro': 'RJ',
+  'Minas Gerais': 'MG', 'Nordeste': 'BA', 'Sul': 'PR',
+  'Centro-Oeste': 'GO', 'Outro': 'BR',
+}
+
 const REGIOES = [
   'Interior SP', 'Litoral SP', 'Rio de Janeiro', 'Minas Gerais',
   'Nordeste', 'Sul', 'Centro-Oeste', 'Outro',
@@ -233,6 +239,8 @@ export default function OnboardingPage() {
         .insert({
           nome: m1.nome,
           cidade: m1.cidade,
+          estado: REGIAO_TO_ESTADO[m1.regiao] || 'BR',
+          regiao: m1.regiao,
           tipo: m1.tipo,
           classificacao: Number(m1.categoria),
           numero_quartos: m1.quartos,
@@ -243,7 +251,7 @@ export default function OnboardingPage() {
         .select('id')
         .single()
 
-      if (error || !hotel) { toast.error('Erro ao salvar hotel'); return null }
+      if (error || !hotel) { toast.error('Erro ao salvar hotel: ' + (error?.message || 'desconhecido')); return null }
 
       // salva modulo_1 em background
       supabase.from('onboarding_responses').insert({

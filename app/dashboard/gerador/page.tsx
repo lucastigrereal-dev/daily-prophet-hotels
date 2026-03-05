@@ -20,7 +20,7 @@ interface Legenda {
 }
 
 interface Hook {
-  id: string; texto: string; publico: string; intencao: string; tema: string; formato: string
+  id: string; hook: string; numero: number; publico: string; intencao: string; tema: string
 }
 
 interface Template {
@@ -110,7 +110,7 @@ export default function GeradorPage() {
   }
 
   function copiarHook(h: Hook) {
-    navigator.clipboard.writeText(h.texto)
+    navigator.clipboard.writeText(h.hook)
     toast.success('Hook copiado!')
   }
 
@@ -444,11 +444,10 @@ export default function GeradorPage() {
                 {hooks.map(h => (
                   <div key={h.id} className="bg-white border border-[#E5E7EB] rounded-xl p-3 flex items-center gap-3 shadow-sm hover:shadow-md transition-all duration-200">
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm text-[#1A1D26]">{h.texto}</p>
+                      <p className="text-sm text-[#1A1D26]">{h.hook}</p>
                       <div className="flex gap-2 mt-1">
                         {h.tema && <span className="text-[10px] text-[#9CA3AF] capitalize">{h.tema.replace(/_/g,' ')}</span>}
                         {h.publico && <span className="text-[10px] text-[#9CA3AF]">· {h.publico}</span>}
-                        {h.formato && <span className="text-[10px] text-[#9CA3AF]">· {h.formato}</span>}
                       </div>
                     </div>
                     <button
