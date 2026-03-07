@@ -48,6 +48,21 @@ const TIPOS = [
   { v: 'hotel_historico',   e: '🏛️', l: 'Hotel Histórico / Cultural' },
 ]
 
+// Mapper: valores do form -> valores aceitos pelo CHECK constraint do banco
+const MAP_TIPO: Record<string, string> = {
+  resort_praia:      'resort',
+  pousada_romantica: 'boutique',
+  hotel_urbano:      'urbano',
+  hotel_fazenda:     'fazenda',
+  eco_lodge:         'eco_resort',
+  chales:            'glamping',
+  resort_spa:        'resort',
+  hotel_familia:     'resort',
+  pet_friendly:      'pousada',
+  hotel_historico:   'boutique',
+}
+function mapTipo(v: string): string { return MAP_TIPO[v] || v }
+
 const CATEGORIAS = [
   { v: '1', l: '⭐ Simples' },
   { v: '2', l: '⭐⭐ Médio' },
@@ -241,7 +256,7 @@ export default function OnboardingPage() {
           cidade: m1.cidade,
           estado: REGIAO_TO_ESTADO[m1.regiao] || 'BR',
           regiao: m1.regiao,
-          tipo: m1.tipo,
+          tipo: mapTipo(m1.tipo),
           classificacao: Number(m1.categoria),
           numero_quartos: m1.quartos,
           ticket_medio_diaria: m1.ticket_medio,
@@ -254,7 +269,7 @@ export default function OnboardingPage() {
       if (error || !hotel) { toast.error('Erro ao salvar hotel: ' + (error?.message || 'desconhecido')); return null }
 
       // salva modulo_1 em background
-      supabase.from('onboarding_responses').insert({
+      supabase.from('onboarding_respostas').insert({
         hotel_id: hotel.id,
         respostas: { modulo_1: m1 },
       }).then(() => {})
@@ -266,21 +281,18 @@ export default function OnboardingPage() {
     }
   }
 
-  // ── Módulo 2: salvar diferenciais em onboarding_responses + atualizar hotels ──
+  // ── Módulo 2: salvar diferenciais em onboarding_respostas ──
   async function saveM2(hid: string) {
-    await Promise.all([
-      supabase.from('onboarding_responses').upsert({
-        hotel_id: hid,
-        respostas: { modulo_1: m1, modulo_2: m2 },
-      }, { onConflict: 'hotel_id' }),
-      supabase.from('hotels').update({ diferenciais: m2.diferenciais }).eq('id', hid),
-    ])
+    await supabase.from('onboarding_respostas').upsert({
+      hotel_id: hid,
+      respostas: { modulo_1: m1, modulo_2: m2 },
+    }, { onConflict: 'hotel_id' })
   }
 
   // ── Módulo 3: salvar auditoria de marketing ──
   async function saveM3(hid: string) {
     const oportunidades = oportunidadesMod3(m3)
-    await supabase.from('onboarding_responses').upsert({
+    await supabase.from('onboarding_respostas').upsert({
       hotel_id: hid,
       respostas: {
         modulo_1: m1,
@@ -303,7 +315,7 @@ export default function OnboardingPage() {
       }
 
       await Promise.all([
-        supabase.from('onboarding_responses').upsert({
+        supabase.from('onboarding_respostas').upsert({
           hotel_id: hid,
           respostas: {
             modulo_1: m1, modulo_2: m2, modulo_3: m3, modulo_4: m4,

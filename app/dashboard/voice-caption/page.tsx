@@ -14,7 +14,7 @@ interface CaptionTemplate {
 
 interface Hook {
   id: string
-  texto: string
+  hook: string
   tema: string
 }
 
@@ -32,7 +32,7 @@ export default function VoiceCaptionPage() {
     async function load() {
       const [{ data: tmpl }, { data: hks }] = await Promise.all([
         supabase.from('caption_templates').select('id, nome, descricao, estrutura, objetivo').order('nome'),
-        supabase.from('hooks').select('id, texto, tema').limit(20),
+        supabase.from('hooks').select('id, hook, tema').limit(20),
       ])
       setTemplates(tmpl || [])
       setHooks(hks || [])
@@ -52,7 +52,7 @@ export default function VoiceCaptionPage() {
     const hookAleatorio = hooks[Math.floor(Math.random() * hooks.length)]
 
     setTimeout(() => {
-      const legenda = `${hookAleatorio?.texto || '✨ Descubra!'}\n\n${textoInput.trim()}\n\n${tmpl ? `📌 Framework: ${tmpl.nome}\n` : ''}💬 Salve esse post para não perder!\n\n#hotelaria #turismo #viagem #hospedagem #brasil`
+      const legenda = `${hookAleatorio?.hook || '✨ Descubra!'}\n\n${textoInput.trim()}\n\n${tmpl ? `📌 Framework: ${tmpl.nome}\n` : ''}💬 Salve esse post para não perder!\n\n#hotelaria #turismo #viagem #hospedagem #brasil`
       setLegendaGerada(legenda)
       setGerando(false)
       toast.success('Legenda gerada!')
