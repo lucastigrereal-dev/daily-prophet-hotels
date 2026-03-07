@@ -15,26 +15,27 @@ interface CalendarPost {
   hotel_id: string
 }
 
-interface ChecklistItem {
+interface WeeklyTask {
   id: string
+  task_key: string
   label: string
-  done: boolean
   categoria: string
+  done: boolean
 }
 
-const CHECKLIST_SEMANAL: ChecklistItem[] = [
-  { id: 'c1', label: 'Planejar posts da semana no calendario', done: false, categoria: 'planejamento' },
-  { id: 'c2', label: 'Selecionar hooks para cada post', done: false, categoria: 'planejamento' },
-  { id: 'c3', label: 'Gravar ou fotografar conteudo', done: false, categoria: 'producao' },
-  { id: 'c4', label: 'Editar imagens/videos', done: false, categoria: 'producao' },
-  { id: 'c5', label: 'Escrever legendas com CTAs claros', done: false, categoria: 'producao' },
-  { id: 'c6', label: 'Agendar posts no Instagram', done: false, categoria: 'publicacao' },
-  { id: 'c7', label: 'Responder comentarios e DMs', done: false, categoria: 'engajamento' },
-  { id: 'c8', label: 'Curtir e comentar em perfis do nicho', done: false, categoria: 'engajamento' },
-  { id: 'c9', label: 'Checar metricas: alcance e engajamento', done: false, categoria: 'analise' },
-  { id: 'c10', label: 'Atualizar stories com reacao dos hospedes', done: false, categoria: 'reputacao' },
-  { id: 'c11', label: 'Verificar link da bio esta atualizado', done: false, categoria: 'perfil' },
-  { id: 'c12', label: 'Pedido de depoimento para hospedes da semana', done: false, categoria: 'reputacao' },
+const CHECKLIST_TEMPLATE = [
+  { task_key: 'c1', label: 'Planejar posts da semana no calendario', categoria: 'planejamento' },
+  { task_key: 'c2', label: 'Selecionar hooks para cada post', categoria: 'planejamento' },
+  { task_key: 'c3', label: 'Gravar ou fotografar conteudo', categoria: 'producao' },
+  { task_key: 'c4', label: 'Editar imagens/videos', categoria: 'producao' },
+  { task_key: 'c5', label: 'Escrever legendas com CTAs claros', categoria: 'producao' },
+  { task_key: 'c6', label: 'Agendar posts no Instagram', categoria: 'publicacao' },
+  { task_key: 'c7', label: 'Responder comentarios e DMs', categoria: 'engajamento' },
+  { task_key: 'c8', label: 'Curtir e comentar em perfis do nicho', categoria: 'engajamento' },
+  { task_key: 'c9', label: 'Checar metricas: alcance e engajamento', categoria: 'analise' },
+  { task_key: 'c10', label: 'Atualizar stories com reacao dos hospedes', categoria: 'reputacao' },
+  { task_key: 'c11', label: 'Verificar link da bio esta atualizado', categoria: 'perfil' },
+  { task_key: 'c12', label: 'Pedido de depoimento para hospedes da semana', categoria: 'reputacao' },
 ]
 
 const CATEGORIA_COLOR: Record<string, string> = {
@@ -67,59 +68,106 @@ function getSemanaDates(): { date: Date; label: string }[] {
   })
 }
 
+function getSemanaInicio(): string {
+  const hoje = new Date()
+  const dow = hoje.getDay()
+  const inicio = new Date(hoje)
+  inicio.setDate(hoje.getDate() - dow)
+  return inicio.toISOString().split('T')[0]
+}
+
 export default function ExecucaoPage() {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [posts, setPosts] = useState<CalendarPost[]>([])
-  const [checklist, setChecklist] = useState<ChecklistItem[]>(CHECKLIST_SEMANAL)
+  const [tasks, setTasks] = useState<WeeklyTask[]>([])
   const [hotelId, setHotelId] = useState<string | null>(null)
   const semana = getSemanaDates()
   const hoje = new Date()
-
-  const storageKey = `execucao_checklist_${hoje.toISOString().slice(0, 10)}`
+  const semanaInicio = getSemanaInicio()
 
   useEffect(() => {
-    // Restaura checklist do localStorage
-    const saved = localStorage.getItem(storageKey)
-    if (saved) {
-      try {
-        const ids: string[] = JSON.parse(saved)
-        setChecklist(prev => prev.map(item => ({ ...item, done: ids.includes(item.id) })))
-      } catch {}
-    }
     load()
   }, [])
 
   async function load() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
+
     const { data: hotelData } = await supabase
       .from('hotels')
       .select('id')
-      .eq('status', 'ativo')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: false })
       .limit(1)
       .single()
 
-    if (hotelData) {
-      setHotelId(hotelData.id)
-      const inicioSemana = semana[0].date.toISOString().split('T')[0]
-      const fimSemana = semana[6].date.toISOString().split('T')[0]
-        const { data: postsData } = await supabase
-        .from('calendarios_gerados')
-        .select('id, data_post, tipo, tema_especifico, status, hook, legenda_completa, hotel_id')
-        .eq('hotel_id', hotelData.id)
-        .gte('data_post', inicioSemana)
-        .lte('data_post', fimSemana)
-        .order('data_post', { ascending: true })
-      setPosts(postsData || [])
+    if (!hotelData) { setLoading(false); return }
+
+    setHotelId(hotelData.id)
+
+    // Posts da semana
+    const inicioSemana = semana[0].date.toISOString().split('T')[0]
+    const fimSemana = semana[6].date.toISOString().split('T')[0]
+    const { data: postsData } = await supabase
+      .from('calendarios_gerados')
+      .select('id, data_post, tipo, tema_especifico, status, hook, legenda_completa, hotel_id')
+      .eq('hotel_id', hotelData.id)
+      .gte('data_post', inicioSemana)
+      .lte('data_post', fimSemana)
+      .order('data_post', { ascending: true })
+    setPosts(postsData || [])
+
+    // Tarefas da semana — busca ou cria
+    const { data: existingTasks } = await supabase
+      .from('hotel_weekly_tasks')
+      .select('id, task_key, label, categoria, done')
+      .eq('hotel_id', hotelData.id)
+      .eq('semana_inicio', semanaInicio)
+
+    if (existingTasks && existingTasks.length > 0) {
+      setTasks(existingTasks)
+    } else {
+      // Cria tarefas da semana no banco
+      const newTasks = CHECKLIST_TEMPLATE.map(t => ({
+        hotel_id: hotelData.id,
+        semana_inicio: semanaInicio,
+        task_key: t.task_key,
+        label: t.label,
+        categoria: t.categoria,
+        done: false,
+      }))
+      const { data: inserted } = await supabase
+        .from('hotel_weekly_tasks')
+        .insert(newTasks)
+        .select('id, task_key, label, categoria, done')
+      setTasks(inserted || [])
     }
 
     setLoading(false)
   }
 
-  function toggleChecklist(id: string) {
-    const updated = checklist.map(item => item.id === id ? { ...item, done: !item.done } : item)
-    setChecklist(updated)
-    const doneIds = updated.filter(i => i.done).map(i => i.id)
-    localStorage.setItem(storageKey, JSON.stringify(doneIds))
+  async function toggleTask(taskId: string) {
+    const task = tasks.find(t => t.id === taskId)
+    if (!task) return
+
+    const newDone = !task.done
+    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, done: newDone } : t))
+
+    await supabase
+      .from('hotel_weekly_tasks')
+      .update({ done: newDone, done_at: newDone ? new Date().toISOString() : null })
+      .eq('id', taskId)
+
+    // Log de execucao
+    if (newDone && hotelId) {
+      await supabase.from('hotel_execution_log').insert({
+        hotel_id: hotelId,
+        acao: `tarefa_concluida:${task.task_key}`,
+        categoria: task.categoria === 'planejamento' ? 'planejamento' : task.categoria === 'engajamento' ? 'engajamento' : 'conteudo',
+        detalhes: { task_key: task.task_key, label: task.label },
+      })
+    }
   }
 
   async function marcarPostPublicado(postId: string) {
@@ -129,13 +177,22 @@ export default function ExecucaoPage() {
       .eq('id', postId)
     setPosts(prev => prev.map(p => p.id === postId ? { ...p, status: 'publicado' } : p))
     toast.success('Post marcado como publicado!')
+
+    if (hotelId) {
+      await supabase.from('hotel_execution_log').insert({
+        hotel_id: hotelId,
+        acao: 'post_publicado',
+        categoria: 'conteudo',
+        detalhes: { post_id: postId },
+        pontos: 3,
+      })
+    }
   }
 
-  const done = checklist.filter(i => i.done).length
-  const total = checklist.length
-  const progresso = Math.round((done / total) * 100)
-
-  const categorias = [...new Set(checklist.map(i => i.categoria))]
+  const done = tasks.filter(i => i.done).length
+  const total = tasks.length
+  const progresso = total > 0 ? Math.round((done / total) * 100) : 0
+  const categorias = [...new Set(tasks.map(i => i.categoria))]
 
   if (loading) {
     return (
@@ -243,10 +300,10 @@ export default function ExecucaoPage() {
         {categorias.map(cat => (
           <div key={cat} className="mb-4">
             <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide mb-2 flex items-center gap-1.5">
-              <span className={`px-1.5 py-0.5 rounded text-[10px] ${CATEGORIA_COLOR[cat]}`}>{cat}</span>
+              <span className={`px-1.5 py-0.5 rounded text-[10px] ${CATEGORIA_COLOR[cat] || ''}`}>{cat}</span>
             </p>
             <div className="space-y-1.5">
-              {checklist.filter(i => i.categoria === cat).map(item => (
+              {tasks.filter(i => i.categoria === cat).map(item => (
                 <label
                   key={item.id}
                   className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#F8F9FB] cursor-pointer transition-colors"
@@ -254,7 +311,7 @@ export default function ExecucaoPage() {
                   <input
                     type="checkbox"
                     checked={item.done}
-                    onChange={() => toggleChecklist(item.id)}
+                    onChange={() => toggleTask(item.id)}
                     className="w-4 h-4 rounded border-[#E5E7EB] text-[#B8860B] focus:ring-[#B8860B]/20 cursor-pointer"
                   />
                   <span className={`text-sm transition-all ${item.done ? 'line-through text-[#9CA3AF]' : 'text-[#1A1D26]'}`}>

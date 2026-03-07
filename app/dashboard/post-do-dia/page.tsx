@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import { getContentDNA, filterByDNA, sortByDNA, type ContentDNA } from '@/lib/hotel/content-dna'
 
 interface Hook {
   id: string
@@ -51,43 +52,70 @@ export default function PostDoDiaPage() {
   }, [])
 
   async function load() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
+
     const { data: hoteisData } = await supabase
       .from('hotels')
       .select('id, nome, tipo')
-      .eq('status', 'ativo')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: false })
       .limit(1)
       .single()
 
     setHotel(hoteisData || null)
+
+    // Carrega Content DNA do hotel
+    const dna: ContentDNA | null = hoteisData ? await getContentDNA(hoteisData.id) : null
+
+    // Busca conteudo ja usado pelo hotel (anti-repeticao)
+    const { data: usedData } = hoteisData ? await supabase
+      .from('hotel_content_history')
+      .select('content_id, content_type')
+      .eq('hotel_id', hoteisData.id) : { data: null }
+    const usedHookIds = new Set((usedData || []).filter(u => u.content_type === 'hook').map(u => u.content_id))
+    const usedBenchIds = new Set((usedData || []).filter(u => u.content_type === 'benchmark').map(u => u.content_id))
 
     const [{ data: hooksData }, { data: benchData }, { data: hashData }] = await Promise.all([
       supabase
         .from('hooks')
         .select('id, hook, tema, formato, objetivo')
         .order('created_at', { ascending: false })
-        .limit(100),
+        .limit(200),
       supabase
         .from('benchmarks_posts')
         .select('id, hook, legenda_completa, tema, formato, qualidade_score, hashtags, cta')
         .eq('ativo', true)
         .order('qualidade_score', { ascending: false })
-        .limit(50),
+        .limit(100),
       supabase
         .from('hashtag_combos')
         .select('hashtags')
         .limit(20),
     ])
 
-    const hooks = hooksData || []
-    const benchmarks = benchData || []
+    let hooks = hooksData || []
+    let benchmarks = benchData || []
 
-    // Seleciona hook do dia baseado no dia do ano (determinístico)
-    const hookSeed = diaDoAno % Math.max(hooks.length, 1)
-    setHookDia(hooks[hookSeed] || hooks[0] || null)
+    // Filtra e ordena por Content DNA
+    if (dna) {
+      hooks = sortByDNA(filterByDNA(hooks, dna), dna)
+      benchmarks = sortByDNA(filterByDNA(benchmarks, dna), dna)
+    }
+
+    // Remove conteudo ja usado (anti-repeticao) — fallback para todos se acabar
+    const freshHooks = hooks.filter(h => !usedHookIds.has(h.id))
+    const freshBench = benchmarks.filter(b => !usedBenchIds.has(b.id))
+    const finalHooks = freshHooks.length > 0 ? freshHooks : hooks
+    const finalBench = freshBench.length > 0 ? freshBench : benchmarks
+
+    // Seleciona hook do dia baseado no dia do ano (deterministico)
+    const hookSeed = diaDoAno % Math.max(finalHooks.length, 1)
+    setHookDia(finalHooks[hookSeed] || finalHooks[0] || null)
 
     // Benchmark do dia
-    const benchSeed = (diaDoAno * 3) % Math.max(benchmarks.length, 1)
-    setBenchmarkDia(benchmarks[benchSeed] || benchmarks[0] || null)
+    const benchSeed = (diaDoAno * 3) % Math.max(finalBench.length, 1)
+    setBenchmarkDia(finalBench[benchSeed] || finalBench[0] || null)
 
     // Hashtags
     const hashCombos = hashData || []
@@ -123,11 +151,35 @@ export default function PostDoDiaPage() {
     toast.success('Novo post sugerido!')
   }
 
-  function copiar(texto: string, id: string) {
+  async function copiar(texto: string, id: string) {
     navigator.clipboard.writeText(texto)
     setCopiado(id)
     toast.success('Copiado!')
     setTimeout(() => setCopiado(null), 2000)
+
+    // Registra uso no historico (anti-repeticao) e log de execucao
+    if (hotel && id === 'completo') {
+      const inserts = []
+      if (hookDia) {
+        inserts.push(supabase.from('hotel_content_history').upsert(
+          { hotel_id: hotel.id, content_type: 'hook', content_id: hookDia.id },
+          { onConflict: 'hotel_id,content_type,content_id' }
+        ))
+      }
+      if (benchmarkDia) {
+        inserts.push(supabase.from('hotel_content_history').upsert(
+          { hotel_id: hotel.id, content_type: 'benchmark', content_id: benchmarkDia.id },
+          { onConflict: 'hotel_id,content_type,content_id' }
+        ))
+      }
+      inserts.push(supabase.from('hotel_execution_log').insert({
+        hotel_id: hotel.id,
+        acao: 'post_copiado',
+        categoria: 'conteudo',
+        detalhes: { hook_id: hookDia?.id, benchmark_id: benchmarkDia?.id },
+      }))
+      await Promise.all(inserts)
+    }
   }
 
   if (loading) {

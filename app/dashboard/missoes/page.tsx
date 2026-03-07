@@ -123,9 +123,14 @@ export default function MissoesPage() {
   }, [])
 
   async function load() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
+
     const { data: hotelData } = await supabase
       .from('hotels')
       .select('id, nome')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: false })
       .limit(1)
       .single()
 

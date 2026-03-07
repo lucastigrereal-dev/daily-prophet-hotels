@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { toast } from 'sonner'
 
 interface Campanha {
   id: string
@@ -17,7 +18,28 @@ interface Campanha {
   ativo: boolean
 }
 
-const CAMPANHAS_ESTATICAS = [
+interface CampanhaLocal {
+  id: string
+  nome: string
+  tipo: string
+  objetivo: string
+  antecedencia_dias: number
+  data_inicio: string
+  data_fim: string
+  formatos_sugeridos: string[]
+  cta_principal: string
+  descricao: string
+  ativo: boolean
+  dias_restantes: number
+}
+
+interface Enrollment {
+  campanha_id: string
+  status: string
+  progresso: number
+}
+
+const CAMPANHAS_ESTATICAS: CampanhaLocal[] = [
   {
     id: 'pascoa',
     nome: 'Pascoa 2026',
@@ -101,20 +123,95 @@ export default function CampanhasPage() {
   const [campanhasDB, setCampanhasDB] = useState<Campanha[]>([])
   const [loading, setLoading] = useState(true)
   const [filtro, setFiltro] = useState<'todas' | 'urgentes' | 'planejamento'>('todas')
+  const [hotelId, setHotelId] = useState<string | null>(null)
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([])
+  const [enrolling, setEnrolling] = useState<string | null>(null)
 
   useEffect(() => {
     load()
   }, [])
 
   async function load() {
-    const { data } = await supabase
-      .from('campanhas')
-      .select('*')
-      .eq('ativo', true)
-      .order('data_inicio', { ascending: true })
-      .limit(50)
-    setCampanhasDB(data || [])
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setLoading(false); return }
+
+    const { data: hotelData } = await supabase
+      .from('hotels')
+      .select('id')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (hotelData) {
+      setHotelId(hotelData.id)
+
+      const [{ data: campanhasData }, { data: enrollData }] = await Promise.all([
+        supabase
+          .from('campanhas')
+          .select('*')
+          .eq('ativo', true)
+          .order('data_inicio', { ascending: true })
+          .limit(50),
+        supabase
+          .from('campaign_hotel_status')
+          .select('campanha_id, status, progresso')
+          .eq('hotel_id', hotelData.id),
+      ])
+      setCampanhasDB(campanhasData || [])
+      setEnrollments(enrollData || [])
+    }
     setLoading(false)
+  }
+
+  async function enrollCampanha(campanhaId: string) {
+    if (!hotelId) return
+    setEnrolling(campanhaId)
+
+    // Para campanhas estaticas (sem UUID), registra no log de execucao
+    const isStaticId = !campanhaId.includes('-')
+    if (isStaticId) {
+      await supabase.from('hotel_execution_log').insert({
+        hotel_id: hotelId,
+        acao: `campanha_inscrita:${campanhaId}`,
+        categoria: 'campanha',
+        detalhes: { campanha_nome: campanhaId },
+        pontos: 2,
+      })
+      toast.success('Inscrito na campanha!')
+      setEnrolling(null)
+      return
+    }
+
+    // Para campanhas do banco (com UUID real)
+    const { error } = await supabase
+      .from('campaign_hotel_status')
+      .upsert({
+        hotel_id: hotelId,
+        campanha_id: campanhaId,
+        status: 'inscrito',
+        started_at: new Date().toISOString(),
+      }, { onConflict: 'hotel_id,campanha_id' })
+
+    if (error) {
+      toast.error('Erro ao inscrever: ' + error.message)
+    } else {
+      setEnrollments(prev => [...prev, { campanha_id: campanhaId, status: 'inscrito', progresso: 0 }])
+      toast.success('Inscrito na campanha!')
+
+      await supabase.from('hotel_execution_log').insert({
+        hotel_id: hotelId,
+        acao: 'campanha_inscrita',
+        categoria: 'campanha',
+        detalhes: { campanha_id: campanhaId },
+        pontos: 2,
+      })
+    }
+    setEnrolling(null)
+  }
+
+  function getEnrollment(campanhaId: string): Enrollment | undefined {
+    return enrollments.find(e => e.campanha_id === campanhaId)
   }
 
   const campanhas = CAMPANHAS_ESTATICAS.sort((a, b) => a.dias_restantes - b.dias_restantes)
@@ -206,27 +303,57 @@ export default function CampanhasPage() {
             </div>
 
             <div className="flex gap-2 mt-3">
-              <button className="flex-1 py-2 text-xs font-medium border border-current/20 rounded-lg hover:bg-current/5 transition-colors">
-                Ver checklist
-              </button>
-              <button className="flex-1 py-2 text-xs font-medium bg-[#B8860B] text-white rounded-lg hover:brightness-110 transition-all">
-                Montar campanha
+              <button
+                onClick={() => enrollCampanha(c.id)}
+                disabled={enrolling === c.id}
+                className="flex-1 py-2 text-xs font-medium bg-[#B8860B] text-white rounded-lg hover:brightness-110 transition-all disabled:opacity-50"
+              >
+                {enrolling === c.id ? 'Inscrevendo...' : 'Participar desta campanha'}
               </button>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Campanhas do banco */}
       {campanhasDB.length > 0 && (
         <div>
-          <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide mb-3">Do banco de dados</p>
+          <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide mb-3">Campanhas personalizadas</p>
           <div className="space-y-2">
-            {campanhasDB.slice(0, 5).map(c => (
-              <div key={c.id} className="bg-white border border-[#E5E7EB] rounded-xl p-3 shadow-sm">
-                <p className="font-medium text-sm text-[#1A1D26]">{c.nome}</p>
-                <p className="text-xs text-[#9CA3AF] mt-0.5">{c.objetivo}</p>
-              </div>
-            ))}
+            {campanhasDB.map(c => {
+              const enrollment = getEnrollment(c.id)
+              return (
+                <div key={c.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-sm text-[#1A1D26]">{c.nome}</p>
+                      <p className="text-xs text-[#9CA3AF] mt-0.5">{c.objetivo}</p>
+                    </div>
+                    {enrollment ? (
+                      <span className="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-full font-medium">
+                        {enrollment.status === 'inscrito' ? 'Inscrito' : enrollment.status}
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => enrollCampanha(c.id)}
+                        disabled={enrolling === c.id}
+                        className="text-xs px-3 py-1.5 bg-[#B8860B] text-white rounded-lg hover:brightness-110 disabled:opacity-50"
+                      >
+                        {enrolling === c.id ? '...' : 'Participar'}
+                      </button>
+                    )}
+                  </div>
+                  {enrollment && enrollment.progresso > 0 && (
+                    <div className="mt-2">
+                      <div className="w-full bg-[#F3F4F6] rounded-full h-1.5">
+                        <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${enrollment.progresso}%` }} />
+                      </div>
+                      <p className="text-[10px] text-[#9CA3AF] mt-0.5">{enrollment.progresso}% concluido</p>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       )}

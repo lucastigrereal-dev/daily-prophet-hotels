@@ -13,6 +13,7 @@ interface Hotel {
   status: string
   instagram: string
   onboarding_completo: boolean
+  cor: string | null
 }
 
 interface Hook {
@@ -57,8 +58,7 @@ function getSemanaDates(): Date[] {
 export default function DashboardPage() {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
-  const [hoteis, setHoteis] = useState<Hotel[]>([])
-  const [hotelAtivo, setHotelAtivo] = useState<Hotel | null>(null)
+  const [hotel, setHotel] = useState<Hotel | null>(null)
   const [stats, setStats] = useState({ total_legendas: 0, total_hooks: 0 })
   const [postDia, setPostDia] = useState<{ hook: Hook | null; benchmark: Benchmark | null }>({ hook: null, benchmark: null })
   const [postsCalendario, setPostsCalendario] = useState<CalendarPost[]>([])
@@ -70,14 +70,34 @@ export default function DashboardPage() {
   }, [])
 
   async function load() {
+    // Busca o hotel do usuario logado
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setLoading(false)
+      return
+    }
+
+    const { data: hotelData } = await supabase
+      .from('hotels')
+      .select('*')
+      .eq('owner_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (!hotelData) {
+      setLoading(false)
+      return
+    }
+
+    setHotel(hotelData)
+
     const [
-      { data: hoteisData },
       { count: totalLegendas },
       { count: totalHooks },
       { data: hooksData },
       { data: benchData },
     ] = await Promise.all([
-      supabase.from('hotels').select('*').order('created_at', { ascending: false }),
       supabase.from('benchmarks_posts').select('*', { count: 'exact', head: true }),
       supabase.from('hooks').select('*', { count: 'exact', head: true }),
       supabase.from('hooks').select('id, hook, tema, formato').limit(50),
@@ -89,32 +109,26 @@ export default function DashboardPage() {
         .limit(20),
     ])
 
-    const h = hoteisData || []
-    setHoteis(h)
     setStats({ total_legendas: totalLegendas || 0, total_hooks: totalHooks || 0 })
 
-    const ativo = h.find(x => x.status === 'ativo') || h[0] || null
-    setHotelAtivo(ativo)
-
-    // Post do dia: hook aleatorio + benchmark top
+    // Post do dia: deterministic por dia do ano
     const hooks = hooksData || []
     const benchmarks = benchData || []
-    const hookAleatorio = hooks[Math.floor(Math.random() * hooks.length)] || null
-    const benchAleatorio = benchmarks[Math.floor(Math.random() * Math.min(benchmarks.length, 5))] || null
-    setPostDia({ hook: hookAleatorio, benchmark: benchAleatorio })
+    const dayOfYear = Math.floor((hoje.getTime() - new Date(hoje.getFullYear(), 0, 0).getTime()) / 86400000)
+    const hookDoDia = hooks.length > 0 ? hooks[dayOfYear % hooks.length] : null
+    const benchDoDia = benchmarks.length > 0 ? benchmarks[dayOfYear % benchmarks.length] : null
+    setPostDia({ hook: hookDoDia, benchmark: benchDoDia })
 
-    // Posts da semana do hotel ativo
-    if (ativo) {
-      const inicioSemana = semana[0].toISOString().split('T')[0]
-      const fimSemana = semana[6].toISOString().split('T')[0]
-      const { data: posts } = await supabase
-        .from('calendarios_gerados')
-        .select('id, data_post, tipo, tema_especifico, status, hotel_id')
-        .eq('hotel_id', ativo.id)
-        .gte('data_post', inicioSemana)
-        .lte('data_post', fimSemana)
-      setPostsCalendario(posts || [])
-    }
+    // Posts da semana do hotel
+    const inicioSemana = semana[0].toISOString().split('T')[0]
+    const fimSemana = semana[6].toISOString().split('T')[0]
+    const { data: posts } = await supabase
+      .from('calendarios_gerados')
+      .select('id, data_post, tipo, tema_especifico, status, hotel_id')
+      .eq('hotel_id', hotelData.id)
+      .gte('data_post', inicioSemana)
+      .lte('data_post', fimSemana)
+    setPostsCalendario(posts || [])
 
     setLoading(false)
   }
@@ -127,30 +141,44 @@ export default function DashboardPage() {
     )
   }
 
-  const scoreConteudo = Math.min(100, Math.round((stats.total_legendas / 2500) * 100))
-  const scoreExecucao = hotelAtivo?.onboarding_completo ? 60 : 20
-  const scoreTotal = Math.round((scoreConteudo + scoreExecucao) / 2)
+  // Sem hotel — direciona para onboarding
+  if (!hotel) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+        <div className="w-16 h-16 rounded-2xl bg-[#FFF8E7] flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-[#B8860B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        </div>
+        <h1 className="text-xl font-bold text-[#1A1D26] mb-2">Bem-vindo ao Daily Prophet</h1>
+        <p className="text-sm text-[#6B7280] mb-6 max-w-sm">
+          Cadastre seu hotel para receber seu Starter Kit personalizado com calendario, hooks e campanhas.
+        </p>
+        <Link
+          href="/onboarding"
+          className="px-6 py-3 bg-[#B8860B] hover:brightness-110 text-white font-semibold rounded-lg transition-all"
+        >
+          Cadastrar meu hotel
+        </Link>
+      </div>
+    )
+  }
 
+  const scoreConteudo = Math.min(100, Math.round(((stats.total_legendas + stats.total_hooks) / 3500) * 100))
+  const scoreExecucao = hotel.onboarding_completo ? 60 : 20
+  const scoreTotal = Math.round((scoreConteudo + scoreExecucao) / 2)
   const nivel = scoreTotal >= 80 ? 'Dominando' : scoreTotal >= 60 ? 'Estrategico' : scoreTotal >= 40 ? 'Ativo' : scoreTotal >= 20 ? 'Organizado' : 'Travado'
+  const corTema = hotel.cor || '#B8860B'
 
   return (
     <div className="space-y-5">
 
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Posto de Comando</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">
-            {hotelAtivo ? hotelAtivo.nome : 'Nenhum hotel ativo'}
-            {hotelAtivo && ` — ${hotelAtivo.cidade}/${hotelAtivo.estado}`}
-          </p>
-        </div>
-        <Link
-          href="/onboarding"
-          className="px-4 py-2.5 bg-[#B8860B] hover:brightness-110 text-white font-semibold rounded-lg text-sm transition-all"
-        >
-          + Hotel
-        </Link>
+      {/* Header — single hotel */}
+      <div>
+        <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Posto de Comando</h1>
+        <p className="text-sm text-[#6B7280] mt-0.5">
+          {hotel.nome} — {hotel.cidade}/{hotel.estado}
+        </p>
       </div>
 
       {/* Score bar */}
@@ -167,8 +195,8 @@ export default function DashboardPage() {
         </div>
         <div className="w-full bg-[#F3F4F6] rounded-full h-2">
           <div
-            className="bg-[#B8860B] h-2 rounded-full transition-all duration-500"
-            style={{ width: `${scoreTotal}%` }}
+            className="h-2 rounded-full transition-all duration-500"
+            style={{ width: `${scoreTotal}%`, backgroundColor: corTema }}
           />
         </div>
       </div>
@@ -182,7 +210,7 @@ export default function DashboardPage() {
             <h2 className="font-semibold text-[#1A1D26] text-sm">Missao Ativa</h2>
             <Link href="/dashboard/missoes" className="text-xs text-[#B8860B] hover:underline">Ver todas</Link>
           </div>
-          {hotelAtivo?.onboarding_completo ? (
+          {hotel.onboarding_completo ? (
             <div className="space-y-3">
               <div className="bg-[#FFF8E7] rounded-xl p-3">
                 <p className="font-medium text-sm text-[#B8860B]">Calendario Editorial do Mes</p>
@@ -297,46 +325,6 @@ export default function DashboardPage() {
         </div>
 
       </div>
-
-      {/* Hoteis */}
-      {hoteis.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-semibold text-[#1A1D26]">Hoteis ({hoteis.length})</h2>
-            <Link href="/dashboard/hoteis" className="text-xs text-[#B8860B] hover:underline">Ver todos</Link>
-          </div>
-          <div className="space-y-2">
-            {hoteis.slice(0, 3).map((hotel) => (
-              <Link
-                key={hotel.id}
-                href={`/dashboard/hoteis/${hotel.id}`}
-                className="flex items-center justify-between bg-white border border-[#E5E7EB] rounded-xl p-3 hover:border-[#D1D5DB] hover:shadow-sm transition-all duration-200"
-              >
-                <div>
-                  <p className="font-medium text-sm text-[#1A1D26]">{hotel.nome}</p>
-                  <p className="text-xs text-[#9CA3AF]">{hotel.cidade}/{hotel.estado} — {hotel.tipo}</p>
-                </div>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                  hotel.status === 'ativo' ? 'bg-emerald-50 text-emerald-700' :
-                  hotel.status === 'onboarding' ? 'bg-[#FFF8E7] text-[#B8860B]' :
-                  'bg-[#F3F4F6] text-[#6B7280]'
-                }`}>
-                  {hotel.status}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {hoteis.length === 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 text-center shadow-sm">
-          <p className="text-[#6B7280] mb-4">Nenhum hotel cadastrado</p>
-          <Link href="/onboarding" className="inline-block px-6 py-3 bg-[#B8860B] hover:brightness-110 text-white font-semibold rounded-lg transition-all">
-            Cadastrar primeiro hotel
-          </Link>
-        </div>
-      )}
 
       {/* Acoes rapidas */}
       <div>

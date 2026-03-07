@@ -1084,7 +1084,7 @@ function Resultado({
 
   function copiarLink() {
     if (!hotelId) return
-    navigator.clipboard.writeText(`${window.location.origin}/dashboard/hoteis/${hotelId}`)
+    navigator.clipboard.writeText(`${window.location.origin}/dashboard/meu-hotel`)
     toast.success('Link copiado!')
   }
 
