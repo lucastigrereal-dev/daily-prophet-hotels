@@ -2,19 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useCurrentHotel } from '@/lib/hotel/use-current-hotel'
 import Link from 'next/link'
-
-interface Hotel {
-  id: string
-  nome: string
-  cidade: string
-  estado: string
-  tipo: string
-  status: string
-  instagram: string
-  onboarding_completo: boolean
-  cor: string | null
-}
 
 interface Hook {
   id: string
@@ -57,8 +46,8 @@ function getSemanaDates(): Date[] {
 
 export default function DashboardPage() {
   const supabase = createClient()
+  const { hotel, loading: hotelLoading } = useCurrentHotel()
   const [loading, setLoading] = useState(true)
-  const [hotel, setHotel] = useState<Hotel | null>(null)
   const [stats, setStats] = useState({ total_legendas: 0, total_hooks: 0 })
   const [postDia, setPostDia] = useState<{ hook: Hook | null; benchmark: Benchmark | null }>({ hook: null, benchmark: null })
   const [postsCalendario, setPostsCalendario] = useState<CalendarPost[]>([])
@@ -66,31 +55,13 @@ export default function DashboardPage() {
   const hoje = new Date()
 
   useEffect(() => {
+    if (hotelLoading) return
+    if (!hotel) { setLoading(false); return }
     load()
-  }, [])
+  }, [hotelLoading, hotel?.id])
 
   async function load() {
-    // Busca o hotel do usuario logado
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      setLoading(false)
-      return
-    }
-
-    const { data: hotelData } = await supabase
-      .from('hotels')
-      .select('*')
-      .eq('owner_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single()
-
-    if (!hotelData) {
-      setLoading(false)
-      return
-    }
-
-    setHotel(hotelData)
+    if (!hotel) return
 
     const [
       { count: totalLegendas },
@@ -111,7 +82,6 @@ export default function DashboardPage() {
 
     setStats({ total_legendas: totalLegendas || 0, total_hooks: totalHooks || 0 })
 
-    // Post do dia: deterministic por dia do ano
     const hooks = hooksData || []
     const benchmarks = benchData || []
     const dayOfYear = Math.floor((hoje.getTime() - new Date(hoje.getFullYear(), 0, 0).getTime()) / 86400000)
@@ -119,13 +89,12 @@ export default function DashboardPage() {
     const benchDoDia = benchmarks.length > 0 ? benchmarks[dayOfYear % benchmarks.length] : null
     setPostDia({ hook: hookDoDia, benchmark: benchDoDia })
 
-    // Posts da semana do hotel
     const inicioSemana = semana[0].toISOString().split('T')[0]
     const fimSemana = semana[6].toISOString().split('T')[0]
     const { data: posts } = await supabase
       .from('calendarios_gerados')
       .select('id, data_post, tipo, tema_especifico, status, hotel_id')
-      .eq('hotel_id', hotelData.id)
+      .eq('hotel_id', hotel.id)
       .gte('data_post', inicioSemana)
       .lte('data_post', fimSemana)
     setPostsCalendario(posts || [])
@@ -133,7 +102,7 @@ export default function DashboardPage() {
     setLoading(false)
   }
 
-  if (loading) {
+  if (hotelLoading || loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin w-8 h-8 border-2 border-[#B8860B] border-t-transparent rounded-full" />
@@ -141,7 +110,6 @@ export default function DashboardPage() {
     )
   }
 
-  // Sem hotel — direciona para onboarding
   if (!hotel) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] text-center">
@@ -154,10 +122,7 @@ export default function DashboardPage() {
         <p className="text-sm text-[#6B7280] mb-6 max-w-sm">
           Cadastre seu hotel para receber seu Starter Kit personalizado com calendario, hooks e campanhas.
         </p>
-        <Link
-          href="/onboarding"
-          className="px-6 py-3 bg-[#B8860B] hover:brightness-110 text-white font-semibold rounded-lg transition-all"
-        >
+        <Link href="/onboarding" className="px-6 py-3 bg-[#B8860B] hover:brightness-110 text-white font-semibold rounded-lg transition-all">
           Cadastrar meu hotel
         </Link>
       </div>
@@ -172,16 +137,11 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-5">
-
-      {/* Header — single hotel */}
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Posto de Comando</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">
-          {hotel.nome} — {hotel.cidade}/{hotel.estado}
-        </p>
+        <p className="text-sm text-[#6B7280] mt-0.5">{hotel.nome} — {hotel.cidade}/{hotel.estado}</p>
       </div>
 
-      {/* Score bar */}
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
@@ -194,17 +154,11 @@ export default function DashboardPage() {
           </div>
         </div>
         <div className="w-full bg-[#F3F4F6] rounded-full h-2">
-          <div
-            className="h-2 rounded-full transition-all duration-500"
-            style={{ width: `${scoreTotal}%`, backgroundColor: corTema }}
-          />
+          <div className="h-2 rounded-full transition-all duration-500" style={{ width: `${scoreTotal}%`, backgroundColor: corTema }} />
         </div>
       </div>
 
-      {/* Grid principal 2 colunas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-        {/* Missao ativa */}
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-[#1A1D26] text-sm">Missao Ativa</h2>
@@ -236,7 +190,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Post do Dia */}
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-[#1A1D26] text-sm">Post do Dia</h2>
@@ -249,30 +202,20 @@ export default function DashboardPage() {
                 <p className="text-sm text-[#1A1D26] leading-snug line-clamp-3">{postDia.hook.hook}</p>
               </div>
               <div className="flex gap-2 text-xs">
-                {postDia.hook.tema && (
-                  <span className="px-2 py-0.5 bg-[#EFF6FF] text-blue-700 rounded-full">{postDia.hook.tema}</span>
-                )}
-                {postDia.hook.formato && (
-                  <span className="px-2 py-0.5 bg-[#ECFDF5] text-emerald-700 rounded-full">{postDia.hook.formato}</span>
-                )}
+                {postDia.hook.tema && <span className="px-2 py-0.5 bg-[#EFF6FF] text-blue-700 rounded-full">{postDia.hook.tema}</span>}
+                {postDia.hook.formato && <span className="px-2 py-0.5 bg-[#ECFDF5] text-emerald-700 rounded-full">{postDia.hook.formato}</span>}
               </div>
               <Link href="/dashboard/post-do-dia" className="block text-center text-xs py-2 bg-[#B8860B] text-white rounded-lg font-medium hover:brightness-110">
                 Ver legenda completa + CTA
               </Link>
             </div>
           ) : (
-            <div className="text-center py-6 text-sm text-[#9CA3AF]">
-              Carregando sugestao do dia...
-            </div>
+            <div className="text-center py-6 text-sm text-[#9CA3AF]">Carregando sugestao do dia...</div>
           )}
         </div>
-
       </div>
 
-      {/* Semana + Campanha */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-        {/* Calendario da semana */}
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-[#1A1D26] text-sm">Semana</h2>
@@ -284,16 +227,9 @@ export default function DashboardPage() {
               const dateStr = dia.toISOString().split('T')[0]
               const temPost = postsCalendario.some(p => String(p.data_post).startsWith(dateStr))
               return (
-                <div
-                  key={i}
-                  className={`flex flex-col items-center p-2 rounded-xl text-center ${
-                    isHoje ? 'bg-[#FFF8E7] border border-[#B8860B]/30' : 'bg-[#F8F9FB]'
-                  }`}
-                >
+                <div key={i} className={`flex flex-col items-center p-2 rounded-xl text-center ${isHoje ? 'bg-[#FFF8E7] border border-[#B8860B]/30' : 'bg-[#F8F9FB]'}`}>
                   <span className="text-[10px] text-[#9CA3AF]">{DIAS_SEMANA[i]}</span>
-                  <span className={`text-sm font-bold mt-0.5 ${isHoje ? 'text-[#B8860B]' : 'text-[#1A1D26]'}`}>
-                    {dia.getDate()}
-                  </span>
+                  <span className={`text-sm font-bold mt-0.5 ${isHoje ? 'text-[#B8860B]' : 'text-[#1A1D26]'}`}>{dia.getDate()}</span>
                   <div className={`w-1.5 h-1.5 rounded-full mt-1 ${temPost ? 'bg-emerald-500' : 'bg-[#E5E7EB]'}`} />
                 </div>
               )
@@ -304,7 +240,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Campanha do mes */}
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-[#1A1D26] text-sm">Campanha do Mes</h2>
@@ -323,10 +258,8 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
-
       </div>
 
-      {/* Acoes rapidas */}
       <div>
         <h2 className="text-base font-semibold text-[#1A1D26] mb-3">Acoes Rapidas</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -336,7 +269,6 @@ export default function DashboardPage() {
           <QuickAction href="/dashboard/campanhas" title="Campanhas" desc="Planejar campanha" icon="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" color="#7C3AED" bg="#F5F3FF" />
         </div>
       </div>
-
     </div>
   )
 }

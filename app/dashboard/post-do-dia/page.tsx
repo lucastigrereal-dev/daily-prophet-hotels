@@ -8,17 +8,23 @@ import { getContentDNA, filterByDNA, sortByDNA, type ContentDNA } from '@/lib/ho
 interface Hook {
   id: string
   hook: string
-  tema: string
-  formato: string
-  objetivo: string
+  tema: string | null
+  formato: string | null
+  objetivo: string | null
+  publico: string | null
+  sazonalidade: string | null
+  quando_usar: string | null
 }
 
 interface Benchmark {
   id: string
   hook: string
   legenda_completa: string
-  tema: string
-  formato: string
+  tema: string | null
+  formato: string | null
+  publico: string | null
+  objetivo: string | null
+  sazonalidade: string | null
   qualidade_score: number
   hashtags: string
   cta: string
@@ -79,12 +85,13 @@ export default function PostDoDiaPage() {
     const [{ data: hooksData }, { data: benchData }, { data: hashData }] = await Promise.all([
       supabase
         .from('hooks')
-        .select('id, hook, tema, formato, objetivo')
-        .order('created_at', { ascending: false })
+        .select('id, hook, tema, formato, objetivo, publico, sazonalidade, quando_usar')
+        .eq('ativo', true)
+        .order('score_qualidade', { ascending: false })
         .limit(200),
       supabase
         .from('benchmarks_posts')
-        .select('id, hook, legenda_completa, tema, formato, qualidade_score, hashtags, cta')
+        .select('id, hook, legenda_completa, tema, formato, publico, objetivo, sazonalidade, qualidade_score, hashtags, cta')
         .eq('ativo', true)
         .order('qualidade_score', { ascending: false })
         .limit(100),
@@ -133,10 +140,10 @@ export default function PostDoDiaPage() {
   async function novoPost() {
     setLoading(true)
     await new Promise(r => setTimeout(r, 300))
-    const { data: hooksData } = await supabase.from('hooks').select('id, hook, tema, formato, objetivo').limit(200)
+    const { data: hooksData } = await supabase.from('hooks').select('id, hook, tema, formato, objetivo, publico, sazonalidade, quando_usar').eq('ativo', true).limit(200)
     const { data: benchData } = await supabase
       .from('benchmarks_posts')
-      .select('id, hook, legenda_completa, tema, formato, qualidade_score, hashtags, cta')
+      .select('id, hook, legenda_completa, tema, formato, publico, objetivo, sazonalidade, qualidade_score, hashtags, cta')
       .eq('ativo', true)
       .order('qualidade_score', { ascending: false })
       .limit(100)
@@ -233,9 +240,16 @@ export default function PostDoDiaPage() {
             </button>
           </div>
           <p className="text-sm text-[#1A1D26] leading-relaxed font-medium">{hookDia?.hook || 'Nenhum hook encontrado'}</p>
-          {hookDia?.tema && (
-            <span className="inline-block mt-2 text-xs px-2 py-0.5 bg-[#EFF6FF] text-blue-700 rounded-full">{hookDia.tema}</span>
+          {hookDia?.quando_usar && (
+            <p className="text-xs text-[#9CA3AF] mt-1.5 italic">{hookDia.quando_usar}</p>
           )}
+          <div className="flex flex-wrap gap-1 mt-2">
+            {hookDia?.tema && <span className="text-xs px-2 py-0.5 bg-[#EFF6FF] text-blue-700 rounded-full">{hookDia.tema}</span>}
+            {hookDia?.objetivo && <span className="text-xs px-2 py-0.5 bg-[#F5F3FF] text-violet-700 rounded-full">{hookDia.objetivo}</span>}
+            {hookDia?.sazonalidade && hookDia.sazonalidade !== 'o_ano_todo' && (
+              <span className="text-xs px-2 py-0.5 bg-orange-50 text-orange-700 rounded-full">{hookDia.sazonalidade.replace(/_/g, ' ')}</span>
+            )}
+          </div>
         </div>
 
         {/* Legenda */}

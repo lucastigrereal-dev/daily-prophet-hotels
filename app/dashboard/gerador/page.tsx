@@ -3,15 +3,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import { TEMAS, TEMA_LABEL, OBJETIVOS, OBJETIVO_LABEL, SAZONALIDADES, SAZONALIDADE_LABEL } from '@/lib/content/taxonomy'
 
 type Tab = 'legendas' | 'templates' | 'hooks'
-
-const TEMAS = [
-  'all_inclusive','aventura','bastidores','cafe_da_manha','casamento','checkin',
-  'corporativo','datas_comemorativas','destino','experiencias','familia','fazenda',
-  'gastronomia','noite','pet_friendly','piscina','por_do_sol','praia','promocoes',
-  'quarto','romantico','serra','spa','sustentabilidade','ugc','workation',
-]
 
 interface Legenda {
   id: string; tema: string; formato: string; publico: string
@@ -165,7 +159,7 @@ export default function GeradorPage() {
                   className="w-full h-10 px-3 bg-white border border-[#E5E7EB] rounded-lg text-sm text-[#1A1D26] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
                 >
                   <option value="">Todos os temas</option>
-                  {TEMAS.map(t => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
+                  {TEMAS.map(t => <option key={t} value={t}>{TEMA_LABEL[t] || t}</option>)}
                 </select>
               </div>
               <div>
@@ -406,7 +400,7 @@ export default function GeradorPage() {
                   className="h-10 px-3 bg-white border border-[#E5E7EB] rounded-lg text-sm text-[#1A1D26] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
                 >
                   <option value="">Todos</option>
-                  {TEMAS.map(t => <option key={t} value={t}>{t.replace(/_/g,' ')}</option>)}
+                  {TEMAS.map(t => <option key={t} value={t}>{TEMA_LABEL[t] || t}</option>)}
                 </select>
               </div>
               <div>

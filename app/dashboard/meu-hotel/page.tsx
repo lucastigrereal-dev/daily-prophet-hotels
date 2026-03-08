@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import Link from 'next/link'
 
-interface Hotel {
+interface HotelFull {
   id: string
   nome: string
   tipo: string
@@ -39,13 +39,31 @@ const TIPO_LABEL: Record<string, string> = {
   apart_hotel: 'Apart Hotel',
 }
 
+interface PrintItem {
+  id: string
+  tipo_print: string
+  file_url: string
+  uploaded_at: string
+}
+
+const PRINT_TYPES = [
+  { value: 'feed', label: 'Feed Principal' },
+  { value: 'perfil', label: 'Perfil / Bio' },
+  { value: 'stories', label: 'Stories / Destaques' },
+  { value: 'insights', label: 'Insights / Metricas' },
+]
+
 export default function MeuHotelPage() {
   const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [hotel, setHotel] = useState<Hotel | null>(null)
+  const [hotel, setHotel] = useState<HotelFull | null>(null)
   const [editMode, setEditMode] = useState(false)
-  const [form, setForm] = useState<Partial<Hotel>>({})
+  const [form, setForm] = useState<Partial<HotelFull>>({})
+  const [prints, setPrints] = useState<PrintItem[]>([])
+  const [showPrintForm, setShowPrintForm] = useState(false)
+  const [printForm, setPrintForm] = useState({ tipo_print: 'feed', file_url: '' })
+  const [savingPrint, setSavingPrint] = useState(false)
 
   useEffect(() => {
     load()
@@ -66,8 +84,40 @@ export default function MeuHotelPage() {
     if (data) {
       setHotel(data)
       setForm(data)
+      // Load prints
+      const { data: printsData } = await supabase
+        .from('hotel_instagram_prints')
+        .select('*')
+        .eq('hotel_id', data.id)
+        .order('uploaded_at', { ascending: false })
+      setPrints(printsData || [])
     }
     setLoading(false)
+  }
+
+  async function savePrint() {
+    if (!hotel || !printForm.file_url.trim()) return
+    setSavingPrint(true)
+    const { error } = await supabase.from('hotel_instagram_prints').insert({
+      hotel_id: hotel.id,
+      tipo_print: printForm.tipo_print,
+      file_url: printForm.file_url.trim(),
+    })
+    setSavingPrint(false)
+    if (error) {
+      toast.error('Erro ao salvar print: ' + error.message)
+    } else {
+      toast.success('Print adicionado!')
+      setPrintForm({ tipo_print: 'feed', file_url: '' })
+      setShowPrintForm(false)
+      load()
+    }
+  }
+
+  async function deletePrint(id: string) {
+    await supabase.from('hotel_instagram_prints').delete().eq('id', id)
+    setPrints(prev => prev.filter(p => p.id !== id))
+    toast.success('Print removido')
   }
 
   async function save() {
@@ -94,7 +144,7 @@ export default function MeuHotelPage() {
       toast.error('Erro ao salvar: ' + error.message)
     } else {
       toast.success('Hotel atualizado!')
-      setHotel({ ...hotel, ...form } as Hotel)
+      setHotel({ ...hotel, ...form } as HotelFull)
       setEditMode(false)
     }
   }
@@ -268,6 +318,77 @@ export default function MeuHotelPage() {
           </div>
         </div>
 
+      </div>
+
+      {/* Prints do Instagram */}
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-[#1A1D26] text-sm">Prints do Instagram</h3>
+          <button
+            onClick={() => setShowPrintForm(!showPrintForm)}
+            className="text-xs text-[#B8860B] hover:text-[#DAA520] font-medium"
+          >
+            {showPrintForm ? 'Cancelar' : '+ Adicionar'}
+          </button>
+        </div>
+
+        {showPrintForm && (
+          <div className="mb-4 p-3 bg-[#F8F9FB] rounded-xl space-y-3">
+            <div>
+              <label className="block text-xs text-[#6B7280] mb-1">Tipo</label>
+              <select
+                value={printForm.tipo_print}
+                onChange={e => setPrintForm(f => ({ ...f, tipo_print: e.target.value }))}
+                className="w-full h-9 px-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:border-[#B8860B]"
+              >
+                {PRINT_TYPES.map(t => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-[#6B7280] mb-1">URL da imagem</label>
+              <input
+                value={printForm.file_url}
+                onChange={e => setPrintForm(f => ({ ...f, file_url: e.target.value }))}
+                placeholder="https://..."
+                className="w-full h-9 px-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:border-[#B8860B]"
+              />
+            </div>
+            <button
+              onClick={savePrint}
+              disabled={savingPrint || !printForm.file_url.trim()}
+              className="w-full py-2 bg-[#B8860B] text-white text-sm font-medium rounded-lg hover:brightness-110 disabled:opacity-50"
+            >
+              {savingPrint ? 'Salvando...' : 'Salvar Print'}
+            </button>
+          </div>
+        )}
+
+        {prints.length === 0 ? (
+          <p className="text-xs text-[#9CA3AF] text-center py-4">
+            Nenhum print adicionado. Adicione screenshots do seu Instagram para analise.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {prints.map(p => (
+              <div key={p.id} className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[#FFF8E7] text-[#B8860B] font-medium capitalize">
+                    {PRINT_TYPES.find(t => t.value === p.tipo_print)?.label || p.tipo_print}
+                  </span>
+                  <span className="text-xs text-[#9CA3AF] truncate max-w-[180px]">{p.file_url}</span>
+                </div>
+                <button
+                  onClick={() => deletePrint(p.id)}
+                  className="text-xs text-red-500 hover:text-red-700"
+                >
+                  Remover
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Onboarding status */}

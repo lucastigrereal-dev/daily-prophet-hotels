@@ -314,6 +314,9 @@ export default function OnboardingPage() {
         foco: focoEstrategico(m4.objetivo_principal),
       }
 
+      const dueAt = new Date()
+      dueAt.setDate(dueAt.getDate() + 30)
+
       await Promise.all([
         supabase.from('onboarding_respostas').upsert({
           hotel_id: hid,
@@ -326,6 +329,26 @@ export default function OnboardingPage() {
         supabase.from('hotels')
           .update({ status: 'ativo', onboarding_completo: true })
           .eq('id', hid),
+        // Starter Kit: primeira missao ativada automaticamente
+        supabase.from('hotel_missoes').insert({
+          hotel_id: hid,
+          tipo: 'calendario_mensal',
+          titulo: 'Calendario Editorial do Mes',
+          descricao: 'Planejar e publicar posts 3x por semana durante 30 dias',
+          objetivo: 'Consistencia e presenca digital',
+          status: 'em_andamento',
+          progresso: 0,
+          started_at: new Date().toISOString(),
+          due_at: dueAt.toISOString(),
+        }),
+        // Starter Kit: log de execucao
+        supabase.from('hotel_execution_log').insert({
+          hotel_id: hid,
+          acao: 'onboarding_completo',
+          categoria: 'onboarding',
+          detalhes: { objetivo: m4.objetivo_principal, prazo: m4.prazo },
+          pontos: 10,
+        }),
       ])
 
       const temas = TIPO_TEMAS[m1.tipo] || ['destino', 'experiencias', 'checkin']

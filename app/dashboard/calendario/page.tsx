@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useCurrentHotel } from '@/lib/hotel/use-current-hotel'
 import { toast } from 'sonner'
+import { TEMAS, TEMA_LABEL } from '@/lib/content/taxonomy'
 
 interface PostCalendario {
   id: string
@@ -20,13 +22,6 @@ interface PostCalendario {
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
-const TEMAS = [
-  'all_inclusive','aventura','bastidores','cafe_da_manha','casamento','checkin',
-  'corporativo','datas_comemorativas','destino','experiencias','familia','fazenda',
-  'gastronomia','noite','pet_friendly','piscina','por_do_sol','praia','promocoes',
-  'quarto','romantico','serra','spa','sustentabilidade','ugc','workation',
-]
-
 const COR_FORMATO: Record<string, string> = {
   foto: 'bg-blue-400',
   carrossel: 'bg-emerald-400',
@@ -35,6 +30,7 @@ const COR_FORMATO: Record<string, string> = {
 
 export default function CalendarioPage() {
   const today = new Date()
+  const { hotel, loading: hotelLoading } = useCurrentHotel()
   const [mes, setMes] = useState(today.getMonth())
   const [ano, setAno] = useState(today.getFullYear())
   const [posts, setPosts] = useState<PostCalendario[]>([])
@@ -49,11 +45,13 @@ export default function CalendarioPage() {
   const supabase = createClient()
 
   async function loadPosts() {
+    if (!hotel) { setLoading(false); return }
     setLoading(true)
     const firstDay = new Date(ano, mes, 1).toISOString().split('T')[0]
     const lastDay = new Date(ano, mes + 1, 0).toISOString().split('T')[0]
     const { data } = await supabase.from('calendarios_gerados')
       .select('*')
+      .eq('hotel_id', hotel.id)
       .gte('data_post', firstDay)
       .lte('data_post', lastDay)
       .order('data_post')
@@ -61,7 +59,9 @@ export default function CalendarioPage() {
     setLoading(false)
   }
 
-  useEffect(() => { loadPosts() }, [mes, ano])
+  useEffect(() => {
+    if (!hotelLoading) loadPosts()
+  }, [mes, ano, hotelLoading, hotel?.id])
 
   function navMes(dir: number) {
     const d = new Date(ano, mes + dir, 1)
@@ -94,7 +94,9 @@ export default function CalendarioPage() {
   async function salvarPost(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
+    if (!hotel) { toast.error('Nenhum hotel cadastrado'); setSaving(false); return }
     const payload = {
+      hotel_id: hotel.id,
       data_post: form.data_post,
       tema: form.tema,
       formato: form.formato,
@@ -317,7 +319,7 @@ export default function CalendarioPage() {
                 >
                   <option value="">Selecionar tema</option>
                   {TEMAS.map(t => (
-                    <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>
+                    <option key={t} value={t}>{TEMA_LABEL[t] || t}</option>
                   ))}
                 </select>
               </div>
