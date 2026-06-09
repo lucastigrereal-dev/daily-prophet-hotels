@@ -105,7 +105,7 @@ export default function MeuHotelPage() {
     })
     setSavingPrint(false)
     if (error) {
-      toast.error('Erro ao salvar print: ' + error.message)
+      toast.error('Não foi possível salvar o print. Tente novamente.')
     } else {
       toast.success('Print adicionado!')
       setPrintForm({ tipo_print: 'feed', file_url: '' })
@@ -141,7 +141,7 @@ export default function MeuHotelPage() {
 
     setSaving(false)
     if (error) {
-      toast.error('Erro ao salvar: ' + error.message)
+      toast.error('Não foi possível salvar. Tente novamente.')
     } else {
       toast.success('Hotel atualizado!')
       setHotel({ ...hotel, ...form } as HotelFull)
@@ -322,7 +322,7 @@ export default function MeuHotelPage() {
 
       {/* Prints do Instagram */}
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-1">
           <h3 className="font-semibold text-[#1A1D26] text-sm">Prints do Instagram</h3>
           <button
             onClick={() => setShowPrintForm(!showPrintForm)}
@@ -331,6 +331,9 @@ export default function MeuHotelPage() {
             {showPrintForm ? 'Cancelar' : '+ Adicionar'}
           </button>
         </div>
+        <p className="text-xs text-[#9CA3AF] mb-3">
+          Salve prints do seu feed, bio e insights para referência. Útil para acompanhar evolução e compartilhar com sua equipe.
+        </p>
 
         {showPrintForm && (
           <div className="mb-4 p-3 bg-[#F8F9FB] rounded-xl space-y-3">

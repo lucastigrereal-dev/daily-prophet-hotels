@@ -93,6 +93,8 @@ export default function GeradorPage() {
     else if (tab === 'templates') loadTemplates()
   }, [tab])
 
+  useEffect(() => { loadTemplates() }, [])
+
   function aplicarFiltros() {
     setExpandedId(null)
     loadLegendas(0)
@@ -128,7 +130,7 @@ export default function GeradorPage() {
       <div className="flex gap-1 bg-[#F3F4F6] p-1 rounded-xl w-fit">
         {([
           { id: 'legendas', label: 'Legendas' },
-          { id: 'templates', label: `Templates (${templates.length || 8})` },
+          { id: 'templates', label: `Templates (${templates.length || '...'})` },
           { id: 'hooks', label: `Hooks (${totalHooks || '1.000'})` },
         ] as { id: Tab; label: string }[]).map(t => (
           <button

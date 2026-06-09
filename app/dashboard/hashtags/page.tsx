@@ -18,6 +18,45 @@ interface KBEntry {
   conteudo: Record<string, unknown>
 }
 
+const STARTER_COMBOS: Omit<HashtagCombo, 'id'>[] = [
+  {
+    nome: 'Experiência Geral Hotel',
+    tema: 'experiencia',
+    alcance_estimado: 180000,
+    hashtags: ['#hotel','#hotellife','#viagem','#turismo','#hospedagem','#viajando','#destinosbrasil','#travelbrasil','#ferias','#escapada','#viajar','#explorando','#dicasdeviagem'],
+  },
+  {
+    nome: 'Gastronomia & Café da Manhã',
+    tema: 'gastronomia',
+    alcance_estimado: 120000,
+    hashtags: ['#cafedamanha','#foodie','#gastronomia','#instafood','#breakfast','#bomdia','#brunch','#comida','#chefdehotel','#delicia'],
+  },
+  {
+    nome: 'Piscina & Lazer',
+    tema: 'lazer',
+    alcance_estimado: 95000,
+    hashtags: ['#piscina','#pool','#poolday','#relaxando','#descanso','#lazer','#momentopiscina','#nadar','#sol','#verao','#feriasperfeitas'],
+  },
+  {
+    nome: 'Casal & Lua de Mel',
+    tema: 'romantico',
+    alcance_estimado: 85000,
+    hashtags: ['#casal','#luademel','#honeymoon','#romantico','#amor','#viagemdecasal','#escapadaromantica','#juntos','#momentospeciais','#casamento'],
+  },
+  {
+    nome: 'Família & Crianças',
+    tema: 'familia',
+    alcance_estimado: 70000,
+    hashtags: ['#familia','#viagemcomcriancas','#kidshotel','#ferias','#momentosfamilia','#pais','#filhos','#aventurafamiliar','#viajandocomcriancas'],
+  },
+  {
+    nome: 'Pousada & Natureza',
+    tema: 'natureza',
+    alcance_estimado: 65000,
+    hashtags: ['#pousada','#natureza','#ecoturismo','#trilha','#mata','#paísagem','#arlivre','#ecoresort','#aventura','#contato com a natureza'],
+  },
+]
+
 export default function HashtagsPage() {
   const [loading, setLoading] = useState(true)
   const [combos, setCombos] = useState<HashtagCombo[]>([])
@@ -65,7 +104,7 @@ export default function HashtagsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
           <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Combos Prontos</p>
-          <p className="text-3xl font-bold text-[#B8860B] mt-1">{combos.length}</p>
+          <p className="text-3xl font-bold text-[#B8860B] mt-1">{combos.length || STARTER_COMBOS.length}</p>
           <p className="text-xs text-[#9CA3AF] mt-1">prontos para copiar</p>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
@@ -107,9 +146,14 @@ export default function HashtagsPage() {
       )}
 
       {/* Combos Grid */}
+      {combos.length === 0 && (
+        <div className="bg-[#FFF8E7] border border-[#DAA520]/30 rounded-xl px-4 py-3 text-sm text-[#6B7280]">
+          Mostrando combos de exemplo — seu banco ainda não tem combos cadastrados.
+        </div>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {combosFiltrados.map(combo => (
-          <div key={combo.id} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
+        {(combosFiltrados.length > 0 ? combosFiltrados : STARTER_COMBOS).map((combo, idx) => (
+          <div key={('id' in combo ? (combo as HashtagCombo).id : null) ?? idx} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="font-semibold text-[#1A1D26]">{combo.nome}</h3>
@@ -132,7 +176,7 @@ export default function HashtagsPage() {
               onClick={() => copiarCombo(combo.hashtags || [])}
               className="px-3 py-1.5 bg-[#B8860B] text-white text-xs font-medium rounded-lg hover:bg-[#9A7209] transition-colors"
             >
-              📋 Copiar {(combo.hashtags || []).length} hashtags
+              Copiar {(combo.hashtags || []).length} hashtags
             </button>
           </div>
         ))}

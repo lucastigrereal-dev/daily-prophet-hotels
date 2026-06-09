@@ -23,7 +23,7 @@ export default function LoginPage() {
     if (error) {
       setError(error.message === 'Invalid login credentials'
         ? 'Email ou senha incorretos'
-        : error.message)
+        : 'Não foi possível entrar. Verifique seus dados.')
       setLoading(false)
       return
     }

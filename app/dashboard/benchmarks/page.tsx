@@ -54,7 +54,9 @@ export default function BenchmarksPage() {
       setMediaGeral(posts.length ? Math.round((soma / posts.length) * 10) / 10 : 0)
 
       const map: Record<string, { count: number; soma: number }> = {}
+      let semTema = 0
       for (const p of posts) {
+        if (!p.tema) { semTema++; continue }
         if (!map[p.tema]) map[p.tema] = { count: 0, soma: 0 }
         map[p.tema].count++
         map[p.tema].soma += p.qualidade_score || 0
@@ -66,6 +68,11 @@ export default function BenchmarksPage() {
         media_qualidade: map[tema] ? Math.round((map[tema].soma / map[tema].count) * 10) / 10 : 0,
       })).sort((a, b) => b.count - a.count)
 
+      // Se todos os posts nao tem tema, carrega todos sem filtro
+      if (semTema > 0 && stats.every(s => s.count === 0)) {
+        setTemaSelecionado('__todos__')
+      }
+
       setTemaStats(stats)
       setLoading(false)
     }
@@ -75,13 +82,9 @@ export default function BenchmarksPage() {
   useEffect(() => {
     async function loadLegendas() {
       if (!temaSelecionado) { setLegendas([]); return }
-      const { data } = await supabase
-        .from('benchmarks_posts')
-        .select('*')
-        .eq('tema', temaSelecionado)
-        .eq('ativo', true)
-        .order('qualidade_score', { ascending: false })
-        .limit(50)
+      let q = supabase.from('benchmarks_posts').select('*').eq('ativo', true).order('qualidade_score', { ascending: false }).limit(50)
+      if (temaSelecionado !== '__todos__') q = q.eq('tema', temaSelecionado)
+      const { data } = await q
       setLegendas(data || [])
     }
     loadLegendas()
@@ -155,7 +158,7 @@ export default function BenchmarksPage() {
       {temaSelecionado && (
         <div>
           <h2 className="font-semibold text-[#1A1D26] mb-3">
-            Legendas: <span className="text-[#B8860B] capitalize">{temaSelecionado.replace(/_/g, ' ')}</span>
+            Legendas: <span className="text-[#B8860B] capitalize">{temaSelecionado === '__todos__' ? 'Todas' : temaSelecionado.replace(/_/g, ' ')}</span>
             <span className="text-sm font-normal text-[#9CA3AF] ml-2">({legendas.length} resultados)</span>
           </h2>
           <div className="space-y-3">

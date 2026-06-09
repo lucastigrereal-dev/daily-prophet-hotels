@@ -194,7 +194,7 @@ export default function CampanhasPage() {
       }, { onConflict: 'hotel_id,campanha_id' })
 
     if (error) {
-      toast.error('Erro ao inscrever: ' + error.message)
+      toast.error('Não foi possível entrar na campanha. Tente novamente.')
     } else {
       setEnrollments(prev => [...prev, { campanha_id: campanhaId, status: 'inscrito', progresso: 0 }])
       toast.success('Inscrito na campanha!')

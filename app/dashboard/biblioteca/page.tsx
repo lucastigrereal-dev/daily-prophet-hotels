@@ -8,8 +8,9 @@ import {
   PUBLICOS, PUBLICO_LABEL, OBJETIVOS, OBJETIVO_LABEL,
   SAZONALIDADES, SAZONALIDADE_LABEL, labelFor,
 } from '@/lib/content/taxonomy'
+import { getContentDNA } from '@/lib/hotel/content-dna'
 
-type Tab = 'hooks' | 'legendas' | 'hashtags'
+type Tab = 'hooks' | 'legendas' | 'hashtags' | 'para_voce'
 
 interface Hook {
   id: string
@@ -48,7 +49,7 @@ interface HashtagCombo {
 
 export default function BibliotecaPage() {
   const supabase = createClient()
-  const [tab, setTab] = useState<Tab>('hooks')
+  const [tab, setTab] = useState<Tab>('para_voce')
   const [loading, setLoading] = useState(true)
   const [busca, setBusca] = useState('')
   const [filtroFormato, setFiltroFormato] = useState('')
@@ -60,10 +61,15 @@ export default function BibliotecaPage() {
   const [hashtags, setHashtags] = useState<HashtagCombo[]>([])
   const [stats, setStats] = useState({ hooks: 0, benchmarks: 0, hashtags: 0 })
   const [copiado, setCopiado] = useState<string | null>(null)
+  const [paraVoceHooks, setParaVoceHooks] = useState<Hook[]>([])
+  const [paraVoceBench, setParaVoceBench] = useState<Benchmark[]>([])
+  const [hotelNome, setHotelNome] = useState<string>('')
 
   useEffect(() => { loadAll() }, [])
 
   async function loadAll() {
+    const { data: { user } } = await supabase.auth.getUser()
+
     const [
       { data: hooksData, count: hooksCount },
       { data: benchData, count: benchCount },
@@ -78,6 +84,26 @@ export default function BibliotecaPage() {
     setBenchmarks(benchData || [])
     setHashtags(hashData || [])
     setStats({ hooks: hooksCount || 0, benchmarks: benchCount || 0, hashtags: hashCount || 0 })
+
+    // Para Você — filtra pelo Content DNA do hotel
+    if (user) {
+      const { data: hotelData } = await supabase
+        .from('hotels').select('id, nome').eq('owner_id', user.id).limit(1).single()
+      if (hotelData) {
+        setHotelNome(hotelData.nome)
+        const dna = await getContentDNA(hotelData.id)
+        const temas = dna.temas_preferidos
+        {
+          const temaMatch = temas.length > 0
+          const hooksMatch = temaMatch ? (hooksData || []).filter(h => h.tema && temas.includes(h.tema)) : []
+          const benchMatch = temaMatch ? (benchData || []).filter(b => b.tema && temas.includes(b.tema)) : []
+          // Fallback: quando DB ainda nao tem metadado de tema, mostra top items sem filtro
+          setParaVoceHooks((hooksMatch.length > 0 ? hooksMatch : (hooksData || [])).slice(0, 30))
+          setParaVoceBench((benchMatch.length > 0 ? benchMatch : (benchData || [])).slice(0, 30))
+        }
+      }
+    }
+
     setLoading(false)
   }
 
@@ -123,8 +149,28 @@ export default function BibliotecaPage() {
 
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Biblioteca</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">Hooks, legendas e hashtags em um so lugar</p>
+        <p className="text-sm text-[#6B7280] mt-0.5">Hooks, legendas e hashtags em um só lugar</p>
+        <div className="flex gap-3 mt-2 flex-wrap">
+          <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full" title="Hook = frase de abertura que prende a atenção nos primeiros 2 segundos">Hook = frase de abertura que prende a atenção</span>
+          <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full" title="CTA = Call to Action, o convite para o seguidor interagir (curtir, comentar, reservar)">CTA = chamada para ação (curtir, comentar, reservar)</span>
+          <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full" title="Score de qualidade de 1 a 10 baseado em performance de posts reais de hotéis">Score = nota de qualidade 1-10</span>
+        </div>
       </div>
+
+      {/* Aba Para Você — destaque */}
+      {(paraVoceHooks.length > 0 || paraVoceBench.length > 0) && (
+        <button
+          onClick={() => setTab('para_voce')}
+          className={`w-full rounded-2xl p-4 text-left transition-all border-2 ${tab === 'para_voce' ? 'bg-[#B8860B] border-[#B8860B] text-white shadow-md' : 'bg-[#FFF8E7] border-[#B8860B]/40 hover:border-[#B8860B]'}`}
+        >
+          <p className={`text-xs uppercase tracking-wide font-semibold ${tab === 'para_voce' ? 'text-white/70' : 'text-[#B8860B]'}`}>
+            Recomendado para você
+          </p>
+          <p className={`text-sm font-bold mt-0.5 ${tab === 'para_voce' ? 'text-white' : 'text-[#1A1D26]'}`}>
+            {hotelNome || 'Seu hotel'} — {paraVoceHooks.length + paraVoceBench.length} peças selecionadas
+          </p>
+        </button>
+      )}
 
       {/* Stats tabs */}
       <div className="grid grid-cols-3 gap-3">
@@ -179,6 +225,64 @@ export default function BibliotecaPage() {
         </div>
       ) : (
         <div className="space-y-2">
+          {/* Para Você */}
+          {tab === 'para_voce' && (
+            <>
+              <p className="text-xs text-[#9CA3AF]">{paraVoceHooks.length + paraVoceBench.length} peças recomendadas para {hotelNome || 'seu hotel'}</p>
+              {paraVoceBench.length > 0 && (
+                <>
+                  <p className="text-xs font-semibold text-[#6B7280] pt-2">Legendas</p>
+                  {paraVoceBench.map(b => (
+                    <div key={b.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-sm transition-all">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-[#1A1D26] mb-1">{b.hook}</p>
+                          {b.legenda_completa && <p className="text-xs text-[#6B7280] line-clamp-2">{b.legenda_completa}</p>}
+                        </div>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <span className="text-sm font-bold text-[#B8860B]" title={`Score de qualidade: ${b.qualidade_score}/10`}>{b.qualidade_score}</span>
+                          <button onClick={() => copiar(b.legenda_completa || b.hook, b.id)}
+                            className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${copiado === b.id ? 'bg-emerald-100 text-emerald-700' : 'bg-[#FFF8E7] text-[#B8860B] hover:bg-[#B8860B] hover:text-white'}`}>
+                            {copiado === b.id ? 'Copiado' : 'Copiar'}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex gap-1.5 mt-2 flex-wrap">
+                        <Badge label={b.tema} color="bg-[#EFF6FF] text-blue-700" />
+                        <Badge label={b.formato} color="bg-[#ECFDF5] text-emerald-700" />
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+              {paraVoceHooks.length > 0 && (
+                <>
+                  <p className="text-xs font-semibold text-[#6B7280] pt-2">Hooks</p>
+                  {paraVoceHooks.map(h => (
+                    <div key={h.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-sm transition-all">
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-sm text-[#1A1D26] leading-relaxed flex-1">{h.hook}</p>
+                        <button onClick={() => copiar(h.hook, h.id)}
+                          className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-lg transition-colors ${copiado === h.id ? 'bg-emerald-100 text-emerald-700' : 'bg-[#FFF8E7] text-[#B8860B] hover:bg-[#B8860B] hover:text-white'}`}>
+                          {copiado === h.id ? 'Copiado' : 'Copiar'}
+                        </button>
+                      </div>
+                      <div className="flex gap-1.5 mt-2 flex-wrap">
+                        <Badge label={h.tema} color="bg-[#EFF6FF] text-blue-700" />
+                        <Badge label={h.formato} color="bg-[#ECFDF5] text-emerald-700" />
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+              {paraVoceHooks.length === 0 && paraVoceBench.length === 0 && (
+                <div className="text-center py-12 text-[#9CA3AF]">
+                  <p>{hotelNome ? 'Nenhum conteúdo disponível ainda. Explore as abas Hooks e Legendas.' : 'Complete o onboarding para ver recomendações personalizadas.'}</p>
+                </div>
+              )}
+            </>
+          )}
+
           {/* Hooks */}
           {tab === 'hooks' && (
             <>
@@ -188,7 +292,7 @@ export default function BibliotecaPage() {
                   <div className="flex items-start justify-between gap-3">
                     <p className="text-sm text-[#1A1D26] leading-relaxed flex-1">{h.hook}</p>
                     <div className="flex flex-col items-end gap-1.5">
-                      {h.score_qualidade && <span className="text-sm font-bold text-[#B8860B]">{h.score_qualidade}</span>}
+                      {h.score_qualidade && <span className="text-sm font-bold text-[#B8860B]" title={`Score de qualidade: ${h.score_qualidade}/10`}>{h.score_qualidade}</span>}
                       <button
                         onClick={() => copiar(h.hook, h.id)}
                         className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-lg transition-colors ${
@@ -208,7 +312,17 @@ export default function BibliotecaPage() {
                 </div>
               ))}
               {hooksFiltered.length === 0 && (
-                <div className="text-center py-12 text-[#9CA3AF]">Nenhum hook encontrado</div>
+                <div className="text-center py-12 text-[#9CA3AF]">
+                  <p className="mb-3">Nenhum hook encontrado para este filtro</p>
+                  {(filtroTema || filtroFormato || filtroObjetivo || filtroSazonalidade) && (
+                    <button
+                      onClick={() => { setFiltroTema(''); setFiltroFormato(''); setFiltroObjetivo(''); setFiltroSazonalidade('') }}
+                      className="text-sm text-[#B8860B] underline"
+                    >
+                      Limpar filtros
+                    </button>
+                  )}
+                </div>
               )}
             </>
           )}
@@ -230,7 +344,7 @@ export default function BibliotecaPage() {
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-1.5">
-                      <span className="text-sm font-bold text-[#B8860B]">{b.qualidade_score}</span>
+                      <span className="text-sm font-bold text-[#B8860B]" title={`Score de qualidade: ${b.qualidade_score}/10`}>{b.qualidade_score}</span>
                       <button
                         onClick={() => copiar(b.legenda_completa || b.hook, b.id)}
                         className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
@@ -250,7 +364,17 @@ export default function BibliotecaPage() {
                 </div>
               ))}
               {benchFiltered.length === 0 && (
-                <div className="text-center py-12 text-[#9CA3AF]">Nenhuma legenda encontrada</div>
+                <div className="text-center py-12 text-[#9CA3AF]">
+                  <p className="mb-3">Nenhuma legenda encontrada para este filtro</p>
+                  {(filtroTema || filtroFormato || filtroObjetivo || filtroSazonalidade) && (
+                    <button
+                      onClick={() => { setFiltroTema(''); setFiltroFormato(''); setFiltroObjetivo(''); setFiltroSazonalidade('') }}
+                      className="text-sm text-[#B8860B] underline"
+                    >
+                      Limpar filtros
+                    </button>
+                  )}
+                </div>
               )}
             </>
           )}

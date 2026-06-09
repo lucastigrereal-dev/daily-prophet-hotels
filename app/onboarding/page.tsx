@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { saveContentDNA } from '@/lib/hotel/content-dna'
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -13,8 +14,15 @@ type Screen = 'mod1' | 'entrega1' | 'mod2' | 'entrega2' | 'mod3' | 'entrega3' | 
 interface M1 {
   nome: string; cidade: string; regiao: string; tipo: string; tipoLabel: string; tipoEmoji: string
   quartos: number; categoria: string; ticket_medio: number
+  contexto_geo: string; publico_principal: string
 }
-interface M2 { diferenciais: string[] }
+interface M2 {
+  diferenciais: string[]
+  experiencias: string[]
+  lugar_fotografado: string
+  lugar_bonito: string
+  espaco_oculto: string
+}
 interface M3 {
   frequencia_posts: string; usa_ota: string; conhece_origem: string
   fez_publi: string; responsavel_ig: string; maior_desafio: string
@@ -64,11 +72,10 @@ const MAP_TIPO: Record<string, string> = {
 function mapTipo(v: string): string { return MAP_TIPO[v] || v }
 
 const CATEGORIAS = [
-  { v: '1', l: '⭐ Simples' },
-  { v: '2', l: '⭐⭐ Médio' },
-  { v: '3', l: '⭐⭐⭐ Superior' },
-  { v: '4', l: '⭐⭐⭐⭐ Luxo' },
-  { v: '5', l: '⭐⭐⭐⭐⭐ Ultra Luxo' },
+  { v: '2', l: '⭐⭐ Econômico' },
+  { v: '3', l: '⭐⭐⭐ Standard' },
+  { v: '4', l: '⭐⭐⭐⭐ Superior' },
+  { v: '5', l: '⭐⭐⭐⭐⭐ Luxo' },
 ]
 
 const DIFERENCIAIS = [
@@ -98,6 +105,36 @@ const DIFERENCIAIS = [
   { k: 'musica_ao_vivo',  e: '🎵', l: 'Música ao Vivo' },
 ]
 
+const CONTEXTO_GEO = [
+  { v: 'praia',    e: '🏖️', l: 'Praia / Litoral' },
+  { v: 'serra',    e: '⛰️', l: 'Serra / Montanha' },
+  { v: 'campo',    e: '🌾', l: 'Campo / Interior' },
+  { v: 'urbano',   e: '🏙️', l: 'Centro Urbano' },
+  { v: 'natureza', e: '🌿', l: 'Natureza / Mata' },
+]
+
+const PUBLICO_PRINCIPAL = [
+  { v: 'casal',       e: '💑', l: 'Casais' },
+  { v: 'familia',     e: '👨‍👩‍👧', l: 'Família' },
+  { v: 'corporativo', e: '👔', l: 'Corporativo' },
+  { v: 'misto',       e: '👥', l: 'Público Misto' },
+]
+
+const EXPERIENCIAS = [
+  { k: 'day_use',           e: '☀️', l: 'Day Use' },
+  { k: 'passeios',          e: '🚢', l: 'Passeios' },
+  { k: 'pacote_romantico',  e: '💑', l: 'Pacote Romântico' },
+  { k: 'pacote_familia',    e: '👨‍👩‍👧', l: 'Pacote Família' },
+  { k: 'lua_de_mel',        e: '💍', l: 'Lua de Mel' },
+  { k: 'aniversario',       e: '🎂', l: 'Aniversário' },
+  { k: 'eventos',           e: '🎉', l: 'Eventos' },
+  { k: 'retiro_wellness',   e: '🧘', l: 'Retiro / Wellness' },
+  { k: 'corporativo_evt',   e: '📊', l: 'Corporativo' },
+  { k: 'jantar_especial',   e: '🍽️', l: 'Jantar Especial' },
+  { k: 'degustacao',        e: '🍷', l: 'Degustação' },
+  { k: 'trilha_guiada',     e: '🥾', l: 'Trilha Guiada' },
+]
+
 const PACOTES = [
   { k: 'romantico',         e: '💑', l: 'Pacote Romântico' },
   { k: 'day_use',           e: '☀️', l: 'Day Use' },
@@ -120,6 +157,16 @@ const OBJETIVOS = [
   { v: 'parcerias',        l: '🤝 Atrair parcerias e influenciadores' },
   { v: 'estrategia',       l: '📊 Ter controle e estratégia de conteúdo' },
 ]
+
+// diferencial → tema do banco (para Content DNA)
+const DIF_TO_TEMA: Record<string, string> = {
+  piscina: 'piscina', vista_mar: 'praia', vista_serra: 'serra',
+  por_do_sol: 'por_do_sol', restaurante: 'gastronomia', cafe_incluso: 'cafe_da_manha',
+  spa: 'spa', lareira: 'romantico', banheira: 'romantico',
+  kids_club: 'familia', trilhas: 'aventura', natureza: 'aventura',
+  adega: 'gastronomia', musica_ao_vivo: 'experiencias', pet_friendly: 'pet_friendly',
+  praia_privativa: 'praia', piscina_natural: 'aventura', bar: 'gastronomia',
+}
 
 // tipo → temas relevantes em benchmarks_posts
 const TIPO_TEMAS: Record<string, string[]> = {
@@ -204,6 +251,113 @@ function focoEstrategico(objetivo: string): string {
 }
 
 // ─────────────────────────────────────────────
+// DIAGNÓSTICO GENERATORS
+// ─────────────────────────────────────────────
+const ATIVO_CONTENT: Record<string, string> = {
+  piscina: 'isso dá foto + reel', vista_mar: 'reel que converte', vista_serra: 'foto sazonal incrível',
+  por_do_sol: 'foto que viraliza', restaurante: 'carrossel + reel', cafe_incluso: 'stories todo dia',
+  spa: 'campanha premium', lareira: 'reel emocional', banheira: 'campanha de casal',
+  kids_club: 'reel + carrossel família', trilhas: 'série de conteúdo', natureza: 'reels autorais',
+  adega: 'harmonização + reels', musica_ao_vivo: 'stories ao vivo', pet_friendly: 'reel que engaja',
+  praia_privativa: 'foto aspiracional', piscina_natural: 'foto viral', bar: 'reel do drink',
+}
+const EXPERIENCIA_CONTENT: Record<string, string> = {
+  day_use: 'campanha de feriado', passeios: 'série de conteúdo', pacote_romantico: 'campanha de casal',
+  pacote_familia: 'campanha de férias', lua_de_mel: 'campanha premium', aniversario: 'campanha de data',
+  eventos: 'carrossel + stories', retiro_wellness: 'campanha de retiro', corporativo_evt: 'conteúdo B2B',
+  jantar_especial: 'reel gastronômico', degustacao: 'reel premium', trilha_guiada: 'reel de aventura',
+}
+
+function gerarManchete(m1: M1, m2: M2): string {
+  const total = m2.diferenciais.length + m2.experiencias.length
+  const pub = { casal: 'casais', familia: 'família', corporativo: 'viagens corporativas', misto: 'todos os perfis' }[m1.publico_principal] || 'seus hóspedes'
+  const geo = { praia: 'à beira-mar', serra: 'na serra', campo: 'no interior', urbano: 'no centro urbano', natureza: 'em meio à natureza' }[m1.contexto_geo] || ''
+  if (total >= 10) return `Você tem ouro nas mãos. ${m1.nome} ${geo} possui ${total} ativos mapeados — conteúdo para meses de Instagram.`
+  if (total >= 5) return `${m1.nome} tem mais conteúdo do que parece. Com ${total} ativos, dá pra postar todo dia com consistência.`
+  return `Seu hotel tem um diferencial claro para ${pub}. Vamos transformar isso em reservas diretas.`
+}
+
+function gerarAtivos(m2: M2): Array<{ emoji: string; label: string; content: string }> {
+  const result: Array<{ emoji: string; label: string; content: string }> = []
+  for (const k of m2.diferenciais) {
+    const d = DIFERENCIAIS.find(x => x.k === k)
+    if (d && ATIVO_CONTENT[k]) result.push({ emoji: d.e, label: d.l, content: ATIVO_CONTENT[k] })
+  }
+  for (const k of m2.experiencias) {
+    const e = EXPERIENCIAS.find(x => x.k === k)
+    if (e && EXPERIENCIA_CONTENT[k]) result.push({ emoji: e.e, label: e.l, content: EXPERIENCIA_CONTENT[k] })
+  }
+  return result
+}
+
+const IDEAS_BY_KEY: Record<string, string> = {
+  piscina: 'Reel da piscina ao entardecer', vista_mar: 'Reel do nascer do sol com vista mar',
+  vista_serra: 'Foto da névoa na serra de manhã', por_do_sol: 'Reel time-lapse do pôr do sol',
+  restaurante: 'Reel do prato principal em close', cafe_incluso: 'Carrossel "Nossa mesa do café da manhã"',
+  spa: 'Reel da sala de massagem iluminada', lareira: 'Reel da lareira acesa à noite',
+  banheira: 'Foto da banheira com pétalas e velas', kids_club: 'Reel do kids club em ação',
+  trilhas: 'Reel de trilha guiada', natureza: 'Reel da fauna local',
+  adega: 'Reel da harmonização de vinhos', musica_ao_vivo: 'Story ao vivo do show',
+  pet_friendly: 'Reel do pet explorando o hotel', praia_privativa: 'Foto aérea da praia privativa',
+  bar: 'Reel do drink sendo preparado no bar', day_use: 'Carrossel "Um dia perfeito de day use"',
+  passeios: 'Carrossel "Roteiro de 1 dia na região"', pacote_romantico: 'Reel "Uma surpresa para seu amor"',
+  lua_de_mel: 'Carrossel "Tudo incluso na lua de mel"', jantar_especial: 'Reel do jantar especial servido',
+  degustacao: 'Reel da harmonização premium', trilha_guiada: 'Reel da trilha com guia local',
+}
+const BASE_IDEAS = [
+  'Carrossel "X razões para fugir da rotina aqui"',
+  'Story com enquete: "Você prefere praia ou piscina?"',
+  'Reel "Chegou, relaxou" — check-in emocional',
+  'Carrossel "Como é um dia completo no hotel"',
+  'Story com avaliação 5★ do Google',
+  'Reel "O que os hóspedes mais amam aqui"',
+  'Carrossel "Como chegar — roteiro de acesso"',
+  'Story com pergunta: "O que você faria no primeiro dia?"',
+  'Reel bastidor da equipe preparando o hotel',
+  'Foto detalhe que poucos hóspedes percebem',
+]
+function gerar20Ideias(m2: M2): string[] {
+  const ideias: string[] = []
+  for (const k of [...m2.diferenciais, ...m2.experiencias]) {
+    if (IDEAS_BY_KEY[k] && !ideias.includes(IDEAS_BY_KEY[k]) && ideias.length < 15) {
+      ideias.push(IDEAS_BY_KEY[k])
+    }
+  }
+  if (m2.lugar_fotografado) ideias.push(`Foto do "${m2.lugar_fotografado}" — o lugar mais fotografado do hotel`)
+  if (m2.espaco_oculto) ideias.push(`Reel revelação: "${m2.espaco_oculto} — poucos sabem que existe aqui"`)
+  for (const idea of BASE_IDEAS) {
+    if (ideias.length >= 20) break
+    if (!ideias.includes(idea)) ideias.push(idea)
+  }
+  return ideias.slice(0, 20)
+}
+
+function gerarPlano14Dias(m1: M1, m2: M2): Array<{ dia: number; formato: string; tema: string; descricao: string }> {
+  const hasCafe = m2.diferenciais.includes('cafe_incluso')
+  const hasPiscina = m2.diferenciais.includes('piscina')
+  const hasVista = m2.diferenciais.some(d => ['vista_mar', 'vista_serra', 'por_do_sol'].includes(d))
+  const hasRest = m2.diferenciais.includes('restaurante')
+  const hasLareira = m2.diferenciais.includes('lareira')
+  const hasSpa = m2.diferenciais.includes('spa')
+  return [
+    { dia: 1,  formato: 'Reel',      tema: 'Abertura',      descricao: `"Você ainda não veio pra ${m1.nome}?"` },
+    { dia: 2,  formato: 'Foto',      tema: hasCafe ? 'Café da Manhã' : 'Acomodação', descricao: hasCafe ? 'Mesa farta do café da manhã' : 'Suíte com melhor ângulo' },
+    { dia: 3,  formato: 'Carrossel', tema: 'Destino',       descricao: `"O que fazer em ${m1.cidade} em 1 fim de semana"` },
+    { dia: 4,  formato: 'Story',     tema: 'Engajamento',   descricao: 'Enquete interativa — deixe o público escolher' },
+    { dia: 5,  formato: 'Foto',      tema: hasPiscina ? 'Piscina' : 'Área externa', descricao: hasPiscina ? 'Piscina ao entardecer' : 'Área de lazer ao fim de tarde' },
+    { dia: 6,  formato: 'Reel',      tema: 'Check-in',      descricao: '"Chegou e relaxou" — experiência emocional' },
+    { dia: 7,  formato: 'Carrossel', tema: 'Prova Social',  descricao: '"O que nossos hóspedes dizem de nós"' },
+    { dia: 8,  formato: 'Foto',      tema: hasVista ? 'Vista' : 'Detalhe', descricao: hasVista ? 'Vista privilegiada ao pôr do sol' : 'Detalhe exclusivo que poucos percebem' },
+    { dia: 9,  formato: 'Story',     tema: 'CTA',           descricao: 'Avaliação 5★ compartilhada + link na bio' },
+    { dia: 10, formato: 'Reel',      tema: hasRest ? 'Gastronomia' : hasLareira ? 'Ambiente' : 'Destaque', descricao: hasRest ? 'Prato especial sendo preparado' : hasLareira ? 'Lareira acesa à noite' : `Destaque exclusivo do ${m1.nome}` },
+    { dia: 11, formato: 'Carrossel', tema: 'Educativo',     descricao: '"Como escolher o quarto ideal pra você"' },
+    { dia: 12, formato: 'Foto',      tema: hasSpa ? 'Spa' : 'Detalhe',  descricao: hasSpa ? 'Ambiente do spa iluminado' : 'Ângulo especial do hotel' },
+    { dia: 13, formato: 'Story',     tema: 'Urgência',      descricao: '"Últimas vagas do mês — reserve pelo link na bio"' },
+    { dia: 14, formato: 'Reel',      tema: 'Fechamento',    descricao: '"Você merece uma pausa. Venha."' },
+  ]
+}
+
+// ─────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────
 function screenToModulo(s: Screen): number {
@@ -226,8 +380,12 @@ export default function OnboardingPage() {
   const [m1, setM1] = useState<M1>({
     nome: '', cidade: '', regiao: '', tipo: '', tipoLabel: '', tipoEmoji: '',
     quartos: 20, categoria: '3', ticket_medio: 0,
+    contexto_geo: '', publico_principal: '',
   })
-  const [m2, setM2] = useState<M2>({ diferenciais: [] })
+  const [m2, setM2] = useState<M2>({
+    diferenciais: [], experiencias: [],
+    lugar_fotografado: '', lugar_bonito: '', espaco_oculto: '',
+  })
   const [m3, setM3] = useState<M3>({
     frequencia_posts: '', usa_ota: '', conhece_origem: '',
     fez_publi: '', responsavel_ig: '', maior_desafio: '',
@@ -263,10 +421,11 @@ export default function OnboardingPage() {
           status: 'onboarding',
           owner_id: userData.user.id,
         })
+        // contexto_geo e publico_principal ficam no onboarding_respostas
         .select('id')
         .single()
 
-      if (error || !hotel) { toast.error('Erro ao salvar hotel: ' + (error?.message || 'desconhecido')); return null }
+      if (error || !hotel) { toast.error('Não foi possível salvar o hotel. Tente novamente.'); return null }
 
       // salva modulo_1 em background
       supabase.from('onboarding_respostas').insert({
@@ -351,6 +510,56 @@ export default function OnboardingPage() {
         }),
       ])
 
+      // ── Content DNA automático baseado no perfil do hotel ──
+      const tipoTemas = TIPO_TEMAS[m1.tipo] || ['destino', 'experiencias']
+      const difTemas = m2.diferenciais.map(k => DIF_TO_TEMA[k]).filter(Boolean)
+      const temasUnicos = [...new Set([...tipoTemas, ...difTemas])].slice(0, 6)
+      const formatos = ['praia', 'serra', 'natureza'].includes(m1.contexto_geo)
+        ? ['reel', 'foto', 'carrossel']
+        : ['carrossel', 'reel', 'foto']
+
+      await saveContentDNA(hid, {
+        publico_primario: m1.publico_principal || 'misto',
+        temas_preferidos: temasUnicos,
+        formatos_preferidos: formatos,
+      })
+
+      // ── Missões automáticas baseadas no diagnóstico do M3 ──
+      const dueAt30 = new Date(); dueAt30.setDate(dueAt30.getDate() + 30)
+      const dueAt14 = new Date(); dueAt14.setDate(dueAt14.getDate() + 14)
+      const dueAt7  = new Date(); dueAt7.setDate(dueAt7.getDate() + 7)
+
+      const missaoAuto = []
+      if (m3.usa_ota === 'sim_muito') {
+        missaoAuto.push(supabase.from('hotel_missoes').insert({
+          hotel_id: hid, tipo: 'reducao_ota', status: 'em_andamento', progresso: 0,
+          titulo: 'Redução de OTA: Canal Direto',
+          descricao: 'Reduzir dependência de Booking/Airbnb gerando reservas diretas via Instagram',
+          objetivo: 'Reduzir comissão de OTA em 20% nos próximos 21 dias',
+          started_at: new Date().toISOString(), due_at: dueAt30.toISOString(),
+        }))
+      }
+      if (m3.responsavel_ig === 'ninguem') {
+        missaoAuto.push(supabase.from('hotel_missoes').insert({
+          hotel_id: hid, tipo: 'bio_perfil', status: 'em_andamento', progresso: 0,
+          titulo: 'Bio e Perfil Profissional',
+          descricao: 'Otimizar bio, foto de perfil e destaques do Instagram',
+          objetivo: 'Perfil profissional ativo em 7 dias',
+          started_at: new Date().toISOString(), due_at: dueAt7.toISOString(),
+        }))
+      }
+      if (m3.frequencia_posts === 'nunca' || m3.frequencia_posts === 'raramente') {
+        missaoAuto.push(supabase.from('hotel_missoes').insert({
+          hotel_id: hid, tipo: 'coleta_depoimentos', status: 'em_andamento', progresso: 0,
+          titulo: 'Coleta de Depoimentos',
+          descricao: 'Coletar 5 depoimentos reais de hóspedes para publicar como prova social',
+          objetivo: '5 avaliações publicadas em 14 dias',
+          started_at: new Date().toISOString(), due_at: dueAt14.toISOString(),
+        }))
+      }
+      if (missaoAuto.length > 0) await Promise.allSettled(missaoAuto)
+
+      // ── Posts sugestão (para Raio-X) ──
       const temas = TIPO_TEMAS[m1.tipo] || ['destino', 'experiencias', 'checkin']
       const { data: posts } = await supabase
         .from('benchmarks_posts')
@@ -476,7 +685,7 @@ function Modulo1({
   data: M1; setData: (d: M1) => void; onNext: () => void; saving: boolean
 }) {
   const set = (k: keyof M1, v: any) => setData({ ...data, [k]: v })
-  const canNext = !!(data.nome && data.cidade && data.regiao && data.tipo)
+  const canNext = !!(data.nome && data.cidade && data.regiao && data.tipo && data.contexto_geo && data.publico_principal)
 
   return (
     <div className="space-y-5">
@@ -550,6 +759,46 @@ function Modulo1({
             >
               <span className="text-lg flex-shrink-0">{t.e}</span>
               <span className="leading-tight text-xs">{t.l}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Contexto geográfico */}
+      <div>
+        <label className="block text-sm font-medium text-[#6B7280] mb-2">
+          Onde fica o hotel? <span className="text-red-500">*</span>
+        </label>
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+          {CONTEXTO_GEO.map(c => (
+            <button key={c.v} type="button" onClick={() => set('contexto_geo', c.v)}
+              className={`flex flex-col items-center gap-1 py-2.5 rounded-xl text-xs transition-all border ${
+                data.contexto_geo === c.v
+                  ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold shadow-sm'
+                  : 'bg-white border-[#E5E7EB] text-[#374151] hover:border-[#D1D5DB]'
+              }`}>
+              <span className="text-xl">{c.e}</span>
+              <span className="text-center leading-tight">{c.l}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Público principal */}
+      <div>
+        <label className="block text-sm font-medium text-[#6B7280] mb-2">
+          Público principal <span className="text-red-500">*</span>
+        </label>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {PUBLICO_PRINCIPAL.map(p => (
+            <button key={p.v} type="button" onClick={() => set('publico_principal', p.v)}
+              className={`flex items-center gap-2 px-3 py-3 rounded-xl text-sm transition-all border ${
+                data.publico_principal === p.v
+                  ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold shadow-sm'
+                  : 'bg-white border-[#E5E7EB] text-[#374151] hover:border-[#D1D5DB]'
+              }`}>
+              <span className="text-lg">{p.e}</span>
+              <span>{p.l}</span>
             </button>
           ))}
         </div>
@@ -674,65 +923,102 @@ function Modulo2({
 }: {
   data: M2; setData: (d: M2) => void; onNext: () => void; onBack: () => void
 }) {
-  function toggle(k: string) {
-    const arr = data.diferenciais.includes(k)
-      ? data.diferenciais.filter(x => x !== k)
-      : [...data.diferenciais, k]
-    setData({ diferenciais: arr })
+  function toggleDif(k: string) {
+    const arr = data.diferenciais.includes(k) ? data.diferenciais.filter(x => x !== k) : [...data.diferenciais, k]
+    setData({ ...data, diferenciais: arr })
   }
+  function toggleExp(k: string) {
+    const arr = data.experiencias.includes(k) ? data.experiencias.filter(x => x !== k) : [...data.experiencias, k]
+    setData({ ...data, experiencias: arr })
+  }
+  const totalAtivos = data.diferenciais.length + data.experiencias.length
 
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-xs text-[#B8860B] font-semibold uppercase tracking-wider mb-1">
-          Módulo 2 · 4 minutos
-        </p>
-        <h2 className="text-xl font-bold text-[#1A1D26]">O que torna seu hotel especial?</h2>
-        <p className="text-sm text-[#6B7280] mt-1">Selecione tudo que seu hotel oferece</p>
+        <p className="text-xs text-[#B8860B] font-semibold uppercase tracking-wider mb-1">Módulo 2 · 5 minutos</p>
+        <h2 className="text-xl font-bold text-[#1A1D26]">O que seu hotel tem e vende?</h2>
+        <p className="text-sm text-[#6B7280] mt-1">Selecione tudo. Cada item vira conteúdo.</p>
       </div>
 
-      {data.diferenciais.length > 0 && (
+      {totalAtivos > 0 && (
         <div className="bg-[#FFF8E7] border border-[#B8860B]/20 rounded-xl px-4 py-2.5">
           <p className="text-xs text-[#B8860B] font-semibold">
-            {data.diferenciais.length} diferencial{data.diferenciais.length !== 1 ? 'is' : ''} selecionado{data.diferenciais.length !== 1 ? 's' : ''}
+            {totalAtivos} ativo{totalAtivos !== 1 ? 's' : ''} mapeado{totalAtivos !== 1 ? 's' : ''} — cada um vira post
           </p>
         </div>
       )}
 
-      {/* Grid: 2 cols mobile → 4 cols desktop */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-        {DIFERENCIAIS.map(d => {
-          const sel = data.diferenciais.includes(d.k)
-          return (
-            <button
-              key={d.k}
-              type="button"
-              onClick={() => toggle(d.k)}
-              className={`flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl text-xs transition-all border ${
-                sel
-                  ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold shadow-sm'
-                  : 'bg-white border-[#E5E7EB] text-[#374151] hover:border-[#D1D5DB] hover:bg-[#F9FAFB]'
-              }`}
-            >
-              <span className="text-xl">{d.e}</span>
-              <span className="text-center leading-tight">{d.l}</span>
-              {sel && <span className="text-[10px] text-[#B8860B] font-bold">✓</span>}
-            </button>
-          )
-        })}
+      {/* Seção A — Estrutura e diferenciais */}
+      <div>
+        <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2">Estrutura e diferenciais</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          {DIFERENCIAIS.map(d => {
+            const sel = data.diferenciais.includes(d.k)
+            return (
+              <button key={d.k} type="button" onClick={() => toggleDif(d.k)}
+                className={`flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl text-xs transition-all border ${
+                  sel ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold shadow-sm'
+                      : 'bg-white border-[#E5E7EB] text-[#374151] hover:border-[#D1D5DB] hover:bg-[#F9FAFB]'
+                }`}>
+                <span className="text-xl">{d.e}</span>
+                <span className="text-center leading-tight">{d.l}</span>
+                {sel && <span className="text-[10px] text-[#B8860B] font-bold">✓</span>}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Seção B — Experiências e pacotes */}
+      <div>
+        <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2">Experiências que você vende</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          {EXPERIENCIAS.map(e => {
+            const sel = data.experiencias.includes(e.k)
+            return (
+              <button key={e.k} type="button" onClick={() => toggleExp(e.k)}
+                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs transition-all border ${
+                  sel ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold'
+                      : 'bg-white border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB]'
+                }`}>
+                <span className="text-base flex-shrink-0">{e.e}</span>
+                <span className="leading-tight">{e.l}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Seção C — O ouro escondido */}
+      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm space-y-3">
+        <div>
+          <p className="text-sm font-semibold text-[#1A1D26] mb-0.5">O ouro escondido do seu hotel</p>
+          <p className="text-xs text-[#9CA3AF]">Esses detalhes viram os melhores reels. Deixe em branco se não souber agora.</p>
+        </div>
+        {[
+          { field: 'lugar_fotografado' as keyof M2, label: 'Qual o lugar mais fotografado pelos hóspedes?', placeholder: 'Ex: a piscina com vista, a varanda do quarto...' },
+          { field: 'lugar_bonito'     as keyof M2, label: 'Qual o espaço mais bonito do hotel?',             placeholder: 'Ex: o jardim à noite, o deck do pôr do sol...' },
+          { field: 'espaco_oculto'   as keyof M2, label: 'Tem algo especial que quase ninguém mostra?',      placeholder: 'Ex: a adega particular, a trilha secreta...' },
+        ].map(({ field, label, placeholder }) => (
+          <div key={field}>
+            <label className="block text-xs font-medium text-[#6B7280] mb-1">{label}</label>
+            <input
+              type="text"
+              value={data[field] as string}
+              onChange={e => setData({ ...data, [field]: e.target.value })}
+              placeholder={placeholder}
+              className="w-full h-10 px-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-sm text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
+            />
+          </div>
+        ))}
       </div>
 
       <div className="flex gap-3">
-        <button
-          onClick={onBack}
-          className="px-5 py-3.5 bg-[#F3F4F6] text-[#6B7280] font-medium rounded-xl hover:bg-[#E5E7EB] transition-colors"
-        >
+        <button onClick={onBack} className="px-5 py-3.5 bg-[#F3F4F6] text-[#6B7280] font-medium rounded-xl hover:bg-[#E5E7EB] transition-colors">
           Voltar
         </button>
-        <button
-          onClick={onNext}
-          className="flex-1 py-3.5 bg-[#B8860B] hover:brightness-110 text-white font-bold rounded-xl transition-all"
-        >
+        <button onClick={onNext} className="flex-1 py-3.5 bg-[#B8860B] hover:brightness-110 text-white font-bold rounded-xl transition-all">
           Ver Análise →
         </button>
       </div>
@@ -1089,7 +1375,7 @@ function Modulo4({
 }
 
 // ─────────────────────────────────────────────
-// TELA RESULTADO
+// RAIO-X FINAL
 // ─────────────────────────────────────────────
 function Resultado({
   m1, m2, m3, m4, posts, hotelId,
@@ -1097,119 +1383,158 @@ function Resultado({
   m1: M1; m2: M2; m3: M3; m4: M4; posts: any[]; hotelId: string | null
 }) {
   const router = useRouter()
-  const cat = CATEGORIAS.find(c => c.v === m1.categoria)
-  const topDifs = m2.diferenciais.slice(0, 3)
-    .map(k => DIFERENCIAIS.find(d => d.k === k))
-    .filter(Boolean)
+  const [abaAtiva, setAbaAtiva] = useState<'ativos' | 'ideias' | 'plano'>('ativos')
+
+  const manchete = gerarManchete(m1, m2)
+  const ativos = gerarAtivos(m2)
+  const ideias = gerar20Ideias(m2)
+  const plano = gerarPlano14Dias(m1, m2)
   const oportunidades = oportunidadesMod3(m3)
   const foco = focoEstrategico(m4.objetivo_principal)
   const obj = OBJETIVOS.find(o => o.v === m4.objetivo_principal)
+  const geo = CONTEXTO_GEO.find(c => c.v === m1.contexto_geo)
+  const pub = PUBLICO_PRINCIPAL.find(p => p.v === m1.publico_principal)
 
-  function copiarLink() {
-    if (!hotelId) return
-    navigator.clipboard.writeText(`${window.location.origin}/dashboard/meu-hotel`)
-    toast.success('Link copiado!')
+  const FORMATO_COR: Record<string, string> = {
+    Reel: 'bg-purple-100 text-purple-700', Foto: 'bg-blue-100 text-blue-700',
+    Carrossel: 'bg-emerald-100 text-emerald-700', Story: 'bg-orange-100 text-orange-700',
   }
 
   return (
-    <div className="space-y-5">
-      {/* Badge celebratório */}
-      <div className="text-center py-4">
+    <div className="space-y-5 pb-6">
+      {/* Cabeçalho celebratório */}
+      <div className="text-center pt-2">
         <div className="inline-flex items-center gap-2 bg-[#FFF8E7] border border-[#B8860B]/30 text-[#B8860B] px-5 py-2.5 rounded-full text-sm font-bold shadow-sm">
-          ✨ Diagnóstico Concluído — {m1.nome}
+          ✨ Raio-X do {m1.nome} — Pronto
         </div>
-        <p className="text-[#6B7280] text-sm mt-3">Seu plano personalizado está pronto.</p>
       </div>
 
-      {/* Classificação */}
+      {/* Manchete de encantamento */}
       <div className="bg-gradient-to-br from-[#FFF8E7] to-[#FFF3CD] border border-[#B8860B]/20 rounded-2xl p-5 shadow-sm">
-        <p className="text-xs text-[#B8860B] font-bold uppercase tracking-wider mb-3">Classificação</p>
-        <p className="text-xl font-bold text-[#1A1D26]">{m1.tipoEmoji} {m1.tipoLabel}</p>
-        <div className="flex flex-wrap gap-2 mt-2">
+        <p className="text-xs text-[#B8860B] font-bold uppercase tracking-wider mb-2">Diagnóstico</p>
+        <p className="text-base font-bold text-[#1A1D26] leading-snug">{manchete}</p>
+        <div className="flex flex-wrap gap-2 mt-3">
           <span className="text-xs bg-white/80 text-[#92660A] border border-[#B8860B]/20 px-3 py-1 rounded-full font-medium">
-            {m1.regiao}
+            {m1.tipoEmoji} {m1.tipoLabel}
           </span>
-          <span className="text-xs bg-white/80 text-[#92660A] border border-[#B8860B]/20 px-3 py-1 rounded-full font-medium">
-            {cat?.l}
-          </span>
+          {geo && <span className="text-xs bg-white/80 text-[#92660A] border border-[#B8860B]/20 px-3 py-1 rounded-full font-medium">{geo.e} {geo.l}</span>}
+          {pub && <span className="text-xs bg-white/80 text-[#92660A] border border-[#B8860B]/20 px-3 py-1 rounded-full font-medium">{pub.e} {pub.l}</span>}
         </div>
-        {topDifs.length > 0 && (
-          <div className="flex gap-2 mt-3">
-            {topDifs.map(d => d && (
-              <span key={d.k} className="text-xl" title={d.l}>{d.e}</span>
+      </div>
+
+      {/* Oportunidades */}
+      {oportunidades.length > 0 && (
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] mb-2">Oportunidades identificadas</p>
+          <div className="space-y-2">
+            {oportunidades.map(op => (
+              <div key={op} className="p-3 bg-amber-50 border border-amber-200/60 rounded-xl">
+                <p className="text-sm text-amber-800">{op}</p>
+              </div>
             ))}
           </div>
-        )}
-      </div>
-
-      {/* Top 3 oportunidades */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] mb-3">
-          Top 3 Oportunidades
-        </p>
-        <div className="space-y-2">
-          {oportunidades.map(op => (
-            <div key={op} className="p-3 bg-amber-50 border border-amber-200/60 rounded-xl">
-              <p className="text-sm text-amber-800">{op}</p>
+          {obj && (
+            <div className="mt-3 pt-3 border-t border-[#E5E7EB]">
+              <p className="text-xs text-[#9CA3AF] mb-1">Foco recomendado</p>
+              <p className="text-sm text-[#374151]">{foco}</p>
             </div>
+          )}
+        </div>
+      )}
+
+      {/* Abas — Ativos / 20 Ideias / Plano 14 dias */}
+      <div>
+        <div className="flex gap-1 bg-[#F3F4F6] p-1 rounded-xl mb-3">
+          {([
+            { id: 'ativos', label: `Ouro (${ativos.length})` },
+            { id: 'ideias', label: '20 Ideias' },
+            { id: 'plano',  label: 'Plano 14d' },
+          ] as const).map(t => (
+            <button key={t.id} onClick={() => setAbaAtiva(t.id)}
+              className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all ${
+                abaAtiva === t.id ? 'bg-white text-[#1A1D26] shadow-sm' : 'text-[#6B7280]'
+              }`}>
+              {t.label}
+            </button>
           ))}
         </div>
-      </div>
 
-      {/* Foco estratégico */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] mb-2">
-          Foco Estratégico Recomendado
-        </p>
-        {obj && (
-          <p className="text-sm font-semibold text-[#B8860B] mb-2">{obj.l}</p>
-        )}
-        <p className="text-sm text-[#374151]">{foco}</p>
-      </div>
-
-      {/* Mini-calendário: 6 sugestões de posts */}
-      {posts.length > 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] mb-3">
-            Sugestões para os Próximos 7 Dias
-          </p>
+        {/* Aba: Ouro nas mãos */}
+        {abaAtiva === 'ativos' && (
           <div className="space-y-2">
-            {posts.map((p, i) => (
-              <div
-                key={p.id}
-                className="flex items-start gap-3 p-3 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB]"
-              >
-                <span className="text-xs bg-[#FFF8E7] text-[#B8860B] border border-[#B8860B]/20 px-2 py-0.5 rounded-full font-bold flex-shrink-0 mt-0.5">
-                  Dia {i + 1}
-                </span>
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold text-[#1A1D26] capitalize">
-                    {p.tema?.replace(/_/g, ' ')} · {p.formato}
-                  </p>
-                  <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-2">{p.hook}</p>
+            {ativos.length === 0 ? (
+              <p className="text-sm text-[#9CA3AF] text-center py-6">Volte e selecione seus diferenciais para ver os ativos.</p>
+            ) : ativos.map((a, i) => (
+              <div key={i} className="flex items-center gap-3 bg-white border border-[#E5E7EB] rounded-xl px-4 py-3 shadow-sm">
+                <span className="text-xl flex-shrink-0">{a.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-[#1A1D26]">{a.label}</p>
+                  <p className="text-xs text-[#B8860B] font-medium">{a.content}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Aba: 20 Ideias */}
+        {abaAtiva === 'ideias' && (
+          <div className="space-y-2">
+            {ideias.map((ideia, i) => (
+              <div key={i} className="flex items-start gap-3 bg-white border border-[#E5E7EB] rounded-xl px-4 py-3 shadow-sm">
+                <span className="text-xs bg-[#FFF8E7] text-[#B8860B] border border-[#B8860B]/20 px-2 py-0.5 rounded-full font-bold flex-shrink-0 mt-0.5">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <p className="text-sm text-[#374151]">{ideia}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Aba: Plano 14 dias */}
+        {abaAtiva === 'plano' && (
+          <div className="space-y-2">
+            {plano.map(d => (
+              <div key={d.dia} className="flex items-start gap-3 bg-white border border-[#E5E7EB] rounded-xl px-4 py-3 shadow-sm">
+                <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2 py-0.5 rounded-full font-bold flex-shrink-0 mt-0.5 w-10 text-center">
+                  D{d.dia}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${FORMATO_COR[d.formato] || 'bg-gray-100 text-gray-600'}`}>
+                      {d.formato}
+                    </span>
+                    <span className="text-xs text-[#9CA3AF]">{d.tema}</span>
+                  </div>
+                  <p className="text-sm text-[#374151]">{d.descricao}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* CTAs */}
-      <div className="space-y-3 pb-4">
+      <div className="space-y-3 pt-2">
         <button
-          onClick={() => router.push('/dashboard')}
+          onClick={() => router.push('/dashboard/post-do-dia')}
           className="w-full py-4 bg-[#B8860B] hover:brightness-110 text-white font-bold rounded-xl transition-all text-base shadow-md"
         >
-          Ver meu Plano de 90 Dias →
+          Gerar Post do Dia →
         </button>
-        {hotelId && (
+        <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={copiarLink}
-            className="w-full py-3.5 bg-white border border-[#E5E7EB] text-[#6B7280] font-medium rounded-xl hover:bg-[#F3F4F6] transition-colors"
+            onClick={() => router.push('/dashboard/calendario')}
+            className="py-3 bg-white border border-[#E5E7EB] text-[#6B7280] font-medium rounded-xl hover:bg-[#F3F4F6] transition-colors text-sm"
           >
-            Compartilhar diagnóstico
+            Ver Calendário
           </button>
-        )}
+          <button
+            onClick={() => router.push('/dashboard/biblioteca')}
+            className="py-3 bg-white border border-[#E5E7EB] text-[#6B7280] font-medium rounded-xl hover:bg-[#F3F4F6] transition-colors text-sm"
+          >
+            Ver Biblioteca
+          </button>
+        </div>
       </div>
     </div>
   )

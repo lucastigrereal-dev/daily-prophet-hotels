@@ -176,7 +176,7 @@ export default function CalendarioPage() {
               return (
                 <button
                   key={idx}
-                  onClick={() => setDiaSelecionado(isSelected ? null : dia)}
+                  onClick={() => { setDiaSelecionado(dia); abrirCriar(dia) }}
                   className={`min-h-[52px] p-1 rounded-xl text-left transition-all ${
                     isSelected ? 'bg-[#FFF8E7] border border-[#B8860B]' :
                     isToday ? 'bg-[#F3F4F6] border border-[#D1D5DB]' :

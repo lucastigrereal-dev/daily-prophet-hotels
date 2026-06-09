@@ -28,7 +28,11 @@ export default function RegisterPage() {
     })
 
     if (error) {
-      setError(error.message)
+      setError(
+        error.message.includes('already registered') ? 'Este email já está cadastrado.'
+        : error.message.includes('Password') ? 'Senha deve ter pelo menos 6 caracteres.'
+        : 'Não foi possível criar a conta. Tente novamente.'
+      )
       setLoading(false)
       return
     }

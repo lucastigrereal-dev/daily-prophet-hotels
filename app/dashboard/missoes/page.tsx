@@ -177,11 +177,7 @@ export default function MissoesPage() {
       await load()
       setTabAtiva('ativas')
     } catch (err: any) {
-      if (err?.code === '42P01') {
-        toast.error('Tabela hotel_missoes ainda nao existe. Execute a migration Sprint 2.')
-      } else {
-        toast.error('Erro ao ativar missao: ' + (err?.message || 'desconhecido'))
-      }
+      toast.error('Não foi possível ativar a missão. Tente novamente.')
     } finally {
       setAtivando(null)
     }
