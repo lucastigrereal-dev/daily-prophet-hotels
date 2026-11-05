@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import {copyWithFeedback} from '@/lib/hotel/v2/domain'
 import { TEMAS, TEMA_LABEL, OBJETIVOS, OBJETIVO_LABEL, SAZONALIDADES, SAZONALIDADE_LABEL } from '@/lib/content/taxonomy'
 
 type Tab = 'legendas' | 'templates' | 'hooks'
@@ -100,14 +101,12 @@ export default function GeradorPage() {
     loadLegendas(0)
   }
 
-  function copiarLegenda(l: Legenda) {
-    navigator.clipboard.writeText(`${l.hook}\n\n${l.legenda_completa}\n\n${l.cta || ''}\n\n${(l.hashtags || []).join(' ')}`.trim())
-    toast.success('Legenda copiada!')
+  async function copiarLegenda(l: Legenda) {
+    await copyWithFeedback(`${l.hook}\n\n${l.legenda_completa}\n\n${l.cta || ''}\n\n${(l.hashtags || []).join(' ')}`.trim(),text=>navigator.clipboard.writeText(text),()=>toast.success('Texto copiado; revise fatos e direitos antes de usar.'),()=>toast.error('Cópia não confirmada. Selecione o texto e tente novamente.'))
   }
 
-  function copiarHook(h: Hook) {
-    navigator.clipboard.writeText(h.hook)
-    toast.success('Hook copiado!')
+  async function copiarHook(h: Hook) {
+    await copyWithFeedback(h.hook,text=>navigator.clipboard.writeText(text),()=>toast.success('Hook copiado; ainda precisa de revisão factual.'),()=>toast.error('Cópia não confirmada. Selecione o texto e tente novamente.'))
   }
 
   const totalPaginas = Math.ceil(totalLegendas / 20)
@@ -119,7 +118,7 @@ export default function GeradorPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Gerador de Legendas</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">Biblioteca completa de conteúdo para hotéis</p>
+          <p className="text-sm text-[#6B7280] mt-0.5">Acervo de referência: confirme origem, direitos e fatos antes de adaptar</p>
         </div>
         <span className="bg-[#FFF8E7] text-[#B8860B] text-xs font-semibold px-3 py-1.5 rounded-full">
           {totalLegendas.toLocaleString('pt-BR')} legendas
@@ -131,7 +130,7 @@ export default function GeradorPage() {
         {([
           { id: 'legendas', label: 'Legendas' },
           { id: 'templates', label: `Templates (${templates.length || '...'})` },
-          { id: 'hooks', label: `Hooks (${totalHooks || '1.000'})` },
+          { id: 'hooks', label: `Hooks (${totalHooks})` },
         ] as { id: Tab; label: string }[]).map(t => (
           <button
             key={t.id}
@@ -376,7 +375,7 @@ export default function GeradorPage() {
                     </div>
                   )}
                   <button
-                    onClick={() => { navigator.clipboard.writeText(t.estrutura || t.nome); toast.success('Template copiado!') }}
+                    onClick={() => copyWithFeedback(t.estrutura || t.nome,text=>navigator.clipboard.writeText(text),()=>toast.success('Modelo copiado para revisão.'),()=>toast.error('Cópia não confirmada. Tente novamente.'))}
                     className="mt-3 w-full py-2 bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#6B7280] rounded-lg text-xs font-medium transition-colors"
                   >
                     Copiar estrutura

@@ -1,0 +1,667 @@
+{
+  "schema_version": "1.0",
+  "module_id": "05_hotel_pro",
+  "domain": "hotel",
+  "release_id": "N360-DOCS-20261022-v2.0",
+  "status": "ORIGINAL_SEED_NOT_FINAL_CORPUS",
+  "language": "pt-BR",
+  "templates": [
+    {
+      "id": "HO-TPL-001",
+      "version": 1,
+      "title": "Um detalhe da acomodação, com contexto",
+      "format": "caption",
+      "pillar": "acomodacao",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "location_hint",
+        "tone_open",
+        "visitor_tip"
+      ],
+      "content": {
+        "hook": "Antes de escolher onde ficar, conheça um detalhe da {{brand_name}}.",
+        "caption": "{{tone_open}}\n\n{{highlight_name}}: {{highlight_detail}}.\n\nNossa referência de localização é {{location_hint}}. Para planejar a hospedagem, {{visitor_tip}}.\n\n{{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-002",
+      "version": 1,
+      "title": "Visita visual a um espaço real",
+      "format": "reel_script",
+      "pillar": "acomodacao",
+      "production_minutes": 15,
+      "requires_filming": true,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "service_rule"
+      ],
+      "content": {
+        "hook": "Um olhar para {{highlight_name}}.",
+        "shots": [
+          "0–3s: mostre a entrada do espaço sem números de quartos ocupados ou hóspedes.",
+          "3–7s: registre o detalhe confirmado: {{highlight_detail}}. Evite lente que distorça dimensões.",
+          "7–11s: filme a circulação ou outro detalhe da mesma categoria de acomodação.",
+          "11–15s: encerre com {{brand_name}} e {{cta}}."
+        ],
+        "caption": "As imagens mostram uma categoria específica. Confirme a categoria e as condições da sua proposta: {{service_rule}}. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-003",
+      "version": 1,
+      "title": "Qual é o ritmo da sua viagem?",
+      "format": "stories",
+      "pillar": "conversa",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "service_rule"
+      ],
+      "content": {
+        "hook": "Cada viagem pede um ritmo.",
+        "stories": [
+          "1/3: Nesta viagem, você procura descanso, passeio ou uma combinação?",
+          "2/3: Na {{brand_name}}, conheça {{highlight_name}}: {{highlight_detail}}.",
+          "3/3: Para saber se a proposta combina com o seu plano: {{service_rule}}. {{cta}}."
+        ],
+        "caption": "Descanso, passeios ou uma combinação: conte o que procura para sua viagem. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar.",
+        "A enquete é convite à conversa; não representa perfil estatístico dos hóspedes."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-004",
+      "version": 1,
+      "title": "Antes de solicitar uma hospedagem",
+      "format": "carousel",
+      "pillar": "planejamento",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "location_hint",
+        "service_rule",
+        "visitor_tip"
+      ],
+      "content": {
+        "hook": "Cinco pontos para chegar a uma proposta mais clara.",
+        "slides": [
+          "1: Informe datas e quantidade de pessoas.",
+          "2: Confirme a categoria de acomodação desejada na {{brand_name}}.",
+          "3: Conheça um detalhe: {{highlight_name}} — {{highlight_detail}}.",
+          "4: Verifique o que está incluído e as condições: {{service_rule}}.",
+          "5: Referência de localização: {{location_hint}}. {{cta}}."
+        ],
+        "caption": "Solicitar informações não confirma disponibilidade nem reserva. {{visitor_tip}}. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-005",
+      "version": 1,
+      "title": "A proposta da hospedagem em uma ideia",
+      "format": "caption",
+      "pillar": "identidade",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "location_hint",
+        "service_rule"
+      ],
+      "content": {
+        "hook": "O detalhe que escolhemos mostrar hoje na {{brand_name}}.",
+        "caption": "{{highlight_name}} faz parte da nossa proposta: {{highlight_detail}}.\n\nEm {{location_hint}}, convidamos você a conhecer as informações da hospedagem e comparar com o que procura para a viagem.\n\n{{service_rule}}. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-006",
+      "version": 1,
+      "title": "Incluído, opcional ou sob consulta?",
+      "format": "stories",
+      "pillar": "confianca",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "service_rule"
+      ],
+      "content": {
+        "hook": "Uma dúvida importante antes de reservar.",
+        "stories": [
+          "1/3: Você sabe o que está incluído na sua proposta de hospedagem?",
+          "2/3: Ao consultar a {{brand_name}}, confirme: {{service_rule}}.",
+          "3/3: {{highlight_name}} é um detalhe para conhecer: {{highlight_detail}}. {{cta}}."
+        ],
+        "caption": "Confira os itens da proposta de hospedagem antes de decidir. {{service_rule}}. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar.",
+        "Revisar inclusão por categoria, período e condição comercial; nunca usar uma regra universal sem evidência.",
+        "Não trate serviço opcional como incluso."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-007",
+      "version": 1,
+      "title": "Um detalhe de acolhimento em movimento",
+      "format": "reel_script",
+      "pillar": "hospitalidade",
+      "production_minutes": 10,
+      "requires_filming": true,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name"
+      ],
+      "content": {
+        "hook": "Uma pequena preparação antes de receber.",
+        "shots": [
+          "0–3s: grave um detalhe real do espaço preparado, sem dados de hóspedes.",
+          "3–6s: mostre o cuidado descrito em {{highlight_detail}}.",
+          "6–10s: encerre com o espaço vazio e {{brand_name}}."
+        ],
+        "caption": "Uma imagem da preparação de {{highlight_name}}. Consulte quais características se aplicam à acomodação desejada. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-008",
+      "version": 1,
+      "title": "Informação útil para a chegada",
+      "format": "caption",
+      "pillar": "planejamento",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "location_hint",
+        "service_rule",
+        "visitor_tip"
+      ],
+      "content": {
+        "hook": "Vai planejar sua chegada à {{brand_name}}?",
+        "caption": "A referência de localização é {{location_hint}}.\n\n{{visitor_tip}}.\n\n{{service_rule}}.\n\nConfirme horários, acesso e condições antes do deslocamento. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-009",
+      "version": 1,
+      "title": "Conforto depende do que você precisa",
+      "format": "carousel",
+      "pillar": "confianca",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "service_rule"
+      ],
+      "content": {
+        "hook": "Antes da viagem, vale perguntar sobre suas necessidades.",
+        "slides": [
+          "1: Informe à {{brand_name}} o que é essencial para sua estadia.",
+          "2: Conheça {{highlight_name}}: {{highlight_detail}}.",
+          "3: Pergunte sobre acesso, circulação, mobiliário e serviços específicos; uma imagem não comprova acessibilidade.",
+          "4: Confira as condições com a equipe: {{service_rule}}.",
+          "5: {{cta}}."
+        ],
+        "caption": "Conte quais características são importantes para a sua hospedagem e confirme os detalhes antes de decidir. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar.",
+        "Não usar selo ou promessa de acessibilidade completa sem verificação técnica e informação precisa."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-010",
+      "version": 1,
+      "title": "Um espaço para conhecer com calma",
+      "format": "reel_script",
+      "pillar": "ambiente",
+      "production_minutes": 10,
+      "requires_filming": true,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "location_hint",
+        "service_rule"
+      ],
+      "content": {
+        "hook": "Uma pausa para olhar o espaço da {{brand_name}}.",
+        "shots": [
+          "0–3s: filme uma área autorizada, vazia e sem objetos de hóspedes.",
+          "3–7s: mostre um detalhe real de luz, textura ou organização, sem criar uma amenidade inexistente.",
+          "7–10s: finalize com {{location_hint}} e {{cta}}."
+        ],
+        "caption": "Um registro de ambiente para ajudar a conhecer a proposta. Serviços e categorias variam conforme a contratação: {{service_rule}}."
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-011",
+      "version": 1,
+      "title": "Sua proposta precisa destas condições",
+      "format": "stories",
+      "pillar": "planejamento",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "service_rule"
+      ],
+      "content": {
+        "hook": "Antes de concluir sua decisão, confira os detalhes.",
+        "stories": [
+          "1/3: A proposta informa datas, pessoas e categoria de acomodação?",
+          "2/3: Confira os serviços e condições com a {{brand_name}}: {{service_rule}}.",
+          "3/3: Ainda tem dúvida? {{cta}}. Informação enviada não é confirmação de reserva."
+        ],
+        "caption": "Consulte as condições para as datas e a categoria desejadas. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar.",
+        "Não sugerir cobrança, garantia de tarifa, desconto ou disponibilidade sem validação da operação."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-012",
+      "version": 1,
+      "title": "O ponto de partida da viagem",
+      "format": "caption",
+      "pillar": "destino",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "location_hint",
+        "visitor_tip"
+      ],
+      "content": {
+        "hook": "O planejamento pode começar por uma pergunta simples: onde ficar?",
+        "caption": "Em {{location_hint}}, a {{brand_name}} apresenta {{highlight_name}}: {{highlight_detail}}.\n\nCompare a proposta com seu roteiro e confirme as condições antes da decisão. {{visitor_tip}}.\n\n{{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-013",
+      "version": 1,
+      "title": "Preparação sem expor hóspedes",
+      "format": "reel_script",
+      "pillar": "bastidores",
+      "production_minutes": 15,
+      "requires_filming": true,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name"
+      ],
+      "content": {
+        "hook": "Antes da chegada, existe preparação.",
+        "shots": [
+          "0–4s: registre a organização de um espaço sem pessoas e sem documentos.",
+          "4–9s: mostre uma etapa autorizada de cuidado ligada a {{highlight_name}}.",
+          "9–13s: detalhe o resultado: {{highlight_detail}}.",
+          "13–16s: encerre com {{brand_name}} e {{cta}}."
+        ],
+        "caption": "Um registro de preparação em {{brand_name}}. Conheça {{highlight_name}} e tire suas dúvidas antes de escolher. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar.",
+        "Uma etapa real da preparação. Não gravar pertences, nomes, telas de reserva ou documentos de hóspedes."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-014",
+      "version": 1,
+      "title": "Uma dúvida sobre a hospedagem",
+      "format": "stories",
+      "pillar": "conversa",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "service_rule",
+        "visitor_tip"
+      ],
+      "content": {
+        "hook": "O que você quer saber antes de escolher?",
+        "stories": [
+          "1/3: Hoje abrimos espaço para dúvidas sobre a {{brand_name}}.",
+          "2/3: Uma orientação para começar: {{visitor_tip}}.",
+          "3/3: Condições e atendimento: {{service_rule}}. {{cta}}."
+        ],
+        "caption": "Que informação ajuda no seu planejamento? Deixe sua dúvida no canal oficial. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar.",
+        "Use perguntas reais de forma anônima; não fabrique avaliações ou mensagens de hóspedes."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-015",
+      "version": 1,
+      "title": "Planejamento para viajar acompanhado",
+      "format": "carousel",
+      "pillar": "ocasiao",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "service_rule",
+        "visitor_tip"
+      ],
+      "content": {
+        "hook": "Vai viajar com outras pessoas? Combine estes detalhes.",
+        "slides": [
+          "1: Confirme datas e quantidade de pessoas por acomodação.",
+          "2: Pergunte sobre categorias e características reais na {{brand_name}}.",
+          "3: Conheça {{highlight_name}}: {{highlight_detail}}.",
+          "4: Informe necessidades específicas e verifique: {{service_rule}}.",
+          "5: {{visitor_tip}}. {{cta}}."
+        ],
+        "caption": "Não prometer acomodação adicional, berço, pet, acesso ou ocupação que não esteja confirmado para a categoria."
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar."
+      ],
+      "not_a_performance_claim": true
+    },
+    {
+      "id": "HO-TPL-016",
+      "version": 1,
+      "title": "Escolha o próximo assunto",
+      "format": "carousel",
+      "pillar": "conversa",
+      "production_minutes": 5,
+      "requires_filming": false,
+      "requires_people": false,
+      "audience_tags": [
+        "turistas",
+        "moradores",
+        "familias",
+        "casais"
+      ],
+      "required_variables": [
+        "brand_name",
+        "cta",
+        "highlight_detail",
+        "highlight_name",
+        "location_hint",
+        "visitor_tip"
+      ],
+      "content": {
+        "hook": "Que informação da {{brand_name}} ajuda mais no seu planejamento?",
+        "slides": [
+          "1: Acomodação, localização ou condições de hospedagem?",
+          "2: Acomodação: {{highlight_name}} — {{highlight_detail}}.",
+          "3: Localização: {{location_hint}}.",
+          "4: Antes da viagem: {{visitor_tip}}.",
+          "5: Conte qual tema quer conhecer melhor. {{cta}}."
+        ],
+        "caption": "Conheça a hospedagem pelo assunto que faz diferença para você: acomodação, localização ou condições. {{cta}}"
+      },
+      "origin": "ORIGINAL_CREATED_FOR_N360_DOCS_20261022",
+      "rights_status": "ORIGINAL_TEXT_SEED_REVIEW_REQUIRED",
+      "commercial_readiness": "DRAFT_NOT_APPROVED_FOR_PUBLICATION",
+      "editorial_review": [
+        "Conferir fatos e validade do estabelecimento.",
+        "Usar apenas fotos/vídeos próprios ou licenciados.",
+        "Substituir texto sintético e revisar linguagem antes de publicar.",
+        "Convide à participação sem atribuir comentários ou satisfação a hóspedes que não autorizaram o uso."
+      ],
+      "not_a_performance_claim": true
+    }
+  ],
+  "disclaimer": "Conteúdo-semente original para revisão. Não é cópia, auditoria, importação nem substituição do acervo histórico Daily Profit/Daily Prophet. Não representa banco final ou publicação."
+}

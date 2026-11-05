@@ -1,336 +1,67 @@
 'use client'
-
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { toast } from 'sonner'
-import { getContentDNA, filterByDNA, sortByDNA, type ContentDNA } from '@/lib/hotel/content-dna'
-
-interface Hook {
-  id: string
-  hook: string
-  tema: string | null
-  formato: string | null
-  objetivo: string | null
-  publico: string | null
-  sazonalidade: string | null
-  quando_usar: string | null
-}
-
-interface Benchmark {
-  id: string
-  hook: string
-  legenda_completa: string
-  tema: string | null
-  formato: string | null
-  publico: string | null
-  objetivo: string | null
-  sazonalidade: string | null
-  qualidade_score: number
-  hashtags: string
-  cta: string
-}
-
-interface Hotel {
-  id: string
-  nome: string
-  tipo: string
-}
-
-const TEMAS_POR_DIA = [
-  'experiencia', 'cafe_manha', 'piscina', 'quarto', 'lazer',
-  'destino', 'gastronomia', 'natureza', 'romance', 'familia',
-]
-
-export default function PostDoDiaPage() {
-  const supabase = createClient()
-  const [loading, setLoading] = useState(true)
-  const [hotel, setHotel] = useState<Hotel | null>(null)
-  const [hookDia, setHookDia] = useState<Hook | null>(null)
-  const [benchmarkDia, setBenchmarkDia] = useState<Benchmark | null>(null)
-  const [hashtagsDia, setHashtagsDia] = useState<string[]>([])
-  const [copiado, setCopiado] = useState<string | null>(null)
-
-  const diaDoAno = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)
-  const temaHoje = TEMAS_POR_DIA[diaDoAno % TEMAS_POR_DIA.length]
-
-  useEffect(() => {
-    load()
-  }, [])
-
-  async function load() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setLoading(false); return }
-
-    const { data: hoteisData } = await supabase
-      .from('hotels')
-      .select('id, nome, tipo')
-      .eq('owner_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single()
-
-    setHotel(hoteisData || null)
-
-    // Carrega Content DNA do hotel
-    const dna: ContentDNA | null = hoteisData ? await getContentDNA(hoteisData.id) : null
-
-    // Busca conteudo ja usado pelo hotel (anti-repeticao)
-    const { data: usedData } = hoteisData ? await supabase
-      .from('hotel_content_history')
-      .select('content_id, content_type')
-      .eq('hotel_id', hoteisData.id) : { data: null }
-    const usedHookIds = new Set((usedData || []).filter(u => u.content_type === 'hook').map(u => u.content_id))
-    const usedBenchIds = new Set((usedData || []).filter(u => u.content_type === 'benchmark').map(u => u.content_id))
-
-    const [{ data: hooksData }, { data: benchData }, { data: hashData }] = await Promise.all([
-      supabase
-        .from('hooks')
-        .select('id, hook, tema, formato, objetivo, publico, sazonalidade, quando_usar')
-        .eq('ativo', true)
-        .order('score_qualidade', { ascending: false })
-        .limit(200),
-      supabase
-        .from('benchmarks_posts')
-        .select('id, hook, legenda_completa, tema, formato, publico, objetivo, sazonalidade, qualidade_score, hashtags, cta')
-        .eq('ativo', true)
-        .order('qualidade_score', { ascending: false })
-        .limit(100),
-      supabase
-        .from('hashtag_combos')
-        .select('hashtags')
-        .limit(20),
-    ])
-
-    let hooks = hooksData || []
-    let benchmarks = benchData || []
-
-    // Filtra e ordena por Content DNA
-    if (dna) {
-      hooks = sortByDNA(filterByDNA(hooks, dna), dna)
-      benchmarks = sortByDNA(filterByDNA(benchmarks, dna), dna)
-    }
-
-    // Remove conteudo ja usado (anti-repeticao) — fallback para todos se acabar
-    const freshHooks = hooks.filter(h => !usedHookIds.has(h.id))
-    const freshBench = benchmarks.filter(b => !usedBenchIds.has(b.id))
-    const finalHooks = freshHooks.length > 0 ? freshHooks : hooks
-    const finalBench = freshBench.length > 0 ? freshBench : benchmarks
-
-    // Seleciona hook do dia baseado no dia do ano (deterministico)
-    const hookSeed = diaDoAno % Math.max(finalHooks.length, 1)
-    setHookDia(finalHooks[hookSeed] || finalHooks[0] || null)
-
-    // Benchmark do dia
-    const benchSeed = (diaDoAno * 3) % Math.max(finalBench.length, 1)
-    setBenchmarkDia(finalBench[benchSeed] || finalBench[0] || null)
-
-    // Hashtags
-    const hashCombos = hashData || []
-    if (hashCombos.length > 0) {
-      const combo = hashCombos[diaDoAno % hashCombos.length]
-      const tags = typeof combo.hashtags === 'string'
-        ? combo.hashtags.split(/[\s,]+/).filter(Boolean)
-        : Array.isArray(combo.hashtags) ? combo.hashtags : []
-      setHashtagsDia(tags.slice(0, 15))
-    }
-
-    setLoading(false)
-  }
-
-  async function novoPost() {
-    setLoading(true)
-    await new Promise(r => setTimeout(r, 300))
-    const { data: hooksData } = await supabase.from('hooks').select('id, hook, tema, formato, objetivo, publico, sazonalidade, quando_usar').eq('ativo', true).limit(200)
-    const { data: benchData } = await supabase
-      .from('benchmarks_posts')
-      .select('id, hook, legenda_completa, tema, formato, publico, objetivo, sazonalidade, qualidade_score, hashtags, cta')
-      .eq('ativo', true)
-      .order('qualidade_score', { ascending: false })
-      .limit(100)
-
-    const hooks = hooksData || []
-    const benchmarks = benchData || []
-    const i = Math.floor(Math.random() * hooks.length)
-    const j = Math.floor(Math.random() * Math.min(benchmarks.length, 20))
-    setHookDia(hooks[i] || null)
-    setBenchmarkDia(benchmarks[j] || null)
-    setLoading(false)
-    toast.success('Novo post sugerido!')
-  }
-
-  async function copiar(texto: string, id: string) {
-    navigator.clipboard.writeText(texto)
-    setCopiado(id)
-    toast.success('Copiado!')
-    setTimeout(() => setCopiado(null), 2000)
-
-    // Registra uso no historico (anti-repeticao) e log de execucao
-    if (hotel && id === 'completo') {
-      const inserts = []
-      if (hookDia) {
-        inserts.push(supabase.from('hotel_content_history').upsert(
-          { hotel_id: hotel.id, content_type: 'hook', content_id: hookDia.id },
-          { onConflict: 'hotel_id,content_type,content_id' }
-        ))
-      }
-      if (benchmarkDia) {
-        inserts.push(supabase.from('hotel_content_history').upsert(
-          { hotel_id: hotel.id, content_type: 'benchmark', content_id: benchmarkDia.id },
-          { onConflict: 'hotel_id,content_type,content_id' }
-        ))
-      }
-      inserts.push(supabase.from('hotel_execution_log').insert({
-        hotel_id: hotel.id,
-        acao: 'post_copiado',
-        categoria: 'conteudo',
-        detalhes: { hook_id: hookDia?.id, benchmark_id: benchmarkDia?.id },
-      }))
-      await Promise.all(inserts)
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin w-8 h-8 border-2 border-[#B8860B] border-t-transparent rounded-full" />
-      </div>
-    )
-  }
-
-  const legendaCompleta = benchmarkDia?.legenda_completa || hookDia?.hook || ''
-  const ctaTexto = benchmarkDia?.cta || 'Salve esse post para nao perder!'
-  const postCompleto = `${hookDia?.hook || ''}\n\n${legendaCompleta}\n\n${ctaTexto}\n\n${hashtagsDia.join(' ')}`
-
-  return (
-    <div className="space-y-5">
-
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Post do Dia</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">
-            {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
-            {hotel && ` — ${hotel.nome}`}
-          </p>
-        </div>
-        <button
-          onClick={novoPost}
-          className="px-4 py-2 bg-[#F3F4F6] hover:bg-[#E5E7EB] text-[#1A1D26] text-sm font-medium rounded-lg transition-colors"
-        >
-          Novo Post
-        </button>
-      </div>
-
-      {/* Tema do dia */}
-      <div className="flex items-center gap-2">
-        <span className="text-xs text-[#9CA3AF]">Tema de hoje:</span>
-        <span className="text-xs px-2 py-0.5 bg-[#FFF8E7] text-[#B8860B] rounded-full font-medium capitalize">{temaHoje.replace('_', ' ')}</span>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {/* Hook */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide">Hook / Abertura</p>
-            <button
-              onClick={() => hookDia && copiar(hookDia.hook, 'hook')}
-              className={`text-xs px-2 py-0.5 rounded ${copiado === 'hook' ? 'bg-emerald-100 text-emerald-700' : 'text-[#B8860B] hover:bg-[#FFF8E7]'}`}
-            >
-              {copiado === 'hook' ? 'Copiado!' : 'Copiar'}
-            </button>
-          </div>
-          <p className="text-sm text-[#1A1D26] leading-relaxed font-medium">{hookDia?.hook || 'Nenhum hook encontrado'}</p>
-          {hookDia?.quando_usar && (
-            <p className="text-xs text-[#9CA3AF] mt-1.5 italic">{hookDia.quando_usar}</p>
-          )}
-          <div className="flex flex-wrap gap-1 mt-2">
-            {hookDia?.tema && <span className="text-xs px-2 py-0.5 bg-[#EFF6FF] text-blue-700 rounded-full">{hookDia.tema}</span>}
-            {hookDia?.objetivo && <span className="text-xs px-2 py-0.5 bg-[#F5F3FF] text-violet-700 rounded-full">{hookDia.objetivo}</span>}
-            {hookDia?.sazonalidade && hookDia.sazonalidade !== 'o_ano_todo' && (
-              <span className="text-xs px-2 py-0.5 bg-orange-50 text-orange-700 rounded-full">{hookDia.sazonalidade.replace(/_/g, ' ')}</span>
-            )}
-          </div>
-        </div>
-
-        {/* Legenda */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide">Legenda</p>
-            <button
-              onClick={() => copiar(legendaCompleta, 'legenda')}
-              className={`text-xs px-2 py-0.5 rounded ${copiado === 'legenda' ? 'bg-emerald-100 text-emerald-700' : 'text-[#B8860B] hover:bg-[#FFF8E7]'}`}
-            >
-              {copiado === 'legenda' ? 'Copiado!' : 'Copiar'}
-            </button>
-          </div>
-          <p className="text-sm text-[#1A1D26] leading-relaxed line-clamp-6">
-            {legendaCompleta || 'Nenhuma legenda disponivel'}
-          </p>
-          {benchmarkDia?.formato && (
-            <span className="inline-block mt-2 text-xs px-2 py-0.5 bg-[#ECFDF5] text-emerald-700 rounded-full">{benchmarkDia.formato}</span>
-          )}
-        </div>
-
-        {/* CTA + Hashtags */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-          <div className="mb-3">
-            <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide mb-1">CTA</p>
-            <p className="text-sm text-[#1A1D26] font-medium">{ctaTexto}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide mb-2">Hashtags</p>
-            <div className="flex flex-wrap gap-1">
-              {hashtagsDia.length > 0 ? hashtagsDia.map((h, i) => (
-                <span key={i} className="text-xs px-2 py-0.5 bg-[#F3F4F6] text-[#6B7280] rounded-full">{h.startsWith('#') ? h : `#${h}`}</span>
-              )) : (
-                <span className="text-xs text-[#9CA3AF]">#hotelaria #turismo #viagem #hospedagem #brasil</span>
-              )}
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Post completo para copiar */}
-      <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-[#1A1D26]">Post Completo</h2>
-          <button
-            onClick={() => copiar(postCompleto, 'completo')}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-              copiado === 'completo'
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-[#B8860B] text-white hover:brightness-110'
-            }`}
-          >
-            {copiado === 'completo' ? 'Copiado!' : 'Copiar Post Completo'}
-          </button>
-        </div>
-        <div className="bg-[#F8F9FB] rounded-xl p-4">
-          <pre className="text-sm text-[#1A1D26] whitespace-pre-wrap font-sans leading-relaxed">{postCompleto}</pre>
-        </div>
-      </div>
-
-      {/* Benchmark de apoio */}
-      {benchmarkDia && (
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-          <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide mb-3">Benchmark de Apoio</p>
-          <div className="flex items-start gap-4">
-            <div className="flex-1">
-              <p className="text-sm text-[#1A1D26]">{benchmarkDia.hook}</p>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-xs px-2 py-0.5 bg-[#F3F4F6] text-[#6B7280] rounded-full">{benchmarkDia.tema}</span>
-                <span className="text-xs px-2 py-0.5 bg-[#F3F4F6] text-[#6B7280] rounded-full">{benchmarkDia.formato}</span>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold text-[#B8860B]">{benchmarkDia.qualidade_score}</p>
-              <p className="text-xs text-[#9CA3AF]">score</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-    </div>
-  )
+import {useEffect,useRef,useState} from 'react'
+import Link from 'next/link'
+import {toast} from 'sonner'
+import {getWorkspace,createWindow,latestDraft,saveDraft,getExport,recordExport,getAlternative} from '@/lib/hotel/workspace-actions'
+import {currentDraft,localDay,exportable,compare,resolve,copyAndRecord,type Draft,type Profile} from '@/lib/hotel/v2/domain'
+import {draftCatalog} from '@/lib/hotel/v2/catalog'
+import {EditorialPreferencesSummary} from '@/components/hotel/editorial-preferences'
+const LABELS:Record<string,string>={brand_name:'Nome da hospedagem',location_hint:'Localização',highlight_name:'Espaço ou categoria',highlight_detail:'Detalhe confirmado',service_rule:'Condições',cta:'Convite ao contato',tone_open:'Abertura editorial',visitor_tip:'Orientação de planejamento'}
+export default function PostDoDiaPage(){
+ const[resumeContext]=useState(()=>{try{const p=new URLSearchParams(window.location.search),actorId=p.get('actor'),hotelId=p.get('hotel'),anchor=p.get('anchor'),draftId=p.get('draft');return actorId&&hotelId&&anchor&&draftId?{actorId,hotelId,anchor,draftId}:null}catch{return null}})
+ const[resolveCurrent,setResolveCurrent]=useState(!resumeContext),[referenceDay,setReferenceDay]=useState('')
+ const[anchor,setAnchor]=useState(resumeContext?.anchor??''),[hotel,setHotel]=useState<{id:string;nome:string;status:string;actorId:string}|null>(null),[profile,setProfile]=useState<Profile|null>(null),[drafts,setDrafts]=useState<Draft[]>([]),[selected,setSelected]=useState(0)
+ const[title,setTitle]=useState(''),[alternative,setAlternative]=useState<Draft|null>(null)
+ const[workspaceState,setWorkspaceState]=useState<'loading'|'ready'|'error'>('loading'),[loadAttempt,setLoadAttempt]=useState(0)
+ const[text,setText]=useState(''),[expected,setExpected]=useState(1),[remote,setRemote]=useState<Draft|null>(null),[confirmed,setConfirmed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState<string|null>(null),[manual,setManual]=useState('')
+ const generation=useRef(0),resumeConsumed=useRef(false),lock=useRef(false),operation=useRef<string|null>(null),draft=drafts[selected],writeAllowed=hotel?.status==='ativo'
+ const key=draft&&hotel?`hotel-editor:${hotel.actorId}:${hotel.id}:${draft.id}`:null
+ function buffer(value:string,revision=expected,localTitle=title){if(key)sessionStorage.setItem(key,JSON.stringify({text:value,title:localTitle,expected:revision}))}
+ useEffect(()=>{
+  if(!draft||!hotel){setText('');setTitle('');return}
+  const storageKey=`hotel-editor:${hotel.actorId}:${hotel.id}:${draft.id}`;let stored:any=null;try{stored=JSON.parse(sessionStorage.getItem(storageKey)??'null')}catch{}
+  if(stored&&typeof stored.text==='string'&&Number.isInteger(stored.expected)&&stored.expected>0){setText(stored.text);setTitle(stored.title??draft.title);setExpected(stored.expected);if(stored.expected!==draft.revision)setRemote(draft);setError('Seu texto local não salvo foi recuperado. Compare sem descartar sua edição.')}
+  else{setText(draft.text);setTitle(draft.title);setExpected(draft.revision);setRemote(null)}
+  setConfirmed(false);setManual('');setAlternative(null)
+ },[draft?.id,hotel?.id,hotel?.actorId])
+ useEffect(()=>{const id=++generation.current;setWorkspaceState('loading');setBusy(true);setError(null);setDrafts([]);setText('');setHotel(null);setProfile(null);setManual('');setRemote(null);operation.current=null
+  getWorkspace(anchor,resolveCurrent).then(w=>{if(generation.current===id){const target=resumeContext&&!resumeConsumed.current?resumeContext:null,index=target?w.drafts.findIndex(d=>d.id===target.draftId):w.drafts.findIndex(d=>d.date===(w.day||anchor));if(target&&(target.actorId!==w.hotel.actorId||target.hotelId!==w.hotel.id))throw new Error('ACCESS_DENIED: entre novamente com a conta deste estabelecimento para retomar seu rascunho.');if(target&&index<0)throw new Error('Rascunho selecionado não encontrado nesta janela. Seu texto local foi preservado.');setReferenceDay(w.day);setHotel(w.hotel);setProfile(w.profile);setDrafts(w.drafts);setSelected(Math.max(0,index));resumeConsumed.current=true;setWorkspaceState('ready')}}).catch(e=>{if(generation.current===id){setWorkspaceState('error');setError(e instanceof Error?e.message:'Não foi possível carregar o DNA e os rascunhos. Tente novamente.')}}).finally(()=>{if(generation.current===id)setBusy(false)})
+ },[anchor,loadAttempt,resolveCurrent])
+ function issue(d:Draft,forExport=false){if(!profile||!hotel)return'Confirme o perfil factual antes de revisar.';try{if(forExport)exportable(d,profile,draftCatalog,localDay(profile.timezone),hotel.actorId);else currentDraft(d,profile,draftCatalog,localDay(profile.timezone));return null}catch(e){return e instanceof Error?e.message:'Revisão factual pendente.'}}
+ async function run(action:()=>Promise<void>){if(lock.current)return;lock.current=true;setBusy(true);setError(null);try{await action()}catch(e){setAlternative(null);setError(e instanceof Error?e.message:'Não foi possível confirmar a operação. Seu texto permanece aqui.')}finally{lock.current=false;setBusy(false)}}
+ async function compareRemote(){if(!draft||!hotel)return;setAlternative(null);buffer(text);const workspace=await getWorkspace(anchor,resolveCurrent);setProfile(workspace.profile);setConfirmed(false);setManual('');const latest=await latestDraft(hotel.id,draft.id),comparison=compare({localText:text,expectedRevision:expected},latest);setRemote(latest);setText(comparison.localText)}
+ async function save(){if(!draft||!hotel)return;setManual('');buffer(text);try{const saved=await saveDraft(hotel.id,{...draft,revision:expected},text,confirmed,profile?.dna_version,title);setDrafts(rows=>rows.map(d=>d.id===saved.id?saved:d));setText(saved.text);setTitle(saved.title);setExpected(saved.revision);setRemote(null);setConfirmed(false);if(key)sessionStorage.removeItem(key);toast.success(saved.editorial_review?'Revisão exata confirmada com os fatos atuais.':'Rascunho salvo, ainda não aprovado para exportar.')}catch(e){if(e instanceof Error&&e.message.includes('REVISION_CONFLICT'))await compareRemote();throw e}}
+ function decision(choice:'reapply'|'remote'){if(!remote)return;setManual('');const resolved=resolve({localText:text,expectedRevision:expected,remote},choice);setText(resolved.localText);setExpected(resolved.expectedRevision);setDrafts(rows=>rows.map(d=>d.id===remote.id?remote:d));setConfirmed(false);if(choice==='remote'){setTitle(remote.title);if(key)sessionStorage.removeItem(key);setRemote(null)}else buffer(resolved.localText,resolved.expectedRevision);setError(choice==='remote'?'Você escolheu usar a versão remota.':'Seu texto foi mantido para mesclar. Revise e salve explicitamente sobre a revisão remota.')}
+ const returnQuery=hotel&&draft?new URLSearchParams({actor:hotel.actorId,hotel:hotel.id,anchor:drafts[0].date,draft:draft.id}).toString():''
+ const loginReturn='/auth/login?next='+encodeURIComponent('/dashboard/post-do-dia'+(returnQuery?'?'+returnQuery:''))
+ const dirty=!!draft&&(text!==draft.text||title!==draft.title),exportIssue=draft?issue(draft,true):null
+ return <div className="space-y-5 max-w-3xl">
+  <div><h1 className="text-2xl font-bold">Hoje · Hotel Pro</h1><p className="text-sm text-[#6B7280]">{hotel?.nome??'Seu estabelecimento'} · textos e roteiros editáveis, sem publicação automática.</p></div>
+  {error?.includes('SESSION_EXPIRED')&&<Link href={loginReturn}>Entrar novamente e retomar este estabelecimento</Link>}
+  {hotel&&!writeAllowed&&<p role="status" className="p-3 bg-amber-50 rounded-xl">Somente leitura neste estado. Novas alterações e exportações estão bloqueadas.</p>}
+  <label className="block">Data de referência da janela (Hoje recupera a janela vigente)<input type="date" value={anchor||referenceDay} disabled={busy||dirty} onChange={e=>{setResolveCurrent(false);setAnchor(e.target.value)}} className="block border rounded-lg p-3 mt-1"/></label>
+  {error&&<p id="editor-error" role="alert" className="p-4 bg-amber-50 text-amber-900 rounded-xl">{error}</p>}{busy&&<p role="status">Aguardando confirmação...</p>}
+  {workspaceState==='error'&&<button disabled={busy} className="p-3 border rounded-lg" onClick={()=>setLoadAttempt(n=>n+1)}>Tentar carregar novamente</button>}
+  {workspaceState==='ready'&&!profile&&!busy&&<p>Falta confirmar o DNA e os fatos no <Link href="/onboarding" className="underline">Meu negócio</Link>. Perfil concluído ou legado pode ser reaberto para reconfirmação.</p>}
+  {profile&&<section aria-label="Tom e vetos do DNA ativo" className="p-4 border rounded-xl"><EditorialPreferencesSummary tone={profile.tone} avoid={profile.avoid}/><p className="text-sm mt-2">O tom altera a abertura do modelo “Um detalhe da acomodação, com contexto”. Revise o estilo dos demais textos manualmente. Vetos excluem modelos desses pilares de novas sugestões.</p></section>}
+  {profile&&!drafts.length&&<button disabled={busy||!writeAllowed} className="p-3 bg-[#B8860B] text-white rounded-xl" onClick={()=>run(async()=>{operation.current??=crypto.randomUUID();const rows=await createWindow(anchor||referenceDay,operation.current);setDrafts(rows);setSelected(0);operation.current=null})}>Criar janela de sete datas</button>}
+  {draft&&<section className="bg-white border rounded-2xl p-4 space-y-3">
+   <p className="text-xs text-[#6B7280]">RASCUNHO · {draft.date} · salva r{draft.revision} · edição espera r{expected} · {draft.intention==='preparar'?'Preparação, sem obrigação de publicar':'Sugestão, não agendada'}</p>
+   <h2 className="text-xl font-bold">{draft.title}</h2><p>{draft.format} · cerca de {draft.minutes} minutos. {draft.reason}</p>
+   {exportIssue&&<p role="note" className="p-3 bg-amber-50 rounded-lg">Exportação bloqueada: {exportIssue} O texto antigo continua para revisão, não é uma recomendação factual nova.</p>}
+   <label htmlFor="draft-title-editor" className="block font-medium">Título local</label><input id="draft-title-editor" aria-describedby={error?"editor-error":undefined} value={title} disabled={busy||!writeAllowed} className="w-full p-3 border rounded-xl" onChange={e=>{setTitle(e.target.value);buffer(text,expected,e.target.value);setConfirmed(false);setManual('')}}/>
+   <label htmlFor="draft-text" className="block font-medium">Texto local, separado da revisão remota</label><textarea id="draft-text" aria-describedby={error?"editor-error":undefined} value={text} disabled={busy||!writeAllowed} rows={12} className="w-full p-3 border rounded-xl" onChange={e=>{setText(e.target.value);buffer(e.target.value);setConfirmed(false);setManual('')}}/>
+   {profile&&<details className="p-3 border rounded-xl"><summary>Comparar com os fatos atualmente confirmados</summary><ul className="mt-3 space-y-2">{Object.entries(profile.facts).map(([name,f])=><li key={name}><strong>{LABELS[name]??'Informação confirmada'}:</strong> {f.value}<br/><small>{f.confirmed?'Confirmado':'Revogado/não confirmado'} · até {f.valid_until} · {f.source}</small></li>)}</ul></details>}
+   <label className="flex gap-2"><input type="checkbox" disabled={busy||!profile||!writeAllowed} checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/>Li este texto exato e os fatos atuais. Confirmei sua correspondência, condições e direitos de mídia. Editar invalida esta confirmação. Isso não é verificação automática da verdade.</label>
+   <div className="flex flex-wrap gap-2"><button disabled={busy||!writeAllowed||(!dirty&&!confirmed)} onClick={()=>run(save)} className="p-3 bg-[#B8860B] text-white rounded-lg">{confirmed?'Salvar e confirmar esta revisão exata':'Salvar rascunho não aprovado'}</button><button disabled={busy} onClick={()=>run(compareRemote)} className="p-3 border rounded-lg">Comparar versão remota sem descartar meu texto</button>
+    <button disabled={busy||!writeAllowed||dirty||!!exportIssue} className="p-3 border rounded-lg" onClick={()=>run(async()=>{const exported=await getExport(hotel!.id,draft.id,draft.revision);setManual(exported);const exportOperation=crypto.randomUUID(),result=await copyAndRecord(exported,t=>navigator.clipboard.writeText(t),()=>recordExport(hotel!.id,draft.id,draft.revision,exportOperation));toast.success(result.history?'Copiado e registrado como exportado, nunca publicado.':'Copiado; histórico não confirmado.')})}>Copiar revisão salva e confirmada</button>
+    <button disabled={busy} onClick={()=>run(async()=>{setAlternative(null);const result=await getAlternative(hotel!.id,draft.id);setProfile(result.profile);setConfirmed(false);setManual('');setAlternative(result.alternative);if(!result.alternative)setError('Não há alternativa elegível de menor esforço para esta data. Seu rascunho permanece salvo.');})} className="p-3 border rounded-lg">Ver alternativa de menor esforço</button></div>
+   {remote&&<section aria-label="Comparação de revisões" className="p-3 border-2 rounded-xl space-y-3"><h3 className="font-bold">{remote.title} — Remota r{remote.revision}, sem substituir seu texto acima</h3><textarea aria-label="Texto da revisão remota" readOnly value={remote.text} rows={8} className="w-full p-3 border rounded-lg"/><div className="flex flex-wrap gap-2"><button onClick={()=>decision('reapply')} className="p-3 border rounded-lg">Manter/mesclar meu texto sobre r{remote.revision}; salvar depois</button><button onClick={()=>decision('remote')} className="p-3 border rounded-lg">Descartar minha edição e usar a versão remota</button></div></section>}
+   <p className="text-sm text-[#6B7280]">Modelos textuais originais para revisão, não peças finais aprovadas. Sem mídia, avaliações ou música alheia autorizadas por inferência.</p>
+  </section>}
+  {alternative&&!issue(alternative)&&<section aria-label="Alternativa de menor esforço" className="p-4 border rounded-xl"><h3>{alternative.title}</h3><p>{alternative.date} · {alternative.minutes} minutos · {alternative.reason}</p><p>Prévia para adaptação. Não substitui nem aprova o título ou texto que você está editando.</p><textarea aria-label="Texto da alternativa" readOnly value={alternative.text} rows={8} className="w-full p-3 border rounded-xl"/><button onClick={()=>setAlternative(null)} className="p-3 border rounded-lg">Manter meu rascunho</button></section>}
+  {manual&&<label className="block">Alternativa manual da exportação verificada<textarea readOnly value={manual} rows={8} onFocus={e=>e.currentTarget.select()} className="w-full p-3 border rounded-xl"/></label>}
+  {!!drafts.length&&<div aria-label="Sete datas" className="grid gap-2 sm:grid-cols-2">{drafts.map((d,i)=><button key={d.id} disabled={busy||dirty} onClick={()=>setSelected(i)} className="text-left p-3 border rounded-xl"><strong>{d.date}</strong><p>{d.title}</p><small>{issue(d)?'Revisão factual pendente, texto preservado':'Fatos da versão atual'} · r{d.revision}</small></button>)}</div>}
+  <Link href="/dashboard/calendario" className="underline">Abrir calendário salvo</Link>
+ </div>
 }

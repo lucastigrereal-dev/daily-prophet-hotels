@@ -1,5 +1,6 @@
 // Content DNA — filtros e preferencias de conteudo por hotel
 import { createClient } from '@/lib/supabase/client'
+import { checked,hasEditorialProfile } from './v2/domain'
 
 export interface ContentDNA {
   tom: string
@@ -14,6 +15,7 @@ export interface ContentDNA {
   formatos_preferidos: string[]
   palavras_evitar: string[]
   concorrentes_nao_mencionar: string[]
+  regras_extras?: Record<string, any>
 }
 
 const DEFAULT_DNA: ContentDNA = {
@@ -31,45 +33,50 @@ const DEFAULT_DNA: ContentDNA = {
   concorrentes_nao_mencionar: [],
 }
 
-export async function getContentDNA(hotelId: string): Promise<ContentDNA> {
+export async function getContentDNA(hotelId: string): Promise<ContentDNA | null> {
   const supabase = createClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('hotel_content_preferences')
     .select('*')
     .eq('hotel_id', hotelId)
-    .single()
+    .maybeSingle()
 
-  if (!data) return DEFAULT_DNA
+  checked({error}, 'a leitura do DNA')
+  if (!data) return null
+  if (data.regras_extras?.profile && !hasEditorialProfile(data.regras_extras.profile)) return null
+  const editorial=hasEditorialProfile(data.regras_extras?.profile)?data.regras_extras.profile:null
 
   return {
-    tom: data.tom || DEFAULT_DNA.tom,
-    voz: data.voz || DEFAULT_DNA.voz,
-    publico_primario: data.publico_primario || DEFAULT_DNA.publico_primario,
+    regras_extras: data.regras_extras,
+    tom: editorial?.tone ?? data.tom ?? DEFAULT_DNA.tom,
+    voz: data.voz ?? DEFAULT_DNA.voz,
+    publico_primario: data.publico_primario ?? DEFAULT_DNA.publico_primario,
     publico_secundario: data.publico_secundario,
-    posts_por_semana: data.posts_por_semana || DEFAULT_DNA.posts_por_semana,
-    stories_por_dia: data.stories_por_dia || DEFAULT_DNA.stories_por_dia,
-    melhor_horario_post: data.melhor_horario_post || DEFAULT_DNA.melhor_horario_post,
-    temas_preferidos: data.temas_preferidos || DEFAULT_DNA.temas_preferidos,
-    temas_evitar: data.temas_evitar || DEFAULT_DNA.temas_evitar,
-    formatos_preferidos: data.formatos_preferidos || DEFAULT_DNA.formatos_preferidos,
-    palavras_evitar: data.palavras_evitar || DEFAULT_DNA.palavras_evitar,
-    concorrentes_nao_mencionar: data.concorrentes_nao_mencionar || DEFAULT_DNA.concorrentes_nao_mencionar,
+    posts_por_semana: data.posts_por_semana ?? DEFAULT_DNA.posts_por_semana,
+    stories_por_dia: data.stories_por_dia ?? DEFAULT_DNA.stories_por_dia,
+    melhor_horario_post: data.melhor_horario_post ?? DEFAULT_DNA.melhor_horario_post,
+    temas_preferidos: data.temas_preferidos ?? DEFAULT_DNA.temas_preferidos,
+    temas_evitar: editorial?.avoid ?? data.temas_evitar ?? DEFAULT_DNA.temas_evitar,
+    formatos_preferidos: data.formatos_preferidos ?? DEFAULT_DNA.formatos_preferidos,
+    palavras_evitar: data.palavras_evitar ?? DEFAULT_DNA.palavras_evitar,
+    concorrentes_nao_mencionar: data.concorrentes_nao_mencionar ?? DEFAULT_DNA.concorrentes_nao_mencionar,
   }
 }
 
 export async function saveContentDNA(hotelId: string, dna: Partial<ContentDNA>): Promise<void> {
   const supabase = createClient()
-  await supabase
+  const result = await supabase
     .from('hotel_content_preferences')
     .upsert({
       hotel_id: hotelId,
       ...dna,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'hotel_id' })
+  checked(result, 'o salvamento do DNA')
 }
 
 // Filtra hooks excluindo temas que o hotel quer evitar
-export function filterByDNA<T extends { tema?: string; formato?: string }>(
+export function filterByDNA<T extends { tema?: string | null; formato?: string | null }>(
   items: T[],
   dna: ContentDNA
 ): T[] {
@@ -80,7 +87,7 @@ export function filterByDNA<T extends { tema?: string; formato?: string }>(
 }
 
 // Ordena priorizando temas preferidos do hotel
-export function sortByDNA<T extends { tema?: string; formato?: string }>(
+export function sortByDNA<T extends { tema?: string | null; formato?: string | null }>(
   items: T[],
   dna: ContentDNA
 ): T[] {

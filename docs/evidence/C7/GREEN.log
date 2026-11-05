@@ -1,0 +1,11 @@
+✔ C7 static trigger replacement qualifies only target schema/table and preserves exact legacy body (1.244563ms)
+✔ C7 static migration neither recreates trigger nor changes search_path/auth/grants/RLS (0.359392ms)
+✔ C7 preserves historical schema, trigger attachment and C6 migration bytes (0.621741ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.754435

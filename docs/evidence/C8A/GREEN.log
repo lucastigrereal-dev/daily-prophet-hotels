@@ -1,0 +1,12 @@
+✔ C8 restricts both old/new existing-hotel states with owner; no permissive OR loophole (1.219414ms)
+✔ C8 reads suspended history without lock, rejects NULL before/after ID-owner lock, never creates after missing lock (0.311003ms)
+✔ C8 preserves all onboarding RPC bytes except reviewed guard; actor/invoker/search_path/CAS/replay unchanged (0.312114ms)
+✔ C8 preserves historical/C6/C7 SQL hashes and proposes one transaction only (0.648385ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.889725

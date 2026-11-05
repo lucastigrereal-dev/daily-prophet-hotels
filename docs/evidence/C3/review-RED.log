@@ -1,0 +1,275 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> daily-prophet-hotels@1.0.0 test
+> node --test tests/*.test.mjs
+
+(node:26) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ application source with synthetic IO exports only exact reviewed current facts, not an external-service test (31.715382ms)
+✔ application export refuses changed text, changed DNA, quarantined template and cross-owner ID (12.952851ms)
+✔ application revision confirmation binds profile actually read; stale expected revision preserves DB (4.196142ms)
+✔ application suspended state allows authorized historical read but denies edit/export/history write (2.768462ms)
+✔ four SDK entrypoints share explicit config; zero stories survives nullish mapping (0.723845ms)
+✔ SQL is explicitly candidate only; static contract covers versions, status, receipt, old fields and calendar format (0.470552ms)
+(node:27) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ missing/invalid operational config never becomes synthetic success (1.727971ms)
+✔ Natal/RN stays RN; region cannot supply a state (0.305168ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.159164ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.234805ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.125254ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.174456ms)
+✔ valid public configuration is explicit; no operational fallback (0.185723ms)
+✔ owner A/B, expired session and ambiguous owner fail closed (0.252281ms)
+✔ suspension/state prevents writes and onboarding reactivation: pausado (0.206483ms)
+✔ suspension/state prevents writes and onboarding reactivation: cancelado (0.306581ms)
+✔ suspension/state prevents writes and onboarding reactivation: arquivado (0.283156ms)
+✔ suspension/state prevents writes and onboarding reactivation: revogado (0.352238ms)
+✔ suspension/state prevents writes and onboarding reactivation: suspenso (0.21085ms)
+✔ suspension/state prevents writes and onboarding reactivation: unknown (0.073909ms)
+✔ suspension/state prevents writes and onboarding reactivation: undefined (0.053148ms)
+✔ active vs onboarding vs readonly authority is explicit (0.24476ms)
+✔ admin requires trusted explicit app_metadata; not user_metadata or users.role (0.312499ms)
+✔ DNA absence is distinct from error; resolved SDK errors and rejection propagate (0.664217ms)
+✔ onboarding receipt binds owner/hotel, exact next revision, module, operation and boolean completion (0.701753ms)
+✔ effective DNA identity changes only by confirmed revision; all form audiences have a week (18.218385ms)
+✔ seven dates are deterministic, distinct and capacity-respecting, without forced video or fabricated claims (6.141823ms)
+✔ origin missing is a contract error; unknown rights and quarantine never become recommendations (0.579963ms)
+✔ facts must be true-boolean confirmed with source and date; veto/capacity apply on every call (0.758816ms)
+✔ complete matching finds week that greedy selection misses (0.458874ms)
+✔ truly impossible matching throws without partial result (1.130593ms)
+✔ export needs exact revision, text, facts and current actor; edit invalidates confirmation (3.454911ms)
+✔ changed still-confirmed fact, revoked/expired fact, source/version change all block old text export (3.292813ms)
+✔ manual factual repair preserves text and requires explicit review; stale embedded fact and unsupported claims reject (3.897973ms)
+✔ conflict comparison keeps byte-exact local buffer until explicit resolution (0.193825ms)
+✔ clipboard denial records no export; history failure is not a copy failure (0.434909ms)
+✔ calendar format contract maps stories and reels correctly (0.162109ms)
+✔ original seed bytes unchanged; sixteen originals, fifteen draft candidates (0.847887ms)
+(node:28) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit null (94.249501ms)
+✖ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {} (24.025191ms)
+✖ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {"hotel_id":"11111111-1111-4111-8111-111111111111"} (19.990497ms)
+✔ C21-P1-01 failed DNA read is explicit, not an empty profile (19.634308ms)
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (3.172786ms)
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.257841ms)
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (4.816834ms)
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.622247ms)
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.316457ms)
+✔ C21-P1-02 independent obsolete occurrence still blocks even when current value contains old (2.475501ms)
+✔ C21-SQL-P1-03 application refuses empty/omitted/extra facts, even exact forged review (2.95741ms)
+✖ C21-SQL-P1-03 candidate derives required facts from server-owned template/version; no empty client loop (1.52287ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 41
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 490.31738
+
+✖ failing tests:
+
+test at tests/review-regressions.test.mjs:14:49
+✖ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit null (94.249501ms)
+  TypeError: Cannot read properties of undefined (reading 'text')
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:14:333)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at tests/review-regressions.test.mjs:14:49
+✖ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {} (24.025191ms)
+  TypeError: Cannot read properties of undefined (reading 'text')
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:14:333)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests/review-regressions.test.mjs:14:49
+✖ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {"hotel_id":"11111111-1111-4111-8111-111111111111"} (19.990497ms)
+  TypeError: Cannot read properties of undefined (reading 'text')
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:14:333)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests/review-regressions.test.mjs:16:147
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (3.172786ms)
+  Error: O texto ainda contém um fato antigo alterado no perfil. Edite esse trecho; seu texto local foi preservado.
+      at Module.revise (file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts:124:185)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:16:567)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'STALE_EMBEDDED_FACT'
+  }
+
+test at tests/review-regressions.test.mjs:16:147
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.257841ms)
+  Error: O texto ainda contém um fato antigo alterado no perfil. Edite esse trecho; seu texto local foi preservado.
+      at Module.revise (file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts:124:185)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:16:567)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'STALE_EMBEDDED_FACT'
+  }
+
+test at tests/review-regressions.test.mjs:16:147
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (4.816834ms)
+  Error: O texto ainda contém um fato antigo alterado no perfil. Edite esse trecho; seu texto local foi preservado.
+      at Module.revise (file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts:124:185)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:16:567)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'STALE_EMBEDDED_FACT'
+  }
+
+test at tests/review-regressions.test.mjs:16:147
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.622247ms)
+  Error: O texto ainda contém um fato antigo alterado no perfil. Edite esse trecho; seu texto local foi preservado.
+      at Module.revise (file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts:124:185)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:16:567)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'STALE_EMBEDDED_FACT'
+  }
+
+test at tests/review-regressions.test.mjs:16:147
+✖ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.316457ms)
+  Error: O texto ainda contém um fato antigo alterado no perfil. Edite esse trecho; seu texto local foi preservado.
+      at Module.revise (file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts:124:185)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:16:567)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'STALE_EMBEDDED_FACT'
+  }
+
+test at tests/review-regressions.test.mjs:19:1
+✖ C21-SQL-P1-03 candidate derives required facts from server-owned template/version; no empty client loop (1.52287ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /FUNCTION public.hotel_v2_required_facts/. Input:
+
+  '-- NOVA CANDIDATA RECOMPOSTA. NOT_APPLIED. PostgreSQL/parser/auth/RLS NOT_RUN.\n' +
+    '-- Requires DEC-DB-PRO, isolated schema/grants/policy/rollback tests and approval before applying.\n' +
+    "-- Uses the repo's versioned tables, not an assertion about the installed database.\n" +
+    'BEGIN;\n' +
+    'CREATE OR REPLACE FUNCTION public.hotel_v2_save_onboarding(p_hotel_id uuid,p_module integer,p_snapshot jsonb,p_expected_revision integer,p_operation_id uuid)\n' +
+    "RETURNS jsonb LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$\n" +
+    'DECLARE actor uuid:=auth.uid(); h public.hotels%ROWTYPE; r public.onboarding_respostas%ROWTYPE;\n' +
+    ' m1 jsonb; old_revision integer; fingerprint text; receipt jsonb; audience text; capacity integer;\n' +
+    'BEGIN\n' +
+    " IF actor IS NULL THEN RAISE EXCEPTION 'SESSION_EXPIRED'; END IF;\n" +
+    " IF p_hotel_id IS NULL OR p_operation_id IS NULL OR p_module IS NULL OR p_module NOT BETWEEN 1 AND 4 OR p_expected_revision IS NULL OR p_expected_revision<0 OR jsonb_typeof(p_snapshot) IS DISTINCT FROM 'object' THEN RAISE EXCEPTION 'INVALID_REQUEST'; END IF;\n" +
+    ' PERFORM pg_advisory_xact_lock(hashtextextended(actor::text,0));\n' +
+    " IF (SELECT count(*) FROM public.hotels WHERE owner_id=actor)>1 THEN RAISE EXCEPTION 'AMBIGUOUS_OWNER'; END IF;\n" +
+    ' SELECT * INTO h FROM public.hotels WHERE owner_id=actor FOR UPDATE;\n' +
+    " IF FOUND AND h.id<>p_hotel_id THEN RAISE EXCEPTION 'ACCESS_DENIED'; END IF;\n" +
+    " IF h.id IS NOT NULL AND (h.status IS NULL OR h.status NOT IN ('lead','onboarding','ativo')) THEN RAISE EXCEPTION 'WRITE_SUSPENDED'; END IF;\n" +
+    " m1:=p_snapshot->'modulo_1';\n" +
+    " IF coalesce(trim(m1->>'nome'),'')='' OR coalesce(trim(m1->>'cidade'),'')='' OR coalesce(m1->>'estado','') NOT IN ('AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO') THEN RAISE EXCEPTION 'IDENTITY_REQUIRED'; END IF;\n" +
+    " IF (m1->>'quartos') IS NULL OR (m1->>'quartos')::integer<0 OR (m1->>'categoria') IS NULL OR (m1->>'categoria')::integer NOT BETWEEN 2 AND 5 OR (m1->>'ticket_medio') IS NULL OR (m1->>'ticket_medio')::numeric<0 THEN RAISE EXCEPTION 'INVALID_NUMERIC_FIELDS'; END IF;\n" +
+    " audience:=CASE m1->>'publico_principal' WHEN 'casal' THEN 'casais' WHEN 'familia' THEN 'familias' WHEN 'corporativo' THEN 'negocios' ELSE m1->>'publico_principal' END;\n" +
+    " IF audience IS NULL OR audience NOT IN ('casais','familias','negocios','aventureiros') THEN RAISE EXCEPTION 'AUDIENCE_REQUIRED'; END IF;\n" +
+    ' IF h.id IS NULL THEN\n' +
+    "  IF p_module<>1 OR p_expected_revision<>0 THEN RAISE EXCEPTION 'START_WITH_IDENTITY'; END IF;\n" +
+    '  INSERT INTO public.hotels(id,owner_id,nome,cidade,estado,regiao,tipo,status,onboarding_completo,numero_quartos,classificacao,ticket_medio_diaria)\n' +
+    "  VALUES(p_hotel_id,actor,trim(m1->>'nome'),trim(m1->>'cidade'),m1->>'estado',m1->>'regiao',m1->>'tipo_db','onboarding',false,(m1->>'quartos')::integer,(m1->>'categoria')::integer,(m1->>'ticket_medio')::numeric) RETURNING * INTO h;\n" +
+    ' END IF;\n' +
+    ' SELECT * INTO r FROM public.onboarding_respostas WHERE hotel_id=h.id FOR UPDATE;\n' +
+    " old_revision:=coalesce((r.respostas->'_v2'->>'revision')::integer,0);\n" +
+    " fingerprint:=md5(jsonb_build_object('module',p_module,'snapshot',p_snapshot)::text);\n" +
+    " receipt:=r.respostas->'_v2'->'operations'->p_operation_id::text;\n" +
+    " IF receipt IS NOT NULL THEN IF receipt->>'fingerprint'<>fingerprint THEN RAISE EXCEPTION 'IDEMPOTENCY_CONFLICT'; END IF; RETURN receipt->'result'; END IF;\n" +
+    " IF old_revision IS DISTINCT FROM p_expected_revision THEN RAISE EXCEPTION 'REVISION_CONFLICT'; END IF;\n" +
+    " IF p_module>coalesce(r.ultima_secao_completada,0)+1 THEN RAISE EXCEPTION 'PREVIOUS_MODULE_REQUIRED'; END IF;\n" +
+    " IF p_module>=3 AND (coalesce(p_snapshot->'modulo_3'->>'frequencia_posts','')='' OR coalesce(p_snapshot->'modulo_3'->>'responsavel_ig','')='') THEN RAISE EXCEPTION 'ROUTINE_REQUIRED'; END IF;\n" +
+    ' IF p_module=4 THEN\n' +
+    "  IF coalesce(p_snapshot->'modulo_4'->>'objetivo_principal','')='' OR coalesce(p_snapshot->'modulo_4'->>'prazo','')='' OR jsonb_typeof(p_snapshot->'editorial_profile') IS DISTINCT FROM 'object' THEN RAISE EXCEPTION 'PROFILE_REQUIRED'; END IF;\n" +
+    "  capacity:=(p_snapshot->'modulo_3'->>'posts_por_semana')::integer;\n" +
+    "  IF capacity IS NULL OR capacity NOT BETWEEN 1 AND 7 THEN RAISE EXCEPTION 'CAPACITY_REQUIRED'; END IF;\n" +
+    "  p_snapshot:=jsonb_set(p_snapshot,'{editorial_profile,dna_version}',to_jsonb('hotel-recomposed:'||h.id::text||':r'||(old_revision+1)::text));\n" +
+    "  p_snapshot:=jsonb_set(p_snapshot,'{editorial_profile,hotel_id}',to_jsonb(h.id::text));\n" +
+    '  INSERT INTO public.hotel_content_preferences(hotel_id,publico_primario,posts_por_semana,stories_por_dia,temas_preferidos,formatos_preferidos,regras_extras)\n' +
+    "  VALUES(h.id,audience,capacity,0,ARRAY['identidade','planejamento','conversa'],ARRAY['foto','carrossel'],jsonb_build_object('version',p_snapshot->'editorial_profile'->>'dna_version','profile',p_snapshot->'editorial_profile'))\n" +
+    '  ON CONFLICT(hotel_id) DO UPDATE SET publico_primario=EXCLUDED.publico_primario,posts_por_semana=EXCLUDED.posts_por_semana,stories_por_dia=EXCLUDED.stories_por_dia,temas_preferidos=EXCLUDED.temas_preferidos,formatos_preferidos=EXCLUDED.formatos_preferidos,regras_extras=EXCLUDED.regras_extras,updated_at=now();\n' +
+    ' END IF;\n' +
+    " receipt:=jsonb_build_object('hotel_id',h.id,'revision',old_revision+1,'complete',p_module=4,'module',p_module,'operation_id',p_operation_id);\n" +
+    " p_snapshot:=p_snapshot||jsonb_build_object('_v2',jsonb_build_object('revision',old_revision+1,'operations',coalesce(r.respostas->'_v2'->'operations','{}'::jsonb)||jsonb_build_object(p_operation_id::text,jsonb_build_object('fingerprint',fingerprint,'result',receipt))));\n" +
+    ' INSERT INTO public.onboarding_respostas(hotel_id,respostas,completado,progresso_percent,ultima_secao_completada) VALUES(h.id,p_snapshot,p_module=4,p_module*25,p_module)\n' +
+    ' ON CONFLICT(hotel_id) DO UPDATE SET respostas=EXCLUDED.respostas,completado=EXCLUDED.completado,progresso_percent=EXCLUDED.progresso_percent,ultima_secao_completada=EXCLUDED.ultima_secao_completada;\n' +
+    " UPDATE public.hotels SET nome=trim(m1->>'nome'),cidade=trim(m1->>'cidade'),estado=m1->>'estado',regiao=m1->>'regiao',tipo=m1->>'tipo_db',numero_quartos=(m1->>'quartos')::integer,classificacao=(m1->>'categoria')::integer,ticket_medio_diaria=(m1->>'ticket_medio')::numeric,status=CASE WHEN p_module=4 THEN 'ativo' ELSE 'onboarding' END,onboarding_completo=(p_module=4) WHERE id=h.id AND owner_id=actor;\n" +
+    " IF p_module=4 THEN INSERT INTO public.hotel_execution_log(hotel_id,acao,categoria,detalhes,pontos) VALUES(h.id,'onboarding_completo','perfil',jsonb_build_object('operation_id',p_operation_id,'revision',old_revision+1),0); END IF;\n" +
+    ' RETURN receipt;\n' +
+    'END; $$;\n' +
+    'ALTER TABLE public.calendarios_gerados ADD COLUMN IF NOT EXISTS v2 jsonb;\n' +
+    'ALTER TABLE public.calendarios_gerados ENABLE ROW LEVEL SECURITY;\n' +
+    '-- Candidate owner policies do not prove that old permissive policies/grants are safe.\n' +
+    'CREATE POLICY hotel_recomposed_calendar_read ON public.calendarios_gerados FOR SELECT TO authenticated USING(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid()));\n' +
+    "CREATE POLICY hotel_recomposed_calendar_insert ON public.calendarios_gerados FOR INSERT TO authenticated WITH CHECK(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid() AND h.status='ativo'));\n" +
+    "CREATE POLICY hotel_recomposed_calendar_update ON public.calendarios_gerados FOR UPDATE TO authenticated USING(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid() AND h.status='ativo')) WITH CHECK(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid() AND h.status='ativo'));\n" +
+    "CREATE UNIQUE INDEX hotel_recomposed_draft_id ON public.calendarios_gerados(hotel_id,((v2->'draft'->>'id'))) WHERE v2 IS NOT NULL;\n" +
+    'CREATE OR REPLACE FUNCTION public.hotel_v2_create_window(p_hotel_id uuid,p_anchor date,p_drafts jsonb,p_operation_id uuid)\n' +
+    "RETURNS jsonb LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$\n" +
+    'DECLARE h public.hotels%ROWTYPE; count_rows integer; item jsonb; prior jsonb; fingerprint text; idx integer:=0;\n' +
+    'BEGIN\n' +
+    " IF auth.uid() IS NULL THEN RAISE EXCEPTION 'SESSION_EXPIRED'; END IF;\n" +
+    ' SELECT * INTO h FROM public.hotels WHERE id=p_hotel_id AND owner_id=auth.uid() FOR UPDATE;\n' +
+    " IF NOT FOUND OR h.status IS DISTINCT FROM 'ativo' OR h.onboarding_completo IS DISTINCT FROM true THEN RAISE EXCEPTION 'WRITE_SUSPENDED_OR_ACCESS_DENIED'; END IF;\n" +
+    " IF p_operation_id IS NULL OR p_anchor IS NULL OR jsonb_typeof(p_drafts) IS DISTINCT FROM 'array' OR jsonb_array_length(p_drafts)<>7 THEN RAISE EXCEPTION 'INVALID_WINDOW'; END IF;\n" +
+    " fingerprint:=md5(jsonb_build_object('anchor',p_anchor,'drafts',p_drafts)::text);\n" +
+    " SELECT v2 INTO prior FROM public.calendarios_gerados WHERE hotel_id=h.id AND v2->>'operation_id'=p_operation_id::text LIMIT 1;\n" +
+    " IF prior IS NOT NULL AND prior->>'input_fingerprint'<>fingerprint THEN RAISE EXCEPTION 'IDEMPOTENCY_CONFLICT'; END IF;\n" +
+    " SELECT count(*) INTO count_rows FROM public.calendarios_gerados WHERE hotel_id=h.id AND v2->>'anchor'=p_anchor::text;\n" +
+    " IF count_rows=7 THEN RETURN jsonb_build_object('preserved',true); END IF;\n" +
+    " IF count_rows<>0 THEN RAISE EXCEPTION 'INCOMPLETE_WINDOW'; END IF;\n" +
+    " IF(SELECT count(DISTINCT x->>'template_id') FROM jsonb_array_elements(p_drafts)x)<>7 THEN RAISE EXCEPTION 'DUPLICATE_TEMPLATE'; END IF;\n" +
+    ' FOR item IN SELECT * FROM jsonb_array_elements(p_drafts) LOOP\n' +
+    "  IF(item->>'id') IS DISTINCT FROM(h.id::text||':'||p_anchor::text||':'||idx::text) OR(item->>'date')::date IS DISTINCT FROM p_anchor+idx OR coalesce(item->>'text','')='' OR(item->>'revision')::integer IS DISTINCT FROM 1 OR item->>'state' IS DISTINCT FROM 'DRAFT' THEN RAISE EXCEPTION 'INVALID_DRAFT'; END IF;\n" +
+    '  INSERT INTO public.calendarios_gerados(hotel_id,data_post,tipo,formato,hook,legenda_completa,status,categoria,v2)\n' +
+    "  VALUES(h.id,p_anchor+idx,CASE item->>'format' WHEN 'stories' THEN 'story' WHEN 'reel_script' THEN 'reel' ELSE 'feed' END,CASE item->>'format' WHEN 'caption' THEN 'foto' WHEN 'carousel' THEN 'carrossel' WHEN 'stories' THEN 'story' WHEN 'reel_script' THEN 'reel' END,ite"... 6432 more characters
+
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/review-regressions.test.mjs:19:207)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "-- NOVA CANDIDATA RECOMPOSTA. NOT_APPLIED. PostgreSQL/parser/auth/RLS NOT_RUN.\n-- Requires DEC-DB-PRO, isolated schema/grants/policy/rollback tests and approval before applying.\n-- Uses the repo's versioned tables, not an assertion about the installed database.\nBEGIN;\nCREATE OR REPLACE FUNCTION public.hotel_v2_save_onboarding(p_hotel_id uuid,p_module integer,p_snapshot jsonb,p_expected_revision integer,p_operation_id uuid)\nRETURNS jsonb LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$\nDECLARE actor uuid:=auth.uid(); h public.hotels%ROWTYPE; r public.onboarding_respostas%ROWTYPE;\n m1 jsonb; old_revision integer; fingerprint text; receipt jsonb; audience text; capacity integer;\nBEGIN\n IF actor IS NULL THEN RAISE EXCEPTION 'SESSION_EXPIRED'; END IF;\n IF p_hotel_id IS NULL OR p_operation_id IS NULL OR p_module IS NULL OR p_module NOT BETWEEN 1 AND 4 OR p_expected_revision IS NULL OR p_expected_revision<0 OR jsonb_typeof(p_snapshot) IS DISTINCT FROM 'object' THEN RAISE EXCEPTION 'INVALID_REQUEST'; END IF;\n PERFORM pg_advisory_xact_lock(hashtextextended(actor::text,0));\n IF (SELECT count(*) FROM public.hotels WHERE owner_id=actor)>1 THEN RAISE EXCEPTION 'AMBIGUOUS_OWNER'; END IF;\n SELECT * INTO h FROM public.hotels WHERE owner_id=actor FOR UPDATE;\n IF FOUND AND h.id<>p_hotel_id THEN RAISE EXCEPTION 'ACCESS_DENIED'; END IF;\n IF h.id IS NOT NULL AND (h.status IS NULL OR h.status NOT IN ('lead','onboarding','ativo')) THEN RAISE EXCEPTION 'WRITE_SUSPENDED'; END IF;\n m1:=p_snapshot->'modulo_1';\n IF coalesce(trim(m1->>'nome'),'')='' OR coalesce(trim(m1->>'cidade'),'')='' OR coalesce(m1->>'estado','') NOT IN ('AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO') THEN RAISE EXCEPTION 'IDENTITY_REQUIRED'; END IF;\n IF (m1->>'quartos') IS NULL OR (m1->>'quartos')::integer<0 OR (m1->>'categoria') IS NULL OR (m1->>'categoria')::integer NOT BETWEEN 2 AND 5 OR (m1->>'ticket_medio') IS NULL OR (m1->>'ticket_medio')::numeric<0 THEN RAISE EXCEPTION 'INVALID_NUMERIC_FIELDS'; END IF;\n audience:=CASE m1->>'publico_principal' WHEN 'casal' THEN 'casais' WHEN 'familia' THEN 'familias' WHEN 'corporativo' THEN 'negocios' ELSE m1->>'publico_principal' END;\n IF audience IS NULL OR audience NOT IN ('casais','familias','negocios','aventureiros') THEN RAISE EXCEPTION 'AUDIENCE_REQUIRED'; END IF;\n IF h.id IS NULL THEN\n  IF p_module<>1 OR p_expected_revision<>0 THEN RAISE EXCEPTION 'START_WITH_IDENTITY'; END IF;\n  INSERT INTO public.hotels(id,owner_id,nome,cidade,estado,regiao,tipo,status,onboarding_completo,numero_quartos,classificacao,ticket_medio_diaria)\n  VALUES(p_hotel_id,actor,trim(m1->>'nome'),trim(m1->>'cidade'),m1->>'estado',m1->>'regiao',m1->>'tipo_db','onboarding',false,(m1->>'quartos')::integer,(m1->>'categoria')::integer,(m1->>'ticket_medio')::numeric) RETURNING * INTO h;\n END IF;\n SELECT * INTO r FROM public.onboarding_respostas WHERE hotel_id=h.id FOR UPDATE;\n old_revision:=coalesce((r.respostas->'_v2'->>'revision')::integer,0);\n fingerprint:=md5(jsonb_build_object('module',p_module,'snapshot',p_snapshot)::text);\n receipt:=r.respostas->'_v2'->'operations'->p_operation_id::text;\n IF receipt IS NOT NULL THEN IF receipt->>'fingerprint'<>fingerprint THEN RAISE EXCEPTION 'IDEMPOTENCY_CONFLICT'; END IF; RETURN receipt->'result'; END IF;\n IF old_revision IS DISTINCT FROM p_expected_revision THEN RAISE EXCEPTION 'REVISION_CONFLICT'; END IF;\n IF p_module>coalesce(r.ultima_secao_completada,0)+1 THEN RAISE EXCEPTION 'PREVIOUS_MODULE_REQUIRED'; END IF;\n IF p_module>=3 AND (coalesce(p_snapshot->'modulo_3'->>'frequencia_posts','')='' OR coalesce(p_snapshot->'modulo_3'->>'responsavel_ig','')='') THEN RAISE EXCEPTION 'ROUTINE_REQUIRED'; END IF;\n IF p_module=4 THEN\n  IF coalesce(p_snapshot->'modulo_4'->>'objetivo_principal','')='' OR coalesce(p_snapshot->'modulo_4'->>'prazo','')='' OR jsonb_typeof(p_snapshot->'editorial_profile') IS DISTINCT FROM 'object' THEN RAISE EXCEPTION 'PROFILE_REQUIRED'; END IF;\n  capacity:=(p_snapshot->'modulo_3'->>'posts_por_semana')::integer;\n  IF capacity IS NULL OR capacity NOT BETWEEN 1 AND 7 THEN RAISE EXCEPTION 'CAPACITY_REQUIRED'; END IF;\n  p_snapshot:=jsonb_set(p_snapshot,'{editorial_profile,dna_version}',to_jsonb('hotel-recomposed:'||h.id::text||':r'||(old_revision+1)::text));\n  p_snapshot:=jsonb_set(p_snapshot,'{editorial_profile,hotel_id}',to_jsonb(h.id::text));\n  INSERT INTO public.hotel_content_preferences(hotel_id,publico_primario,posts_por_semana,stories_por_dia,temas_preferidos,formatos_preferidos,regras_extras)\n  VALUES(h.id,audience,capacity,0,ARRAY['identidade','planejamento','conversa'],ARRAY['foto','carrossel'],jsonb_build_object('version',p_snapshot->'editorial_profile'->>'dna_version','profile',p_snapshot->'editorial_profile'))\n  ON CONFLICT(hotel_id) DO UPDATE SET publico_primario=EXCLUDED.publico_primario,posts_por_semana=EXCLUDED.posts_por_semana,stories_por_dia=EXCLUDED.stories_por_dia,temas_preferidos=EXCLUDED.temas_preferidos,formatos_preferidos=EXCLUDED.formatos_preferidos,regras_extras=EXCLUDED.regras_extras,updated_at=now();\n END IF;\n receipt:=jsonb_build_object('hotel_id',h.id,'revision',old_revision+1,'complete',p_module=4,'module',p_module,'operation_id',p_operation_id);\n p_snapshot:=p_snapshot||jsonb_build_object('_v2',jsonb_build_object('revision',old_revision+1,'operations',coalesce(r.respostas->'_v2'->'operations','{}'::jsonb)||jsonb_build_object(p_operation_id::text,jsonb_build_object('fingerprint',fingerprint,'result',receipt))));\n INSERT INTO public.onboarding_respostas(hotel_id,respostas,completado,progresso_percent,ultima_secao_completada) VALUES(h.id,p_snapshot,p_module=4,p_module*25,p_module)\n ON CONFLICT(hotel_id) DO UPDATE SET respostas=EXCLUDED.respostas,completado=EXCLUDED.completado,progresso_percent=EXCLUDED.progresso_percent,ultima_secao_completada=EXCLUDED.ultima_secao_completada;\n UPDATE public.hotels SET nome=trim(m1->>'nome'),cidade=trim(m1->>'cidade'),estado=m1->>'estado',regiao=m1->>'regiao',tipo=m1->>'tipo_db',numero_quartos=(m1->>'quartos')::integer,classificacao=(m1->>'categoria')::integer,ticket_medio_diaria=(m1->>'ticket_medio')::numeric,status=CASE WHEN p_module=4 THEN 'ativo' ELSE 'onboarding' END,onboarding_completo=(p_module=4) WHERE id=h.id AND owner_id=actor;\n IF p_module=4 THEN INSERT INTO public.hotel_execution_log(hotel_id,acao,categoria,detalhes,pontos) VALUES(h.id,'onboarding_completo','perfil',jsonb_build_object('operation_id',p_operation_id,'revision',old_revision+1),0); END IF;\n RETURN receipt;\nEND; $$;\nALTER TABLE public.calendarios_gerados ADD COLUMN IF NOT EXISTS v2 jsonb;\nALTER TABLE public.calendarios_gerados ENABLE ROW LEVEL SECURITY;\n-- Candidate owner policies do not prove that old permissive policies/grants are safe.\nCREATE POLICY hotel_recomposed_calendar_read ON public.calendarios_gerados FOR SELECT TO authenticated USING(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid()));\nCREATE POLICY hotel_recomposed_calendar_insert ON public.calendarios_gerados FOR INSERT TO authenticated WITH CHECK(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid() AND h.status='ativo'));\nCREATE POLICY hotel_recomposed_calendar_update ON public.calendarios_gerados FOR UPDATE TO authenticated USING(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid() AND h.status='ativo')) WITH CHECK(EXISTS(SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid() AND h.status='ativo'));\nCREATE UNIQUE INDEX hotel_recomposed_draft_id ON public.calendarios_gerados(hotel_id,((v2->'draft'->>'id'))) WHERE v2 IS NOT NULL;\nCREATE OR REPLACE FUNCTION public.hotel_v2_create_window(p_hotel_id uuid,p_anchor date,p_drafts jsonb,p_operation_id uuid)\nRETURNS jsonb LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$\nDECLARE h public.hotels%ROWTYPE; count_rows integer; item jsonb; prior jsonb; fingerprint text; idx integer:=0;\nBEGIN\n IF auth.uid() IS NULL THEN RAISE EXCEPTION 'SESSION_EXPIRED'; END IF;\n SELECT * INTO h FROM public.hotels WHERE id=p_hotel_id AND owner_id=auth.uid() FOR UPDATE;\n IF NOT FOUND OR h.status IS DISTINCT FROM 'ativo' OR h.onboarding_completo IS DISTINCT FROM true THEN RAISE EXCEPTION 'WRITE_SUSPENDED_OR_ACCESS_DENIED'; END IF;\n IF p_operation_id IS NULL OR p_anchor IS NULL OR jsonb_typeof(p_drafts) IS DISTINCT FROM 'array' OR jsonb_array_length(p_drafts)<>7 THEN RAISE EXCEPTION 'INVALID_WINDOW'; END IF;\n fingerprint:=md5(jsonb_build_object('anchor',p_anchor,'drafts',p_drafts)::text);\n SELECT v2 INTO prior FROM public.calendarios_gerados WHERE hotel_id=h.id AND v2->>'operation_id'=p_operation_id::text LIMIT 1;\n IF prior IS NOT NULL AND prior->>'input_fingerprint'<>fingerprint THEN RAISE EXCEPTION 'IDEMPOTENCY_CONFLICT'; END IF;\n SELECT count(*) INTO count_rows FROM public.calendarios_gerados WHERE hotel_id=h.id AND v2->>'anchor'=p_anchor::text;\n IF count_rows=7 THEN RETURN jsonb_build_object('preserved',true); END IF;\n IF count_rows<>0 THEN RAISE EXCEPTION 'INCOMPLETE_WINDOW'; END IF;\n IF(SELECT count(DISTINCT x->>'template_id') FROM jsonb_array_elements(p_drafts)x)<>7 THEN RAISE EXCEPTION 'DUPLICATE_TEMPLATE'; END IF;\n FOR item IN SELECT * FROM jsonb_array_elements(p_drafts) LOOP\n  IF(item->>'id') IS DISTINCT FROM(h.id::text||':'||p_anchor::text||':'||idx::text) OR(item->>'date')::date IS DISTINCT FROM p_anchor+idx OR coalesce(item->>'text','')='' OR(item->>'revision')::integer IS DISTINCT FROM 1 OR item->>'state' IS DISTINCT FROM 'DRAFT' THEN RAISE EXCEPTION 'INVALID_DRAFT'; END IF;\n  INSERT INTO public.calendarios_gerados(hotel_id,data_post,tipo,formato,hook,legenda_completa,status,categoria,v2)\n  VALUES(h.id,p_anchor+idx,CASE item->>'format' WHEN 'stories' THEN 'story' WHEN 'reel_script' THEN 'reel' ELSE 'feed' END,CASE item->>'format' WHEN 'caption' THEN 'foto' WHEN 'carousel' THEN 'carrossel' WHEN 'stories' THEN 'story' WHEN 'reel_script' THEN 'reel' END,ite"... 6432 more characters,
+    expected: /FUNCTION public.hotel_v2_required_facts/,
+    operator: 'match',
+    diff: 'simple'
+  }

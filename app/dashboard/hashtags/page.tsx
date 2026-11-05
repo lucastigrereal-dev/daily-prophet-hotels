@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import {copyWithFeedback} from '@/lib/hotel/v2/domain'
 
 interface HashtagCombo {
   id: string
@@ -22,37 +23,37 @@ const STARTER_COMBOS: Omit<HashtagCombo, 'id'>[] = [
   {
     nome: 'Experiência Geral Hotel',
     tema: 'experiencia',
-    alcance_estimado: 180000,
+    alcance_estimado: 0,
     hashtags: ['#hotel','#hotellife','#viagem','#turismo','#hospedagem','#viajando','#destinosbrasil','#travelbrasil','#ferias','#escapada','#viajar','#explorando','#dicasdeviagem'],
   },
   {
     nome: 'Gastronomia & Café da Manhã',
     tema: 'gastronomia',
-    alcance_estimado: 120000,
+    alcance_estimado: 0,
     hashtags: ['#cafedamanha','#foodie','#gastronomia','#instafood','#breakfast','#bomdia','#brunch','#comida','#chefdehotel','#delicia'],
   },
   {
     nome: 'Piscina & Lazer',
     tema: 'lazer',
-    alcance_estimado: 95000,
+    alcance_estimado: 0,
     hashtags: ['#piscina','#pool','#poolday','#relaxando','#descanso','#lazer','#momentopiscina','#nadar','#sol','#verao','#feriasperfeitas'],
   },
   {
     nome: 'Casal & Lua de Mel',
     tema: 'romantico',
-    alcance_estimado: 85000,
+    alcance_estimado: 0,
     hashtags: ['#casal','#luademel','#honeymoon','#romantico','#amor','#viagemdecasal','#escapadaromantica','#juntos','#momentospeciais','#casamento'],
   },
   {
     nome: 'Família & Crianças',
     tema: 'familia',
-    alcance_estimado: 70000,
+    alcance_estimado: 0,
     hashtags: ['#familia','#viagemcomcriancas','#kidshotel','#ferias','#momentosfamilia','#pais','#filhos','#aventurafamiliar','#viajandocomcriancas'],
   },
   {
     nome: 'Pousada & Natureza',
     tema: 'natureza',
-    alcance_estimado: 65000,
+    alcance_estimado: 0,
     hashtags: ['#pousada','#natureza','#ecoturismo','#trilha','#mata','#paísagem','#arlivre','#ecoresort','#aventura','#contato com a natureza'],
   },
 ]
@@ -77,9 +78,8 @@ export default function HashtagsPage() {
     load()
   }, [])
 
-  function copiarCombo(hashtags: string[]) {
-    navigator.clipboard.writeText(hashtags.join(' '))
-    toast.success('Hashtags copiadas!')
+  async function copiarCombo(hashtags: string[]) {
+    await copyWithFeedback(hashtags.join(' '),text=>navigator.clipboard.writeText(text),()=>toast.success('Hashtags copiadas para revisão de pertinência.'),()=>toast.error('Cópia não confirmada. Tente novamente.'))
   }
 
   const temas = [...new Set(combos.map(c => c.tema).filter(Boolean))]
@@ -97,7 +97,7 @@ export default function HashtagsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Otimizador de Hashtags</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">Mix ideal: 30% alta + 40% média + 30% baixa competição = +35% alcance</p>
+        <p className="text-sm text-[#6B7280] mt-0.5">Referências para revisão: use somente termos que correspondam ao conteúdo e ao estabelecimento.</p>
       </div>
 
       {/* Stats */}
@@ -105,22 +105,22 @@ export default function HashtagsPage() {
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
           <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Combos Prontos</p>
           <p className="text-3xl font-bold text-[#B8860B] mt-1">{combos.length || STARTER_COMBOS.length}</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">prontos para copiar</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">referências a revisar</p>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-          <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Hashtags Analisadas</p>
+          <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Referências cadastradas</p>
           <p className="text-3xl font-bold text-emerald-700 mt-1">{hashtagsKB.length}</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">com dados de performance</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">sem validação de performance</p>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-          <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Aumento Alcance</p>
-          <p className="text-3xl font-bold text-blue-700 mt-1">+35%</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">com mix otimizado</p>
+          <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Alcance</p>
+          <p className="text-3xl font-bold text-blue-700 mt-1">Não medido</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">nenhum resultado prometido</p>
         </div>
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm">
-          <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Limite</p>
-          <p className="text-3xl font-bold text-[#1A1D26] mt-1">30</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">hashtags por post</p>
+          <p className="text-xs text-[#9CA3AF] uppercase tracking-wide font-medium">Publicação</p>
+          <p className="text-3xl font-bold text-[#1A1D26] mt-1">Manual</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">confirme regras na plataforma</p>
         </div>
       </div>
 
@@ -159,11 +159,7 @@ export default function HashtagsPage() {
                 <h3 className="font-semibold text-[#1A1D26]">{combo.nome}</h3>
                 <p className="text-xs text-[#9CA3AF] capitalize mt-0.5">{combo.tema?.replace(/_/g, ' ')}</p>
               </div>
-              {combo.alcance_estimado > 0 && (
-                <span className="text-xs font-medium text-[#B8860B] bg-[#FFF8E7] px-2 py-1 rounded-full">
-                  {(combo.alcance_estimado / 1000).toFixed(0)}k alcance
-                </span>
-              )}
+              <span className="text-xs text-[#6B7280]">Alcance não medido</span>
             </div>
             <div className="flex flex-wrap gap-1.5 mb-3">
               {(combo.hashtags || []).map((tag, i) => (
@@ -207,7 +203,7 @@ export default function HashtagsPage() {
       {/* Hashtags individuais do KB */}
       {hashtagsKB.length > 0 && (
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
-          <h2 className="font-semibold text-[#1A1D26] mb-4">Hashtags Analisadas ({hashtagsKB.length})</h2>
+          <h2 className="font-semibold text-[#1A1D26] mb-4">Referências cadastradas ({hashtagsKB.length})</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {hashtagsKB.map(h => (
               <div key={h.id} className="bg-[#FAFBFC] rounded-lg p-3">

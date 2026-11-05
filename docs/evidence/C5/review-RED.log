@@ -1,0 +1,44 @@
+(node:13) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ C4-P1 later text typed during pending save stays editable, byte-exact and recoverable; first response cannot replace it (20.498647ms)
+✔ C4-P1 review intention changed during save is not overwritten by older approval response (4.862376ms)
+✔ C4-P1 newer snapshot during onboarding response stays local with prior expected revision until explicit comparison (2.615927ms)
+✔ C4-P1 typing while remote comparison GET is pending cannot be overwritten by its initial text snapshot (4.172022ms)
+✔ C4-P1 stale export response after newer edit cannot show/copy/register an old export (5.801618ms)
+✔ C4-P2 owner A manual export and remote fields are cleared on B without drafts, with A buffer retained only in A scope (5.018987ms)
+✔ C4-P1 draft context changed before response prevents replacing the new draft (4.222968ms)
+✔ C5 changed DNA while response is pending invalidates a newer checkbox without replacing human text (3.621567ms)
+✔ C5 conflict response preserves later text, explicit reapply saves again and only exact latest approval exports (7.519048ms)
+✔ C5 failed pending save leaves the newer byte-exact buffer unmodified (3.726233ms)
+✔ C5 A to empty B to A restores only A local buffer and never restores old export or review (3.586014ms)
+✖ C5 withdrawing approval during pending save stays unsaved across compare/reselect until explicit save (5.353814ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 221.440335
+
+✖ failing tests:
+
+test at tests/lab-client.test.mjs:32:1
+✖ C5 withdrawing approval during pending save stays unsaved across compare/reselect until explicit save (5.353814ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/lab-client.test.mjs:32:404)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

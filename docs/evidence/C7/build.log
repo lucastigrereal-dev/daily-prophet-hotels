@@ -1,0 +1,48 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> daily-prophet-hotels@1.0.0 build
+> next build
+
+▲ Next.js 16.1.1 (Turbopack)
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.7s
+  Running TypeScript ...
+  Collecting page data using 8 workers ...
+  Generating static pages using 8 workers (0/2) ...
+✓ Generating static pages using 8 workers (2/2) in 116.1ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /admin
+├ ƒ /auth/callback
+├ ƒ /auth/login
+├ ƒ /auth/register
+├ ƒ /dashboard
+├ ƒ /dashboard/analytics
+├ ƒ /dashboard/benchmarks
+├ ƒ /dashboard/biblioteca
+├ ƒ /dashboard/calendario
+├ ƒ /dashboard/campanhas
+├ ƒ /dashboard/execucao
+├ ƒ /dashboard/gerador
+├ ƒ /dashboard/hashtags
+├ ƒ /dashboard/meu-hotel
+├ ƒ /dashboard/missoes
+├ ƒ /dashboard/post-do-dia
+├ ƒ /dashboard/sazonal
+└ ƒ /onboarding
+
+
+ƒ Proxy (Middleware)
+
+ƒ  (Dynamic)  server-rendered on demand
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

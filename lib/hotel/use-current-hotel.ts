@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { getOwnedHotel } from './owner-actions'
 
 export interface CurrentHotel {
   id: string
@@ -21,40 +21,26 @@ interface UseCurrentHotelResult {
   hotel: CurrentHotel | null
   hotelId: string | null
   loading: boolean
+  error: string | null
 }
 
 export function useCurrentHotel(): UseCurrentHotelResult {
-  const supabase = createClient()
   const [hotel, setHotel] = useState<CurrentHotel | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
 
     async function resolve() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user || cancelled) {
-        setLoading(false)
-        return
-      }
-
-      const { data } = await supabase
-        .from('hotels')
-        .select('id, nome, cidade, estado, tipo, status, instagram, onboarding_completo, cor, numero_quartos, classificacao')
-        .eq('owner_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-
-      if (!cancelled) {
-        setHotel(data || null)
-        setLoading(false)
-      }
+      try { const data=await getOwnedHotel(); if(!cancelled)setHotel(data) }
+      catch(err){if(!cancelled){setHotel(null);setError(err instanceof Error?err.message:'Não foi possível carregar seu estabelecimento.')}}
+      finally{if(!cancelled)setLoading(false)}
     }
 
     resolve()
     return () => { cancelled = true }
   }, [])
 
-  return { hotel, hotelId: hotel?.id || null, loading }
+  return { hotel, hotelId: hotel?.id || null, loading, error }
 }

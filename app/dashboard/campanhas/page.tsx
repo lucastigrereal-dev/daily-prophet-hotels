@@ -44,71 +44,71 @@ const CAMPANHAS_ESTATICAS: CampanhaLocal[] = [
     id: 'pascoa',
     nome: 'Pascoa 2026',
     tipo: 'feriado',
-    objetivo: 'Lotacao total no feriado',
+    objetivo: 'Planejar conteúdo adequado aos fatos confirmados do estabelecimento',
     antecedencia_dias: 14,
     data_inicio: '2026-04-02',
     data_fim: '2026-04-05',
     formatos_sugeridos: ['reel', 'story', 'carrossel'],
-    cta_principal: 'Reserve agora com desconto de Pascoa',
-    descricao: 'Campanha especial para o feriado de Pascoa. Foco em pacotes de 3 noites.',
+    cta_principal: 'Consulte datas, categorias e condições diretamente com a hospedagem.',
+    descricao: 'Referência de planejamento datada. Não confirma oferta, disponibilidade, pacote, amenidade ou resultado.',
     ativo: true,
-    dias_restantes: Math.max(0, Math.ceil((new Date('2026-04-02').getTime() - Date.now()) / 86400000)),
+    dias_restantes: Math.ceil((new Date('2026-04-02').getTime() - Date.now()) / 86400000),
   },
   {
     id: 'dia_maes',
     nome: 'Dia das Maes',
     tipo: 'data_comemorativa',
-    objetivo: 'Pacotes romanticos e familiares',
+    objetivo: 'Planejar conteúdo adequado aos fatos confirmados do estabelecimento',
     antecedencia_dias: 21,
     data_inicio: '2026-05-10',
     data_fim: '2026-05-11',
     formatos_sugeridos: ['reel', 'story'],
-    cta_principal: 'Presente que ela vai amar — reserve ja',
-    descricao: 'Uma das datas mais fortes para hotelaria de lazer. Comece a campanha 3 semanas antes.',
+    cta_principal: 'Consulte datas, categorias e condições diretamente com a hospedagem.',
+    descricao: 'Referência de planejamento datada. Não confirma oferta, disponibilidade, pacote, amenidade ou resultado.',
     ativo: true,
-    dias_restantes: Math.max(0, Math.ceil((new Date('2026-05-10').getTime() - Date.now()) / 86400000)),
+    dias_restantes: Math.ceil((new Date('2026-05-10').getTime() - Date.now()) / 86400000),
   },
   {
     id: 'ferias_julho',
     nome: 'Ferias de Julho',
     tipo: 'ferias_escolares',
-    objetivo: 'Ocupacao maxima durante as ferias escolares',
+    objetivo: 'Planejar conteúdo adequado aos fatos confirmados do estabelecimento',
     antecedencia_dias: 30,
     data_inicio: '2026-07-01',
     data_fim: '2026-07-31',
     formatos_sugeridos: ['reel', 'carrossel', 'story'],
-    cta_principal: 'Julho ja tem data — garanta o seu',
-    descricao: 'Ferias de julho sao a temporada mais disputada. Inicie a campanha em junho.',
+    cta_principal: 'Consulte datas, categorias e condições diretamente com a hospedagem.',
+    descricao: 'Referência de planejamento datada. Não confirma oferta, disponibilidade, pacote, amenidade ou resultado.',
     ativo: true,
-    dias_restantes: Math.max(0, Math.ceil((new Date('2026-07-01').getTime() - Date.now()) / 86400000)),
+    dias_restantes: Math.ceil((new Date('2026-07-01').getTime() - Date.now()) / 86400000),
   },
   {
     id: 'baixa_temporada_may',
-    nome: 'Promocao Baixa Temporada',
+    nome: 'Planejamento de Baixa Temporada',
     tipo: 'baixa_temporada',
-    objetivo: 'Aumentar ocupacao no periodo fraco',
+    objetivo: 'Planejar conteúdo adequado aos fatos confirmados do estabelecimento',
     antecedencia_dias: 7,
     data_inicio: '2026-05-15',
     data_fim: '2026-06-30',
     formatos_sugeridos: ['post', 'story'],
-    cta_principal: 'Preco especial so para quem reservar agora',
-    descricao: 'Baixa temporada entre feriados. Foco em casais e viagens individuais com precos agressivos.',
+    cta_principal: 'Consulte datas, categorias e condições diretamente com a hospedagem.',
+    descricao: 'Referência de planejamento datada. Não confirma oferta, disponibilidade, pacote, amenidade ou resultado.',
     ativo: true,
-    dias_restantes: Math.max(0, Math.ceil((new Date('2026-05-15').getTime() - Date.now()) / 86400000)),
+    dias_restantes: Math.ceil((new Date('2026-05-15').getTime() - Date.now()) / 86400000),
   },
   {
     id: 'dia_namorados',
     nome: 'Dia dos Namorados',
     tipo: 'data_comemorativa',
-    objetivo: 'Pacotes romanticos para casais',
+    objetivo: 'Planejar conteúdo adequado aos fatos confirmados do estabelecimento',
     antecedencia_dias: 21,
     data_inicio: '2026-06-12',
     data_fim: '2026-06-14',
     formatos_sugeridos: ['reel', 'story', 'carrossel'],
-    cta_principal: 'A noite perfeita para voces dois',
-    descricao: 'Data forte para pousadas romanticas e resorts. Foco em pacotes com jantar e spa.',
+    cta_principal: 'Consulte datas, categorias e condições diretamente com a hospedagem.',
+    descricao: 'Referência de planejamento datada. Não confirma oferta, disponibilidade, pacote, amenidade ou resultado.',
     ativo: true,
-    dias_restantes: Math.max(0, Math.ceil((new Date('2026-06-12').getTime() - Date.now()) / 86400000)),
+    dias_restantes: Math.ceil((new Date('2026-06-12').getTime() - Date.now()) / 86400000),
   },
 ]
 
@@ -171,14 +171,9 @@ export default function CampanhasPage() {
     // Para campanhas estaticas (sem UUID), registra no log de execucao
     const isStaticId = !campanhaId.includes('-')
     if (isStaticId) {
-      await supabase.from('hotel_execution_log').insert({
-        hotel_id: hotelId,
-        acao: `campanha_inscrita:${campanhaId}`,
-        categoria: 'campanha',
-        detalhes: { campanha_nome: campanhaId },
-        pontos: 2,
-      })
-      toast.success('Inscrito na campanha!')
+      const {error:logError}=await supabase.rpc('hotel_c10_owner_report',{p_hotel_id:hotelId,p_kind:'campaign',p_target:campanhaId,p_done:true})
+      if(logError){toast.error('Planejamento não confirmado. Tente novamente.');setEnrolling(null);return}
+      toast.success('Planejamento registrado; nenhuma oferta ou publicação criada.')
       setEnrolling(null)
       return
     }
@@ -199,13 +194,8 @@ export default function CampanhasPage() {
       setEnrollments(prev => [...prev, { campanha_id: campanhaId, status: 'inscrito', progresso: 0 }])
       toast.success('Inscrito na campanha!')
 
-      await supabase.from('hotel_execution_log').insert({
-        hotel_id: hotelId,
-        acao: 'campanha_inscrita',
-        categoria: 'campanha',
-        detalhes: { campanha_id: campanhaId },
-        pontos: 2,
-      })
+      const {error:reportError}=await supabase.rpc('hotel_c10_owner_report',{p_hotel_id:hotelId,p_kind:'campaign',p_target:campanhaId,p_done:true})
+      if(reportError)toast.error('Inscrição salva, mas o relato não foi confirmado. Tente novamente.')
     }
     setEnrolling(null)
   }
@@ -214,9 +204,9 @@ export default function CampanhasPage() {
     return enrollments.find(e => e.campanha_id === campanhaId)
   }
 
-  const campanhas = CAMPANHAS_ESTATICAS.sort((a, b) => a.dias_restantes - b.dias_restantes)
+  const campanhas = [...CAMPANHAS_ESTATICAS].sort((a, b) => a.dias_restantes - b.dias_restantes)
   const campanhsFiltradas = campanhas.filter(c => {
-    if (filtro === 'urgentes') return c.dias_restantes <= 14
+    if (filtro === 'urgentes') return c.dias_restantes >= 0 && c.dias_restantes <= 14
     if (filtro === 'planejamento') return c.dias_restantes > 14
     return true
   })
@@ -234,14 +224,14 @@ export default function CampanhasPage() {
 
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Campanhas</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">Sazonalidade e datas importantes para o seu hotel</p>
+        <p className="text-sm text-[#6B7280] mt-0.5">Referências datadas de planejamento. Valide fatos e condições antes de adaptar qualquer campanha.</p>
       </div>
 
       {/* Alerta urgente */}
-      {campanhas.filter(c => c.dias_restantes <= 7).length > 0 && (
+      {campanhas.filter(c => c.dias_restantes >= 0 && c.dias_restantes <= 7).length > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <p className="text-sm font-semibold text-red-700">
-            Atencao: {campanhas.filter(c => c.dias_restantes <= 7).length} campanha(s) em menos de 7 dias!
+            Atencao: {campanhas.filter(c => c.dias_restantes >= 0 && c.dias_restantes <= 7).length} campanha(s) em menos de 7 dias!
           </p>
           <p className="text-xs text-red-600 mt-0.5">Comece a producao de conteudo agora.</p>
         </div>
@@ -271,7 +261,7 @@ export default function CampanhasPage() {
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-semibold text-[#1A1D26]">{c.nome}</h3>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${urgenciaColor(c.dias_restantes)}`}>
-                    {c.dias_restantes === 0 ? 'HOJE' : `${c.dias_restantes}d`}
+                    {c.dias_restantes < 0 ? 'Data passada' : c.dias_restantes === 0 ? 'HOJE' : `${c.dias_restantes}d`}
                   </span>
                 </div>
                 <p className="text-xs text-[#6B7280] mb-2">{c.descricao}</p>
@@ -305,10 +295,10 @@ export default function CampanhasPage() {
             <div className="flex gap-2 mt-3">
               <button
                 onClick={() => enrollCampanha(c.id)}
-                disabled={enrolling === c.id}
+                disabled={enrolling === c.id || new Date(c.data_fim).getTime()<Date.now()}
                 className="flex-1 py-2 text-xs font-medium bg-[#B8860B] text-white rounded-lg hover:brightness-110 transition-all disabled:opacity-50"
               >
-                {enrolling === c.id ? 'Inscrevendo...' : 'Participar desta campanha'}
+                {c.dias_restantes<0?'Referência histórica':enrolling === c.id ? 'Registrando...' : 'Registrar planejamento'}
               </button>
             </div>
           </div>
@@ -332,11 +322,12 @@ export default function CampanhasPage() {
                     {enrollment ? (
                       <span className="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-full font-medium">
                         {enrollment.status === 'inscrito' ? 'Inscrito' : enrollment.status}
+                        <button className="block underline mt-1" onClick={async()=>{const {error}=await supabase.rpc('hotel_c10_owner_report',{p_hotel_id:hotelId,p_kind:'campaign',p_target:c.id,p_done:true});if(error)toast.error('Relato não confirmado. Tente novamente.');else toast.success('Relato registrado, sem publicação ou oferta criada.')}}>Confirmar registro no histórico</button>
                       </span>
                     ) : (
                       <button
                         onClick={() => enrollCampanha(c.id)}
-                        disabled={enrolling === c.id}
+                        disabled={enrolling === c.id || new Date(c.data_fim).getTime()<Date.now()}
                         className="text-xs px-3 py-1.5 bg-[#B8860B] text-white rounded-lg hover:brightness-110 disabled:opacity-50"
                       >
                         {enrolling === c.id ? '...' : 'Participar'}

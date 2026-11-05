@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "executed": true,
+  "started": "2026-11-05T00:17:15.118922+00:00",
+  "expected_lab_tag": "hotel-c16-visual-e33734b177",
+  "base_head": "4495a6ff7ab653b77f141cec110f4fde9273db69",
+  "boundary": "Real GoTrue/PostgREST/RPC/PostgreSQL plus pure domain export; no browser, clipboard, outage injection, restart or production acceptance",
+  "results": [
+    {
+      "name": "C04_C05_four_receipts_and_idempotent_retries",
+      "status": "PASS",
+      "observed": {
+        "receipts": [
+          {
+            "module": 1,
+            "complete": false,
+            "hotel_id": "b609d26e-5527-4514-930a-9153d332ced5",
+            "revision": 1,
+            "operation_id": "da9d788a-3ebf-4fdf-8b24-9eca00375104"
+          },
+          {
+            "module": 2,
+            "complete": false,
+            "hotel_id": "b609d26e-5527-4514-930a-9153d332ced5",
+            "revision": 2,
+            "operation_id": "dab9963e-e646-4c91-bba7-ef89f8ed4ce1"
+          },
+          {
+            "module": 3,
+            "complete": false,
+            "hotel_id": "b609d26e-5527-4514-930a-9153d332ced5",
+            "revision": 3,
+            "operation_id": "9baeeb50-d3f9-4a34-a366-14f6dc6c6872"
+          },
+          {
+            "module": 4,
+            "complete": true,
+            "hotel_id": "b609d26e-5527-4514-930a-9153d332ced5",
+            "revision": 4,
+            "operation_id": "4ff1986b-e85a-4df2-87ee-df87f776909e"
+          }
+        ],
+        "same_operation_retries": 4,
+        "persisted_sections": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "completion_events": 1
+      }
+    },
+    {
+      "name": "C07_seven_stable_draft_ids_with_three_posts_four_preparations",
+      "status": "PASS",
+      "observed": {
+        "draft_ids": [
+          "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:0",
+          "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:1",
+          "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:2",
+          "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:3",
+          "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:4",
+          "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:5",
+          "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:6"
+        ],
+        "dates": [
+          "2026-11-04",
+          "2026-11-05",
+          "2026-11-06",
+          "2026-11-07",
+          "2026-11-08",
+          "2026-11-09",
+          "2026-11-10"
+        ],
+        "publications_suggested": 3,
+        "preparations": 4,
+        "same_operation_state_unchanged": true
+      }
+    },
+    {
+      "name": "C08_exact_human_edit_and_stale_revision_conflict",
+      "status": "PASS",
+      "observed": {
+        "draft_id": "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:0",
+        "revision": 2,
+        "title_text_sha256": "2a67996abdff491747fa4356d2280ee15f7681c80dfd2bfb314b184492442ad7",
+        "stale_edit_http": 400,
+        "winner_preserved": true
+      }
+    },
+    {
+      "name": "C09_exact_export_and_single_idempotent_event",
+      "status": "PASS",
+      "observed": {
+        "draft_id": "b609d26e-5527-4514-930a-9153d332ced5:2026-11-04:0",
+        "revision": 2,
+        "utf8_bytes": 911,
+        "export_sha256": "3da536afb2de58e5172f004562ce26a88733b9cd72944f0f657bf1b5d1857257",
+        "exact_sql_revision": true,
+        "matching_export_events": 1,
+        "boundary": "Pure product-domain export plus real RPC/event; no browser clipboard"
+      }
+    },
+    {
+      "name": "C02_owner_B_cannot_read_edit_or_export_owner_A",
+      "status": "PASS",
+      "observed": {
+        "positive_own_hotel_read": true,
+        "foreign_tables_empty": 4,
+        "foreign_edit_export_http": [
+          400,
+          400
+        ],
+        "owner_A_state_unchanged": true
+      }
+    }
+  ],
+  "synthetic_resources": {
+    "actor_A": "f99bb2e8-3fcc-4cd1-8169-2488dcc6f777",
+    "actor_B": "770c7276-c75d-4920-a460-3154d87182d7",
+    "hotel_A": "b609d26e-5527-4514-930a-9153d332ced5",
+    "hotel_B": "200956c2-9823-4681-b07d-ef80c2a07599"
+  },
+  "anchor_from_postgresql_local_day": "2026-11-04",
+  "pure_source_sha256": {
+    "lib/hotel/v2/domain.ts": "a425c6beb943765e21da32ac6f85f574487c2a34b36da3356ec26761cbf6c1cc",
+    "lab/fixtures.mjs": "8e6fc2b0d75579ba88eed2aa1add8e43233479d44abb14f65300e618151651a3",
+    "lib/hotel/v2/seed-original.json": "6f2475187a5f79e556cc142b26fc2b3b0408630ec08fcdca5b79e7d2db330628"
+  },
+  "finished": "2026-11-05T00:18:26.533793+00:00"
+}

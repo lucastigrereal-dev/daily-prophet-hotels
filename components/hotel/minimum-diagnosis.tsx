@@ -1,0 +1,8 @@
+export type MinimumDiagnosis = {motivo_viagem?:string;promessa?:string;canal_consulta?:string;pendencias?:string;fotos_autorizadas?:boolean;pessoas_autorizadas?:boolean}
+export function MinimumDiagnosisFields({value={},onChange}:{value?:MinimumDiagnosis;onChange:(v:MinimumDiagnosis)=>void}) {
+ const fields={motivo_viagem:'Motivo de viagem desejado',promessa:'Promessa da hospedagem em palavras simples',canal_consulta:'Canal para consultar disponibilidade',pendencias:'O que ainda falta confirmar (ou informe nenhum)'} as const
+ return <fieldset className="space-y-3 border rounded-xl p-4"><legend>Perfil mínimo da hospedagem</legend><p>Informe apenas o que conhece. Até 1000 caracteres por campo. Estes dados não confirmam reserva nem autorizam imagens de terceiros.</p>
+ {Object.entries(fields).map(([key,label])=><label className="block" key={key} htmlFor={'diagnosis-'+key}>{label}<textarea id={'diagnosis-'+key} value={String(value[key as keyof MinimumDiagnosis]??'')} onChange={e=>onChange({...value,[key]:e.target.value})} className="w-full p-3 border rounded-lg"/></label>)}
+ {([['fotos_autorizadas','Tenho fotos próprias ou licenciadas disponíveis'],['pessoas_autorizadas','Tenho pessoas com autorização para participar']] as const).map(([key,label])=><label className="block" key={key} htmlFor={'diagnosis-'+key}>{label}<select id={'diagnosis-'+key} value={value[key]===undefined?'':String(value[key])} onChange={e=>onChange({...value,[key]:e.target.value===''?undefined:e.target.value==='true'})} className="w-full p-3 border rounded-lg"><option value="">Confirme</option><option value="true">Sim</option><option value="false">Não / ainda não autorizado</option></select></label>)}
+ </fieldset>
+}

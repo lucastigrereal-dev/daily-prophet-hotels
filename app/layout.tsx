@@ -1,12 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-jakarta",
-});
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Daily Prophet Hotels",
@@ -17,8 +13,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: "#FAFBFC",
 };
 
@@ -29,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${jakarta.variable} antialiased bg-[#FAFBFC] text-[#1A1D26]`}>
+      <body className={"antialiased bg-[#FAFBFC] text-[#1A1D26]"}>
         {children}
         <Toaster
           position="top-center"

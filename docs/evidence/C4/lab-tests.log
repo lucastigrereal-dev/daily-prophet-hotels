@@ -1,0 +1,34 @@
+(node:13) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ LAB requires explicit mode and uses no operational service/credential (3.008906ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_transaction (2.80962ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_answers (0.920463ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_answers (1.190583ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_profile (2.605634ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_hotel (1.444139ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_commit (0.852688ms)
+✔ LAB uncertain response after commit is recovered by identical idempotent retry, no duplicate event (0.808367ms)
+✔ LAB window atomic failure is not partial; retry preserves seven deterministic drafts and human edit (15.501739ms)
+✔ LAB all four audiences get complete distinct seven-date plan (11.126441ms)
+✔ LAB shared export policy blocks revoked facts for get and record, not merely application UI (10.550883ms)
+✔ LAB export history is idempotent and clipboard denial writes nothing; failure rolls back event (4.610307ms)
+✔ LAB DNA reconfirmation increments identity, preserves human text, requires exact repair then review (4.681923ms)
+✔ LAB missing DNA leaves historical drafts and unapproved human edits accessible, not export (3.810853ms)
+✔ LAB stale revision rejects overwrite; A/B and suspended state read/write boundaries stay distinct (4.831986ms)
+✔ LAB JSON atomic snapshot survives restart with revisions, buffers stored server-side and export history (7.1518ms)
+(node:14) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ LAB HTTP local adapter demonstrates rollback, retry, A/B, exact export, revocation, suspension and restart; not auth/RLS (484.82223ms)
+✔ LAB cannot start by operational config failure or implicit default mode (131.06415ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 787.419743

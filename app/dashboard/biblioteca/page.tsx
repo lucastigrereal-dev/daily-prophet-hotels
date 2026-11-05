@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import {copyWithFeedback} from '@/lib/hotel/v2/domain'
 import {
   TEMAS, TEMA_LABEL, FORMATOS, FORMATO_LABEL,
   PUBLICOS, PUBLICO_LABEL, OBJETIVOS, OBJETIVO_LABEL,
@@ -51,6 +52,8 @@ export default function BibliotecaPage() {
   const supabase = createClient()
   const [tab, setTab] = useState<Tab>('para_voce')
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const loadingRef = useRef(false)
   const [busca, setBusca] = useState('')
   const [filtroFormato, setFiltroFormato] = useState('')
   const [filtroTema, setFiltroTema] = useState('')
@@ -68,50 +71,60 @@ export default function BibliotecaPage() {
   useEffect(() => { loadAll() }, [])
 
   async function loadAll() {
-    const { data: { user } } = await supabase.auth.getUser()
+    if (loadingRef.current) return
+    loadingRef.current = true
+    setLoading(true)
+    setLoadError(null)
+    try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError) throw userError
 
     const [
-      { data: hooksData, count: hooksCount },
-      { data: benchData, count: benchCount },
-      { data: hashData, count: hashCount },
+      { data: hooksData, count: hooksCount, error: hooksError },
+      { data: benchData, count: benchCount, error: benchError },
+      { data: hashData, count: hashCount, error: hashError },
     ] = await Promise.all([
       supabase.from('hooks').select('id, hook, tema, formato, objetivo, publico, sazonalidade, score_qualidade', { count: 'exact' }).eq('ativo', true).order('score_qualidade', { ascending: false }).limit(200),
       supabase.from('benchmarks_posts').select('id, hook, legenda_completa, tema, formato, publico, objetivo, sazonalidade, qualidade_score, hashtags, cta', { count: 'exact' }).eq('ativo', true).order('qualidade_score', { ascending: false }).limit(200),
       supabase.from('hashtag_combos').select('id, nome, hashtags, tema, objetivo, publico, sazonalidade', { count: 'exact' }).eq('ativo', true).limit(100),
     ])
 
-    setHooks(hooksData || [])
-    setBenchmarks(benchData || [])
-    setHashtags(hashData || [])
-    setStats({ hooks: hooksCount || 0, benchmarks: benchCount || 0, hashtags: hashCount || 0 })
+    if (hooksError || benchError || hashError) throw hooksError || benchError || hashError
 
     // Para Você — filtra pelo Content DNA do hotel
     if (user) {
-      const { data: hotelData } = await supabase
-        .from('hotels').select('id, nome').eq('owner_id', user.id).limit(1).single()
+      const { data: hotelData, error: hotelError } = await supabase
+        .from('hotels').select('id, nome').eq('owner_id', user.id).limit(1).maybeSingle()
+      if (hotelError) throw hotelError
       if (hotelData) {
         setHotelNome(hotelData.nome)
         const dna = await getContentDNA(hotelData.id)
-        const temas = dna.temas_preferidos
+        const temas = dna?.temas_preferidos ?? []
         {
           const temaMatch = temas.length > 0
           const hooksMatch = temaMatch ? (hooksData || []).filter(h => h.tema && temas.includes(h.tema)) : []
           const benchMatch = temaMatch ? (benchData || []).filter(b => b.tema && temas.includes(b.tema)) : []
           // Fallback: quando DB ainda nao tem metadado de tema, mostra top items sem filtro
-          setParaVoceHooks((hooksMatch.length > 0 ? hooksMatch : (hooksData || [])).slice(0, 30))
-          setParaVoceBench((benchMatch.length > 0 ? benchMatch : (benchData || [])).slice(0, 30))
+          setParaVoceHooks([]) // Legacy rights/facts not homologated.
+          setParaVoceBench([])
         }
       }
     }
 
-    setLoading(false)
+    setHooks(hooksData || [])
+    setBenchmarks(benchData || [])
+    setHashtags(hashData || [])
+    setStats({ hooks: hooksCount || 0, benchmarks: benchCount || 0, hashtags: hashCount || 0 })
+    } catch {
+      setLoadError('Não foi possível carregar a biblioteca. Tente novamente; seus filtros foram mantidos.')
+    } finally {
+      loadingRef.current = false
+      setLoading(false)
+    }
   }
 
-  function copiar(texto: string, id: string) {
-    navigator.clipboard.writeText(texto)
-    setCopiado(id)
-    toast.success('Copiado!')
-    setTimeout(() => setCopiado(null), 2000)
+  async function copiar(texto: string, id: string) {
+    await copyWithFeedback(texto,text=>navigator.clipboard.writeText(text),()=>{setCopiado(id);toast.success('Copiado para revisão.');setTimeout(()=>setCopiado(null),2000)},()=>{setCopiado(null);toast.error('Cópia não confirmada. Tente novamente.')})
   }
 
   function matchFilters(item: { tema?: string | null; formato?: string | null; objetivo?: string | null; sazonalidade?: string | null }) {
@@ -146,14 +159,14 @@ export default function BibliotecaPage() {
 
   return (
     <div className="space-y-5">
-
+      <p role="note" className="p-4 bg-amber-50 rounded-xl">Acervo histórico em revisão de origem, fatos e direitos. Referências, não peças homologadas para seu hotel. Hoje usa a semente textual original revisável. Mídia e avaliações alheias não foram autorizadas.</p>
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Biblioteca</h1>
         <p className="text-sm text-[#6B7280] mt-0.5">Hooks, legendas e hashtags em um só lugar</p>
         <div className="flex gap-3 mt-2 flex-wrap">
           <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full" title="Hook = frase de abertura que prende a atenção nos primeiros 2 segundos">Hook = frase de abertura que prende a atenção</span>
           <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full" title="CTA = Call to Action, o convite para o seguidor interagir (curtir, comentar, reservar)">CTA = chamada para ação (curtir, comentar, reservar)</span>
-          <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full" title="Score de qualidade de 1 a 10 baseado em performance de posts reais de hotéis">Score = nota de qualidade 1-10</span>
+          <span className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2.5 py-1 rounded-full" title="Classificação histórica não validada nesta entrega">Score = classificação histórica, não resultado comprovado</span>
         </div>
       </div>
 
@@ -181,7 +194,7 @@ export default function BibliotecaPage() {
             className={`rounded-2xl p-4 text-left transition-all ${tab === key ? 'bg-[#B8860B] text-white shadow-md' : 'bg-white border border-[#E5E7EB] hover:shadow-sm'}`}
           >
             <p className={`text-xs uppercase tracking-wide font-medium ${tab === key ? 'text-white/70' : 'text-[#9CA3AF]'}`}>{label}</p>
-            <p className={`text-2xl font-bold mt-1 ${tab === key ? 'text-white' : 'text-[#1A1D26]'}`}>{count.toLocaleString('pt-BR')}</p>
+            <p className={`text-2xl font-bold mt-1 ${tab === key ? 'text-white' : 'text-[#1A1D26]'}`}>{loading || loadError ? '—' : count.toLocaleString('pt-BR')}</p>
           </button>
         ))}
       </div>
@@ -222,6 +235,11 @@ export default function BibliotecaPage() {
       {loading ? (
         <div className="flex items-center justify-center h-48">
           <div className="animate-spin w-8 h-8 border-2 border-[#B8860B] border-t-transparent rounded-full" />
+        </div>
+      ) : loadError ? (
+        <div className="p-4 bg-amber-50 rounded-xl space-y-3">
+          <p role="alert">{loadError}</p>
+          <button onClick={loadAll} className="p-3 border rounded-lg">Tentar carregar novamente</button>
         </div>
       ) : (
         <div className="space-y-2">

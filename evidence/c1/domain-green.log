@@ -1,0 +1,49 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> daily-prophet-hotels@1.0.0 test
+> node --test tests/*.test.mjs
+
+(node:28) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ missing/invalid operational config never becomes synthetic success (1.80591ms)
+✔ Natal/RN stays RN; region cannot supply a state (0.265724ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.147479ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.199596ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.120538ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.252043ms)
+✔ valid public configuration is explicit; no operational fallback (0.217763ms)
+✔ owner A/B, expired session and ambiguous owner fail closed (0.363498ms)
+✔ suspension/state prevents writes and onboarding reactivation: pausado (0.338251ms)
+✔ suspension/state prevents writes and onboarding reactivation: cancelado (0.21604ms)
+✔ suspension/state prevents writes and onboarding reactivation: arquivado (0.15517ms)
+✔ suspension/state prevents writes and onboarding reactivation: revogado (0.10092ms)
+✔ suspension/state prevents writes and onboarding reactivation: suspenso (0.211593ms)
+✔ suspension/state prevents writes and onboarding reactivation: unknown (0.119557ms)
+✔ suspension/state prevents writes and onboarding reactivation: undefined (0.096062ms)
+✔ active vs onboarding vs readonly authority is explicit (0.20297ms)
+✔ admin requires trusted explicit app_metadata; not user_metadata or users.role (0.181529ms)
+✔ DNA absence is distinct from error; resolved SDK errors and rejection propagate (0.404399ms)
+✔ onboarding receipt binds owner/hotel, exact next revision, module, operation and boolean completion (0.600179ms)
+✔ effective DNA identity changes only by confirmed revision; all form audiences have a week (15.949206ms)
+✔ seven dates are deterministic, distinct and capacity-respecting, without forced video or fabricated claims (5.341828ms)
+✔ origin missing is a contract error; unknown rights and quarantine never become recommendations (0.635942ms)
+✔ facts must be true-boolean confirmed with source and date; veto/capacity apply on every call (0.912812ms)
+✔ complete matching finds week that greedy selection misses (0.491578ms)
+✔ truly impossible matching throws without partial result (1.353025ms)
+✔ export needs exact revision, text, facts and current actor; edit invalidates confirmation (3.826388ms)
+✔ changed still-confirmed fact, revoked/expired fact, source/version change all block old text export (3.133602ms)
+✔ manual factual repair preserves text and requires explicit review; stale embedded fact and unsupported claims reject (3.427327ms)
+✔ conflict comparison keeps byte-exact local buffer until explicit resolution (0.162791ms)
+✔ clipboard denial records no export; history failure is not a copy failure (0.237602ms)
+✔ calendar format contract maps stories and reels correctly (0.145626ms)
+✔ original seed bytes unchanged; sixteen originals, fifteen draft candidates (0.692767ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.860809

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import {safeAuthReturn} from '@/lib/hotel/v2/domain'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -28,7 +29,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/dashboard')
+    router.push(safeAuthReturn(new URLSearchParams(window.location.search).get('next'),window.location.origin))
     router.refresh()
   }
 
@@ -36,8 +37,9 @@ export default function LoginPage() {
     <form onSubmit={handleLogin} className="space-y-4">
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 space-y-4 shadow-sm">
         <div>
-          <label className="block text-sm text-[#6B7280] mb-1.5 font-medium">Email</label>
+          <label htmlFor="login-email" className="block text-sm text-[#6B7280] mb-1.5 font-medium">Email</label>
           <input
+            id="login-email" aria-describedby={error?"login-error":undefined}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -48,8 +50,9 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <label className="block text-sm text-[#6B7280] mb-1.5 font-medium">Senha</label>
+          <label htmlFor="login-password" className="block text-sm text-[#6B7280] mb-1.5 font-medium">Senha</label>
           <input
+            id="login-password" aria-describedby={error?"login-error":undefined}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -61,7 +64,7 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
+          <p id="login-error" role="alert" className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
             {error}
           </p>
         )}
@@ -76,7 +79,7 @@ export default function LoginPage() {
       </div>
 
       <p className="text-center text-sm text-[#6B7280]">
-        Novo por aqui?{' '}
+        <Link href="/auth/recover">Recuperar acesso</Link><br/>Novo por aqui?{' '}
         <Link href="/auth/register" className="text-[#B8860B] hover:text-[#DAA520] font-medium">
           Criar conta
         </Link>

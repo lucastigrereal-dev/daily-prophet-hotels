@@ -1,0 +1,49 @@
+✖ C7 static trigger replacement qualifies only target schema/table and preserves exact legacy body (1.644051ms)
+✖ C7 static migration neither recreates trigger nor changes search_path/auth/grants/RLS (0.201048ms)
+✔ C7 preserves historical schema, trigger attachment and C6 migration bytes (0.863136ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.743395
+
+✖ failing tests:
+
+test at tests/trigger-migration.test.mjs:8:1
+✖ C7 static trigger replacement qualifies only target schema/table and preserves exact legacy body (1.644051ms)
+  AssertionError [ERR_ASSERTION]: C7 requires a NEW migration; historical schema/C6 must not be edited
+      at migration (file:///workspace/shared/hotel-recomposed-candidate/tests/trigger-migration.test.mjs:7:29)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/trigger-migration.test.mjs:8:279)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/trigger-migration.test.mjs:9:1
+✖ C7 static migration neither recreates trigger nor changes search_path/auth/grants/RLS (0.201048ms)
+  AssertionError [ERR_ASSERTION]: C7 requires a NEW migration; historical schema/C6 must not be edited
+      at migration (file:///workspace/shared/hotel-recomposed-candidate/tests/trigger-migration.test.mjs:7:29)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/trigger-migration.test.mjs:9:109)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

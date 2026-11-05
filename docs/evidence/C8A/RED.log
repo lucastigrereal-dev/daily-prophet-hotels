@@ -1,0 +1,88 @@
+✖ C8 restricts both old/new existing-hotel states with owner; no permissive OR loophole (1.101326ms)
+✖ C8 reads suspended history without lock, rejects NULL before/after ID-owner lock, never creates after missing lock (0.330441ms)
+✖ C8 preserves all onboarding RPC bytes except reviewed guard; actor/invoker/search_path/CAS/replay unchanged (0.252415ms)
+✖ C8 preserves historical/C6/C7 SQL hashes and proposes one transaction only (0.705558ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 96.245
+
+✖ failing tests:
+
+test at tests/state-policy-migration.test.mjs:11:1
+✖ C8 restricts both old/new existing-hotel states with owner; no permissive OR loophole (1.101326ms)
+  AssertionError [ERR_ASSERTION]: C8 requires a NEW state migration, leaving historical SQL unchanged
+      at read (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:7:24)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:11:109)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/state-policy-migration.test.mjs:12:1
+✖ C8 reads suspended history without lock, rejects NULL before/after ID-owner lock, never creates after missing lock (0.330441ms)
+  AssertionError [ERR_ASSERTION]: C8 requires a NEW state migration, leaving historical SQL unchanged
+      at read (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:7:24)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:12:150)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/state-policy-migration.test.mjs:13:1
+✖ C8 preserves all onboarding RPC bytes except reviewed guard; actor/invoker/search_path/CAS/replay unchanged (0.252415ms)
+  AssertionError [ERR_ASSERTION]: C8 requires a NEW state migration, leaving historical SQL unchanged
+      at read (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:7:24)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:13:143)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/state-policy-migration.test.mjs:14:1
+✖ C8 preserves historical/C6/C7 SQL hashes and proposes one transaction only (0.705558ms)
+  AssertionError [ERR_ASSERTION]: C8 requires a NEW state migration, leaving historical SQL unchanged
+      at read (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:7:24)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/state-policy-migration.test.mjs:14:548)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

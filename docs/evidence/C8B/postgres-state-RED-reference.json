@@ -1,0 +1,419 @@
+{
+  "scope": "C7 suspension RED observations: synthetic direct table writes, not product acceptance",
+  "candidate_commit": "cefb9776cb3ac657a261d5034297091b10fd2320",
+  "started_utc": "2026-10-23T17:18:39.541990+00:00",
+  "finished_utc": "2026-10-23T17:18:39.848956+00:00",
+  "grant_contract_is_harness_only": true,
+  "claims_are_verified_JWT": false,
+  "cross_session_concurrency": "NOT_RUN: whole fixture remains uncommitted",
+  "negative_two_hotel_fixture": "Two synthetic hotels of one owner ONLY to discriminate hotel_id escape; no multi-hotel product contract or RPC use",
+  "rollback_verified": true,
+  "red_confirmed_count": 42,
+  "red_not_confirmed_count": 0,
+  "source_path": "/workspace/shared/hotel-pg-qa/c8-state-qa/runs/run-state-KNnLdQ8T/evidence/red-results.json",
+  "source_sha256": "450b4facb79a086ac6dba6a2a3e8f90c5b761bd52cadba41ee3a2424e051149f",
+  "counts_by_target": {
+    "hotels": 9,
+    "onboarding_respostas": 15,
+    "hotel_content_preferences": 15,
+    "execution_log": 3
+  },
+  "probes": [
+    {
+      "name": "C7_pausado_hotels_status",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "1757311835e9906137748920622dae40030c1d58d66b3f4b7eb638b026d29cf6",
+      "after_sha256": "9ef8e53d02aedf80d0f2a5d58baf5d681c0901b2984ed05642396c56f4ae86c9"
+    },
+    {
+      "name": "C7_pausado_hotels_other_field",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "1757311835e9906137748920622dae40030c1d58d66b3f4b7eb638b026d29cf6",
+      "after_sha256": "ecd749b9fbef4d1c1c050521c670c602f6bcb2558c6895c6f1d5bf01c7b64528"
+    },
+    {
+      "name": "C7_pausado_hotels_upsert",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "1757311835e9906137748920622dae40030c1d58d66b3f4b7eb638b026d29cf6",
+      "after_sha256": "85cbcee3b663b064405674574d9e86c07f5d430cec0c6d4e11d929f05bc69c80"
+    },
+    {
+      "name": "C7_pausado_onboarding_respostas_insert",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "1757311835e9906137748920622dae40030c1d58d66b3f4b7eb638b026d29cf6",
+      "after_sha256": "7926a106946a0cc5c01178ceb130d802bfd1c7f381a8e661448f89dae8e19eb4"
+    },
+    {
+      "name": "C7_pausado_onboarding_respostas_update",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "5eef05354469060bd9833c760356f2f8cbf085d3fd30d00d65661f1ded8390da",
+      "after_sha256": "5709a3c23173f0f59160d6618a8f150e47fc82a9ab2a91714db4c1e5ec4b4fa3"
+    },
+    {
+      "name": "C7_pausado_onboarding_respostas_upsert",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "a9940ac5a22688dc9474f4860c777796508e023d470b7c8f08661e0bfc3a8ff4",
+      "after_sha256": "cd19fafb2222a333efb7b237184fadf2b74c5e61400f07af999c42f6e9d41344"
+    },
+    {
+      "name": "C7_pausado_onboarding_respostas_move_from_suspended",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "54c14139664c963d7035458f5be4e3278735a556c0b1ae6443eaaf12ae941e70",
+      "after_sha256": "3bd1ded014a601a5012cdabc4d55bd2c4fd013153f6e32fa00b6cbd4f9cf2b87"
+    },
+    {
+      "name": "C7_pausado_onboarding_respostas_move_into_suspended",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "411b7510887c1d1cb7a31c6329cd33d333fd90b6393d158a6bafac67438927a0",
+      "after_sha256": "6cab3f6f7b40ce921362811df3a3a3cae871a2f5cb87abb56673cc1f3f53895f"
+    },
+    {
+      "name": "C7_pausado_hotel_content_preferences_insert",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "1757311835e9906137748920622dae40030c1d58d66b3f4b7eb638b026d29cf6",
+      "after_sha256": "25697a57d963ea04c849b010628252912089a39e11a11fbab4065acebcd66d28"
+    },
+    {
+      "name": "C7_pausado_hotel_content_preferences_update",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "089bc36a2059e2b8a15a4619cb631e5d03d760a83ca47901d8568d426fe294a4",
+      "after_sha256": "e590e51135a6ba74e506d856dd9970585a54eff5973297675fcda8ab2c113d22"
+    },
+    {
+      "name": "C7_pausado_hotel_content_preferences_upsert",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "bc789238994eda688be8c65c0d6ac3eaf7ab9002dc9bac36714f3208d31a9325",
+      "after_sha256": "dc70eb66df2623adb751fc80a942951dab65a3daa2ef0d97ea493f242f74467d"
+    },
+    {
+      "name": "C7_pausado_hotel_content_preferences_move_from_suspended",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "d9c6e101be5bfa7a75c8cc99c70d81f88d38fc23277f4974eae8199ca625fcd4",
+      "after_sha256": "54cdbee0a4998a9f3ff02ca6d8a755335aee481b8613015104dbcce525b250ac"
+    },
+    {
+      "name": "C7_pausado_hotel_content_preferences_move_into_suspended",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "72903002abbff9a7a6e11fc4aba52da0d93ebb32ae9e84df21577aef20db0c29",
+      "after_sha256": "6b1125af9fcb359e2f95063ac220419ce66ebc477e4b6983acf22574e147a447"
+    },
+    {
+      "name": "C7_pausado_execution_log_insert",
+      "state": "pausado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "1757311835e9906137748920622dae40030c1d58d66b3f4b7eb638b026d29cf6",
+      "after_sha256": "16317f6b4d49e1358bc7e17bab81d5a4849061b3a71368ac6af1524c646b0aef"
+    },
+    {
+      "name": "C7_cancelado_hotels_status",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "4fcb43426221fe50c0722f1f339c088e7494789736e92901a99f65ee9c819e6a",
+      "after_sha256": "9ef8e53d02aedf80d0f2a5d58baf5d681c0901b2984ed05642396c56f4ae86c9"
+    },
+    {
+      "name": "C7_cancelado_hotels_other_field",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "4fcb43426221fe50c0722f1f339c088e7494789736e92901a99f65ee9c819e6a",
+      "after_sha256": "3e7e7b82db196338a76b982885ab7bb10cfd2c33f1c27143bdb84d566727d4ed"
+    },
+    {
+      "name": "C7_cancelado_hotels_upsert",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "4fcb43426221fe50c0722f1f339c088e7494789736e92901a99f65ee9c819e6a",
+      "after_sha256": "85cbcee3b663b064405674574d9e86c07f5d430cec0c6d4e11d929f05bc69c80"
+    },
+    {
+      "name": "C7_cancelado_onboarding_respostas_insert",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "4fcb43426221fe50c0722f1f339c088e7494789736e92901a99f65ee9c819e6a",
+      "after_sha256": "56adb3418b01d03ddef0c2a08e07df88e401123e8cae912501b2dc2cc989e8c8"
+    },
+    {
+      "name": "C7_cancelado_onboarding_respostas_update",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "c3c0478edca0f899246738524cf61d6d76f6e0cffb588778225c9c89bf19c3ca",
+      "after_sha256": "655d3a9f194972ac7008699e25241b9f6470115ff426ee036c21ff21608e1f60"
+    },
+    {
+      "name": "C7_cancelado_onboarding_respostas_upsert",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "e0294e733c9c11995aecfc08f8ead41eedbbe64daca7714cb3f53af860606113",
+      "after_sha256": "46af5b7d6859ee1a328a5b3dee51bbf2af8d73dead6f574cf8aa3130cb00638a"
+    },
+    {
+      "name": "C7_cancelado_onboarding_respostas_move_from_suspended",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "e0ae574c4aeecb4f32054f60251a46e405c7284fd7ae9249378c9511107708f4",
+      "after_sha256": "d861b353c8b15d32bec81a3509fde5e8ec0e3893eef0409445a6f27409e72ff4"
+    },
+    {
+      "name": "C7_cancelado_onboarding_respostas_move_into_suspended",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "62a0258bc13b3d47f4cf2fc91704b4b0001c48c0cc04ad8898c45cad2fd2bd2f",
+      "after_sha256": "4ec6f21e64af6226c6d101c049e159bcc4b91a8e411755230a72a7540fe8f159"
+    },
+    {
+      "name": "C7_cancelado_hotel_content_preferences_insert",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "4fcb43426221fe50c0722f1f339c088e7494789736e92901a99f65ee9c819e6a",
+      "after_sha256": "dff0c7293fc1ea1682d31e041109f238ca0f8f94732d36043eb95d0f5d475674"
+    },
+    {
+      "name": "C7_cancelado_hotel_content_preferences_update",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "23292782317b0c08a9bceafab2233cd4b3a2601d89a15d5998e5fd4cd292faf1",
+      "after_sha256": "11d8e4bbaba08dec71d6617f987a998591ea231d31801e666ca32a2cdc24f6f0"
+    },
+    {
+      "name": "C7_cancelado_hotel_content_preferences_upsert",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "6022f5500bac86c724d467bf2f6a1963fc6246a37d8bbfe5df367e79596e12f1",
+      "after_sha256": "c313c595aa735d063c4402e84a30ee9fa9f2c4c64c4ef03baebae64e82ac2f64"
+    },
+    {
+      "name": "C7_cancelado_hotel_content_preferences_move_from_suspended",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "6db792d0104baf1406c4c7ae88c1a5864d096d859fb208cf52404e6632f6dce5",
+      "after_sha256": "253419b9c1e3b8566a6f346fd63f89032e3ed0d2b541e0b7e6438ad9da226471"
+    },
+    {
+      "name": "C7_cancelado_hotel_content_preferences_move_into_suspended",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "6c04bf51d8884367a92b788fcdc4e0ee36376850d7cfc6a6bf5b485301d27076",
+      "after_sha256": "8331e3a619d5b6c9281ab31047f08e256b04db5faf60b2c0d2b3dcc6e2254dd2"
+    },
+    {
+      "name": "C7_cancelado_execution_log_insert",
+      "state": "cancelado",
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "4fcb43426221fe50c0722f1f339c088e7494789736e92901a99f65ee9c819e6a",
+      "after_sha256": "00e17fffebe1d3d5208b5fa5d2fc6d011608df24a864209aaf9800c41d95b3a3"
+    },
+    {
+      "name": "C7_NULL_hotels_status",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "d764d49a7e4252d1208aed5074a3cfc93f28d58d51e810f2ecf277dbd0f1264a",
+      "after_sha256": "9ef8e53d02aedf80d0f2a5d58baf5d681c0901b2984ed05642396c56f4ae86c9"
+    },
+    {
+      "name": "C7_NULL_hotels_other_field",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "d764d49a7e4252d1208aed5074a3cfc93f28d58d51e810f2ecf277dbd0f1264a",
+      "after_sha256": "f83290bd68a9f79e4ae84637f74c4b97d8d218a01696a0becabf68ae27484b83"
+    },
+    {
+      "name": "C7_NULL_hotels_upsert",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "d764d49a7e4252d1208aed5074a3cfc93f28d58d51e810f2ecf277dbd0f1264a",
+      "after_sha256": "85cbcee3b663b064405674574d9e86c07f5d430cec0c6d4e11d929f05bc69c80"
+    },
+    {
+      "name": "C7_NULL_onboarding_respostas_insert",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "d764d49a7e4252d1208aed5074a3cfc93f28d58d51e810f2ecf277dbd0f1264a",
+      "after_sha256": "847d0a001d4449868e64b80e140dfb3a194da5df5f364378448fdf1ddbd2ec12"
+    },
+    {
+      "name": "C7_NULL_onboarding_respostas_update",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "2eb1337d3834ed4111c8addcbfc792353286e9f1cfa367e4d2e99c55d35a5aef",
+      "after_sha256": "1f134e90042d8037e599c0cfd9475c6e779c65addb58014a5edafe9023a354b0"
+    },
+    {
+      "name": "C7_NULL_onboarding_respostas_upsert",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "a0128c8ceb5c5ab874bd4d6373ea5569e2bd8db9e622ac507431c901d67ec019",
+      "after_sha256": "1f335c1d338091d6db9a76b34b1f943b34536ff0c543e512d6d02d957fc06f30"
+    },
+    {
+      "name": "C7_NULL_onboarding_respostas_move_from_suspended",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "4796ed06098ee63e7f8d511e7cb7f8b5ca62e3adc5f59f008a97731b4e89b276",
+      "after_sha256": "af4f65fbc6a930f794d67a8bb2c1513ffe8331869494b97ec946cade5c9232f4"
+    },
+    {
+      "name": "C7_NULL_onboarding_respostas_move_into_suspended",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "33b03ad14699dfec5190957b39a8c3d86f09a2fe6b33dfb7024dfb39423bfa09",
+      "after_sha256": "c2c778f3d9a58c69e11d936130c7034645c7659c5b77d8a617eb2b14e6424d5a"
+    },
+    {
+      "name": "C7_NULL_hotel_content_preferences_insert",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "d764d49a7e4252d1208aed5074a3cfc93f28d58d51e810f2ecf277dbd0f1264a",
+      "after_sha256": "3e77b7aa1d03ac89b0e8361d3054326faa6e8937c3d80cbcb7023c1aa6738e60"
+    },
+    {
+      "name": "C7_NULL_hotel_content_preferences_update",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "835eddb14ce09e100a2330c74751a4446b84607609b9d0851a221dd1f9891746",
+      "after_sha256": "23567f9c869b1453b60c150027e505bd39c943629c0b2f345505c6282bfa69ca"
+    },
+    {
+      "name": "C7_NULL_hotel_content_preferences_upsert",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "af0c731ed4410b26546fa7c56a4041ee8d3cb7894e2619a1efbe7f33fa97c04b",
+      "after_sha256": "0875494f4c941bb23fcc5454521a8b0ca21c7c6f3dbeabeaa8460e6db0e078c8"
+    },
+    {
+      "name": "C7_NULL_hotel_content_preferences_move_from_suspended",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "b0e349fe413d541a4cd68988d75c7f9f443434fc5b98d4b0d3eb0e3c6be62ce5",
+      "after_sha256": "380a475a667def708118f2fb87889898057d4c6557240910e4fb639b89b02bc7"
+    },
+    {
+      "name": "C7_NULL_hotel_content_preferences_move_into_suspended",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "59252dfa129018aec453c7e493ae69e2711e149a2b3429fc8f20797e0acf52f7",
+      "after_sha256": "129676d6db680b5ea26aa8b50c65d9a2c7e807a35e0050365d556ecdea4b777a"
+    },
+    {
+      "name": "C7_NULL_execution_log_insert",
+      "state": null,
+      "sqlstate": "00000",
+      "result": "RED_CONFIRMED",
+      "data_changed": true,
+      "before_sha256": "d764d49a7e4252d1208aed5074a3cfc93f28d58d51e810f2ecf277dbd0f1264a",
+      "after_sha256": "c2db769de0719e5bfb6ba17daeb2d8bcc9f5915aee7bc39350b7aa77837c8852"
+    }
+  ],
+  "classification": "REAL_POSTGRES_SYNTHETIC_RED_OBSERVATIONS_NOT_SECURITY_ACCEPTANCE",
+  "C8B_POSTGRES_GREEN": "PENDING_NEW_INDEPENDENT_RUN",
+  "C8A_partial_GREEN": {
+    "scope": "C8A partial hotels GREEN plus four RPC regressions; auxiliary state gates NOT implemented; no real Auth/JWT",
+    "candidate_commit": "62b8baedc47bd8e5ceb8c6a34621b483201c7ac7",
+    "started_utc": "2026-10-23T17:18:39.898992+00:00",
+    "finished_utc": "2026-10-23T17:18:40.182471+00:00",
+    "pass_count": 78,
+    "fail_count": 0,
+    "rollback_verified": true,
+    "source_path": "/workspace/shared/hotel-pg-qa/c8-state-qa/runs/run-state-KNnLdQ8T/evidence/green-results.json",
+    "source_sha256": "fb69014f065847b23ba93bcaedda991f287e2db56e107bd3ca64f40d89c2f4d1"
+  },
+  "cleanup": {
+    "path": "/workspace/shared/hotel-pg-qa/c8-state-qa/runs/run-state-KNnLdQ8T/evidence/cleanup.txt",
+    "sha256": "1a623e24a2c1179b2de82028379eb2506c52405c0db99f80d8310c1c7170510c",
+    "text": "2026-10-23T17:18:40Z\nsuite_exit_code=0\nstop_attempted=yes\nstop_exit_code=0\npostmaster_pid_file=ABSENT\nsocket=ABSENT\nown_process=ABSENT\nshutdown_verified=yes\nfinal_exit_code=0\n"
+  }
+}

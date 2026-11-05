@@ -1,0 +1,12 @@
+/** Static checks only, after separately observed PostgreSQL REDs; not an RLS GREEN. */
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import crypto from 'node:crypto'
+const file='sql/MIGRATION_C8B_AUXILIARY_STATE_NOT_APPLIED.sql'
+function read(){assert.ok(fs.existsSync(file),'C8B requires a NEW migration after preserved C8A');return fs.readFileSync(file,'utf8')}
+function policies(){return [...read().matchAll(/CREATE POLICY (\w+) ON public\.(\w+)\s+AS RESTRICTIVE FOR (INSERT|UPDATE) TO authenticated\s+([\s\S]*?);/g)].map(m=>({name:m[1],table:m[2],command:m[3],clauses:m[4]}))}
+function predicate(states){return `EXISTS (SELECT 1 FROM public.hotels h WHERE h.id=hotel_id AND h.owner_id=auth.uid() AND h.status ${states})`}
+for(const table of ['onboarding_respostas','hotel_content_preferences'])test('C8B static '+table+' insert and update check both old/new hotel ownership and writable states',()=>{const items=policies().filter(p=>p.table===table),p=predicate("IN ('lead','onboarding','ativo')");assert.equal(items.length,2);assert.equal(items.find(x=>x.command==='INSERT')?.clauses,`WITH CHECK (${p})`);assert.equal(items.find(x=>x.command==='UPDATE')?.clauses,`USING (${p})\nWITH CHECK (${p})`)})
+test('C8B static operational log insertion requires owner active, with no new SELECT/ALL/update policy',()=>{const items=policies().filter(p=>p.table==='hotel_execution_log');assert.equal(items.length,1);assert.equal(items[0].command,'INSERT');assert.equal(items[0].clauses,`WITH CHECK (${predicate("='ativo'")})`);const sql=read().replace(/^\s*--.*$/gm,'');assert.equal(policies().length,5);assert.ok(!/\b(?:GRANT|REVOKE|DELETE|TRUNCATE|DROP|ALTER|FUNCTION)\b|SECURITY DEFINER|FOR ALL|FOR SELECT|calendarios_gerados/i.test(sql));assert.equal((sql.match(/^BEGIN;$/gm)||[]).length,1);assert.equal((sql.match(/^COMMIT;$/gm)||[]).length,1)})
+test('C8B preserves exact C8A RPC/state policy, C7 repair and historical/C6 migrations',()=>{for(const[file,sha]of[['sql/MIGRATION_C8_EXISTING_HOTEL_STATE_NOT_APPLIED.sql','58e2d957f1caa527f99c5beb9c9503b18ea831c0531070ef030b87831ec2cb7a'],['sql/MIGRATION_C7_ONBOARDING_TRIGGER_SCHEMA_NOT_APPLIED.sql','bfee191ed18a906e32e319b1a2e39171bf57a2ac9ed14479b76edb2b2ead1246'],['sql/HOTEL_RECOMPOSED_CANDIDATE_NOT_APPLIED.sql','364951169fd1748e7cc98f15239c631b236ba64dbed5e61c4e1f9ecc273ec2c6'],['sql/SCHEMA_V2.sql','577109a043c693a74b8fce1e25a11d2f70f08d10486d4685d74537dc9c3c64ed']])assert.equal(crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'),sha)})

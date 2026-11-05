@@ -81,6 +81,8 @@ export default function ExecucaoPage() {
   const [loading, setLoading] = useState(true)
   const [posts, setPosts] = useState<CalendarPost[]>([])
   const [tasks, setTasks] = useState<WeeklyTask[]>([])
+  const [history,setHistory]=useState<Array<{id:string;created_at:string;acao:string;detalhes:any}>>([])
+  const [historyError,setHistoryError]=useState(false)
   const [hotelId, setHotelId] = useState<string | null>(null)
   const semana = getSemanaDates()
   const hoje = new Date()
@@ -105,6 +107,8 @@ export default function ExecucaoPage() {
     if (!hotelData) { setLoading(false); return }
 
     setHotelId(hotelData.id)
+    const {data:events,error:eventsError}=await supabase.from('hotel_execution_log').select('id,created_at,acao,detalhes').eq('hotel_id',hotelData.id).in('acao',['exportado','owner_reported']).order('created_at',{ascending:false}).limit(100)
+    setHistoryError(!!eventsError); if(!eventsError)setHistory(events||[])
 
     // Posts da semana
     const inicioSemana = semana[0].date.toISOString().split('T')[0]
@@ -148,45 +152,19 @@ export default function ExecucaoPage() {
   }
 
   async function toggleTask(taskId: string) {
-    const task = tasks.find(t => t.id === taskId)
-    if (!task) return
-
-    const newDone = !task.done
-    setTasks(prev => prev.map(t => t.id === taskId ? { ...t, done: newDone } : t))
-
-    await supabase
-      .from('hotel_weekly_tasks')
-      .update({ done: newDone, done_at: newDone ? new Date().toISOString() : null })
-      .eq('id', taskId)
-
-    // Log de execucao
-    if (newDone && hotelId) {
-      await supabase.from('hotel_execution_log').insert({
-        hotel_id: hotelId,
-        acao: `tarefa_concluida:${task.task_key}`,
-        categoria: task.categoria === 'planejamento' ? 'planejamento' : task.categoria === 'engajamento' ? 'engajamento' : 'conteudo',
-        detalhes: { task_key: task.task_key, label: task.label },
-      })
-    }
+    const task=tasks.find(t=>t.id===taskId)
+    if(!task||!hotelId)return
+    const newDone=!task.done
+    const {error}=await supabase.rpc('hotel_c10_owner_report',{p_hotel_id:hotelId,p_kind:'task',p_target:taskId,p_done:newDone})
+    if(error){toast.error('Alteração não confirmada. Sua lista foi preservada; tente novamente.');return}
+    setTasks(prev=>prev.map(t=>t.id===taskId?{...t,done:newDone}:t))
   }
-
   async function marcarPostPublicado(postId: string) {
-    await supabase
-      .from('calendarios_gerados')
-      .update({ status: 'publicado' })
-      .eq('id', postId)
-    setPosts(prev => prev.map(p => p.id === postId ? { ...p, status: 'publicado' } : p))
-    toast.success('Post marcado como publicado!')
-
-    if (hotelId) {
-      await supabase.from('hotel_execution_log').insert({
-        hotel_id: hotelId,
-        acao: 'post_publicado',
-        categoria: 'conteudo',
-        detalhes: { post_id: postId },
-        pontos: 3,
-      })
-    }
+    if(!hotelId)return
+    const {error}=await supabase.rpc('hotel_c10_owner_report',{p_hotel_id:hotelId,p_kind:'post',p_target:postId,p_done:true})
+    if(error){toast.error('Relato não confirmado. Seu rascunho foi preservado; tente novamente.');return}
+    await load()
+    toast.success('Relato do proprietário registrado. A publicação não foi verificada pela plataforma.')
   }
 
   const done = tasks.filter(i => i.done).length
@@ -204,6 +182,11 @@ export default function ExecucaoPage() {
 
   return (
     <div className="space-y-5">
+      <section aria-label="Histórico de exportações e relatos" className="bg-white border rounded-xl p-4 space-y-2">
+        <h2 className="font-semibold">Histórico de exportações e relatos</h2>
+        <p>Últimos 100 registros de exportação e relatos. Exportar não publica. Relatos do proprietário não são verificação externa.</p>
+        {historyError?<p role="alert">Não foi possível carregar o histórico. Tente novamente.</p>:history.filter(e=>['exportado','owner_reported'].includes(e.acao)).length===0?<p>Nenhuma exportação ou relato registrado.</p>:<ul>{history.filter(e=>['exportado','owner_reported'].includes(e.acao)).map(e=><li key={e.id} className="py-2 border-b break-words"><time>{new Date(e.created_at).toLocaleString('pt-BR')}</time>{e.acao==='exportado'?<p>Exportado — revisão {e.detalhes?.revision}. Rascunho {e.detalhes?.draft_id}. Não publicado pela plataforma.</p>:<p>Relato do proprietário — {e.detalhes?.kind==='post'?'publicação informada':e.detalhes?.kind==='task'?'tarefa informada':'planejamento informado'}. Não verificado externamente.</p>}</li>)}</ul>}
+      </section>
 
       <div>
         <h1 className="text-xl lg:text-2xl font-bold text-[#1A1D26]">Tarefas da Semana</h1>
@@ -279,7 +262,7 @@ export default function ExecucaoPage() {
                       onClick={() => marcarPostPublicado(p.id)}
                       className="text-xs px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors"
                     >
-                      Publicar
+                      Registrar relato
                     </button>
                   )}
                 </div>

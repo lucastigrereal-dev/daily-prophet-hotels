@@ -1,0 +1,110 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> daily-prophet-hotels@1.0.0 test
+> node --test tests/*.test.mjs
+
+(node:223) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ application source with synthetic IO exports only exact reviewed current facts, not an external-service test (41.821108ms)
+✔ application export refuses changed text, changed DNA, quarantined template and cross-owner ID (13.584122ms)
+✔ application revision confirmation binds profile actually read; stale expected revision preserves DB (3.87517ms)
+✔ application suspended state allows authorized historical read but denies edit/export/history write (2.633481ms)
+✔ four SDK entrypoints share explicit config; zero stories survives nullish mapping (0.544056ms)
+✔ SQL is explicitly candidate only; static contract covers versions, status, receipt, old fields and calendar format (0.433352ms)
+(node:224) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ missing/invalid operational config never becomes synthetic success (1.370369ms)
+✔ Natal/RN stays RN; region cannot supply a state (0.396995ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.153887ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.192894ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.170751ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.195088ms)
+✔ valid public configuration is explicit; no operational fallback (0.195038ms)
+✔ owner A/B, expired session and ambiguous owner fail closed (0.251611ms)
+✔ suspension/state prevents writes and onboarding reactivation: pausado (0.260033ms)
+✔ suspension/state prevents writes and onboarding reactivation: cancelado (0.193675ms)
+✔ suspension/state prevents writes and onboarding reactivation: arquivado (0.112736ms)
+✔ suspension/state prevents writes and onboarding reactivation: revogado (0.11529ms)
+✔ suspension/state prevents writes and onboarding reactivation: suspenso (0.09542ms)
+✔ suspension/state prevents writes and onboarding reactivation: unknown (0.063613ms)
+✔ suspension/state prevents writes and onboarding reactivation: undefined (0.090153ms)
+✔ active vs onboarding vs readonly authority is explicit (0.230299ms)
+✔ admin requires trusted explicit app_metadata; not user_metadata or users.role (0.194146ms)
+✔ DNA absence is distinct from error; resolved SDK errors and rejection propagate (0.310437ms)
+✔ onboarding receipt binds owner/hotel, exact next revision, module, operation and boolean completion (0.653453ms)
+✔ effective DNA identity changes only by confirmed revision; all form audiences have a week (15.904986ms)
+✔ seven dates are deterministic, distinct and capacity-respecting, without forced video or fabricated claims (5.901082ms)
+✔ origin missing is a contract error; unknown rights and quarantine never become recommendations (0.923531ms)
+✔ facts must be true-boolean confirmed with source and date; veto/capacity apply on every call (0.954486ms)
+✔ complete matching finds week that greedy selection misses (0.523231ms)
+✔ truly impossible matching throws without partial result (1.750408ms)
+✔ export needs exact revision, text, facts and current actor; edit invalidates confirmation (4.959906ms)
+✔ changed still-confirmed fact, revoked/expired fact, source/version change all block old text export (4.143683ms)
+✔ manual factual repair preserves text and requires explicit review; stale embedded fact and unsupported claims reject (3.903379ms)
+✔ conflict comparison keeps byte-exact local buffer until explicit resolution (0.276617ms)
+✔ clipboard denial records no export; history failure is not a copy failure (0.347672ms)
+✔ calendar format contract maps stories and reels correctly (0.242607ms)
+✔ original seed bytes unchanged; sixteen originals, fifteen draft candidates (0.84166ms)
+(node:225) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ LAB requires explicit mode and uses no operational service/credential (2.860273ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_transaction (7.386961ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_answers (1.064117ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_answers (1.088794ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_profile (4.29779ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_hotel (0.825416ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_commit (0.998311ms)
+✔ LAB uncertain response after commit is recovered by identical idempotent retry, no duplicate event (0.947074ms)
+✔ LAB window atomic failure is not partial; retry preserves seven deterministic drafts and human edit (22.251684ms)
+✔ LAB all four audiences get complete distinct seven-date plan (14.116131ms)
+✔ LAB shared export policy blocks revoked facts for get and record, not merely application UI (7.238081ms)
+✔ LAB export history is idempotent and clipboard denial writes nothing; failure rolls back event (7.09465ms)
+✔ LAB DNA reconfirmation increments identity, preserves human text, requires exact repair then review (9.398222ms)
+✔ LAB missing DNA leaves historical drafts and unapproved human edits accessible, not export (7.024686ms)
+✔ LAB stale revision rejects overwrite; A/B and suspended state read/write boundaries stay distinct (6.269374ms)
+✔ LAB JSON atomic snapshot survives restart with revisions, buffers stored server-side and export history (7.360391ms)
+(node:226) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ LAB HTTP local adapter demonstrates rollback, retry, A/B, exact export, revocation, suspension and restart; not auth/RLS (550.644932ms)
+✔ LAB cannot start by operational config failure or implicit default mode (126.086622ms)
+(node:227) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit null (106.564963ms)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {} (26.620312ms)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {"hotel_id":"11111111-1111-4111-8111-111111111111"} (21.659964ms)
+✔ C21-P1-01 failed DNA read is explicit, not an empty profile (16.340184ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (3.542057ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (3.620293ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (5.805845ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (1.794227ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.966074ms)
+✔ C21-P1-02 independent obsolete occurrence still blocks even when current value contains old (2.964402ms)
+✔ C21-SQL-P1-03 application refuses empty/omitted/extra facts, even exact forged review (3.738988ms)
+✔ C21-SQL-P1-03 candidate derives required facts from server-owned template/version; no empty client loop (0.410759ms)
+✔ SQL trusted template map matches exact approved seed keys; empty, omitted and extra keys fail derived contract (static model, not PostgreSQL) (0.968885ms)
+✔ built daily-prophet-hotels runtime returns explicit 503 with no config, never synthetic login success (637.726558ms)
+✔ reused onboarding awaits one receipt before advancing; actual UF and explicit capacity, no regional guess (1.541261ms)
+✔ Hoje editor keeps local and remote buffers separate, owner-scoped, with explicit decision (0.363115ms)
+✔ Hoje gates initial and new-post eligibility alike and exports only server-verified exact revision (0.258782ms)
+✔ calendar retains monthly read/create UI with awaited owner-scoped server actions and draft-only state (4.328015ms)
+✔ LAB browser source parses, labels fiction and keeps policy server-side; no HTML injection or external request (1.570543ms)
+✔ onboarding preview no longer carries legacy performance/forced-video idea claims (0.512314ms)
+✔ C3-P2 old manual export is cleared on text input, save and conflict decision (0.232352ms)
+ℹ tests 77
+ℹ suites 0
+ℹ pass 77
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 825.458831

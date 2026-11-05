@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import Link from 'next/link'
 
 export default function AdminPage() {
   const [stats, setStats] = useState({ hoteis: 0, ativos: 0, leads: 0, collabs: 0, mrr: 0, posts: 0 })
@@ -68,14 +67,16 @@ export default function AdminPage() {
       </div>
 
       <div className="space-y-3">
-        <Link href="/admin/hoteis" className="block bg-white border border-[#E5E7EB] rounded-2xl p-4 hover:border-[#D1D5DB] hover:shadow-md transition-all duration-200">
+        <div aria-disabled={true} className="block bg-white border border-[#E5E7EB] rounded-2xl p-4">
           <h3 className="font-semibold text-[#1A1D26]">Pipeline de Hotéis</h3>
           <p className="text-sm text-[#6B7280]">Ver todos os hotéis por status</p>
-        </Link>
-        <Link href="/admin/financeiro" className="block bg-white border border-[#E5E7EB] rounded-2xl p-4 hover:border-[#D1D5DB] hover:shadow-md transition-all duration-200">
+          <p className="text-xs text-[#9CA3AF] mt-2">Indisponível nesta versão</p>
+        </div>
+        <div aria-disabled={true} className="block bg-white border border-[#E5E7EB] rounded-2xl p-4">
           <h3 className="font-semibold text-[#1A1D26]">Financeiro</h3>
           <p className="text-sm text-[#6B7280]">Receita, collabs e pagamentos</p>
-        </Link>
+          <p className="text-xs text-[#9CA3AF] mt-2">Indisponível nesta versão</p>
+        </div>
       </div>
     </div>
   )

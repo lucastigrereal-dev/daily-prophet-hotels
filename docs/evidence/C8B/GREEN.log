@@ -1,0 +1,12 @@
+✔ C8B static onboarding_respostas insert and update check both old/new hotel ownership and writable states (1.394669ms)
+✔ C8B static hotel_content_preferences insert and update check both old/new hotel ownership and writable states (0.254217ms)
+✔ C8B static operational log insertion requires owner active, with no new SELECT/ALL/update policy (0.481224ms)
+✔ C8B preserves exact C8A RPC/state policy, C7 repair and historical/C6 migrations (1.060393ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101.898968

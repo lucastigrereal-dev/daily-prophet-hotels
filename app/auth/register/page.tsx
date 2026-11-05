@@ -45,10 +45,10 @@ export default function RegisterPage() {
     <form onSubmit={handleRegister} className="space-y-4">
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 space-y-4 shadow-sm">
         <div>
-          <label className="block text-sm text-[#6B7280] mb-1.5 font-medium">Nome</label>
+          <label htmlFor="register-nome" className="block text-sm text-[#6B7280] mb-1.5 font-medium">Nome</label>
           <input
             type="text"
-            value={nome}
+            id="register-nome" aria-describedby={error?"register-error":undefined} value={nome}
             onChange={(e) => setNome(e.target.value)}
             className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] text-base transition-colors"
             placeholder="Seu nome"
@@ -56,10 +56,10 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm text-[#6B7280] mb-1.5 font-medium">Email</label>
+          <label htmlFor="register-email" className="block text-sm text-[#6B7280] mb-1.5 font-medium">Email</label>
           <input
             type="email"
-            value={email}
+            id="register-email" aria-describedby={error?"register-error":undefined} value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] text-base transition-colors"
             placeholder="seu@email.com"
@@ -68,10 +68,10 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm text-[#6B7280] mb-1.5 font-medium">Senha</label>
+          <label htmlFor="register-password" className="block text-sm text-[#6B7280] mb-1.5 font-medium">Senha</label>
           <input
             type="password"
-            value={password}
+            id="register-password" aria-describedby={error?"register-error":undefined} value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] text-base transition-colors"
             placeholder="Mínimo 6 caracteres"
@@ -82,7 +82,7 @@ export default function RegisterPage() {
         </div>
 
         {error && (
-          <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
+          <p id="register-error" role="alert" className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg p-3">
             {error}
           </p>
         )}

@@ -1,0 +1,208 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> daily-prophet-hotels@1.0.0 test
+> node --test tests/*.test.mjs
+
+(node:216) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ application source with synthetic IO exports only exact reviewed current facts, not an external-service test (38.46616ms)
+✔ application export refuses changed text, changed DNA, quarantined template and cross-owner ID (9.249479ms)
+✔ application revision confirmation binds profile actually read; stale expected revision preserves DB (3.997134ms)
+✔ application suspended state allows authorized historical read but denies edit/export/history write (2.959846ms)
+✔ four SDK entrypoints share explicit config; zero stories survives nullish mapping (0.498429ms)
+✔ SQL is explicitly candidate only; static contract covers versions, status, receipt, old fields and calendar format (0.346593ms)
+(node:217) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ missing/invalid operational config never becomes synthetic success (1.260648ms)
+✔ Natal/RN stays RN; region cannot supply a state (0.359322ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.169501ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.177623ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.118636ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.247516ms)
+✔ valid public configuration is explicit; no operational fallback (0.196321ms)
+✔ owner A/B, expired session and ambiguous owner fail closed (0.303721ms)
+✔ suspension/state prevents writes and onboarding reactivation: pausado (0.205014ms)
+✔ suspension/state prevents writes and onboarding reactivation: cancelado (0.17481ms)
+✔ suspension/state prevents writes and onboarding reactivation: arquivado (0.128491ms)
+✔ suspension/state prevents writes and onboarding reactivation: revogado (0.076864ms)
+✔ suspension/state prevents writes and onboarding reactivation: suspenso (0.124504ms)
+✔ suspension/state prevents writes and onboarding reactivation: unknown (0.120769ms)
+✔ suspension/state prevents writes and onboarding reactivation: undefined (0.280776ms)
+✔ active vs onboarding vs readonly authority is explicit (0.254107ms)
+✔ admin requires trusted explicit app_metadata; not user_metadata or users.role (0.227357ms)
+✔ DNA absence is distinct from error; resolved SDK errors and rejection propagate (0.481633ms)
+✔ onboarding receipt binds owner/hotel, exact next revision, module, operation and boolean completion (0.712786ms)
+✔ effective DNA identity changes only by confirmed revision; all form audiences have a week (35.498081ms)
+✔ seven dates are deterministic, distinct and capacity-respecting, without forced video or fabricated claims (6.223063ms)
+✔ origin missing is a contract error; unknown rights and quarantine never become recommendations (0.986802ms)
+✔ facts must be true-boolean confirmed with source and date; veto/capacity apply on every call (0.993532ms)
+✔ complete matching finds week that greedy selection misses (0.554081ms)
+✔ truly impossible matching throws without partial result (1.553182ms)
+✔ export needs exact revision, text, facts and current actor; edit invalidates confirmation (5.324722ms)
+✔ changed still-confirmed fact, revoked/expired fact, source/version change all block old text export (3.711961ms)
+✔ manual factual repair preserves text and requires explicit review; stale embedded fact and unsupported claims reject (4.160747ms)
+✔ conflict comparison keeps byte-exact local buffer until explicit resolution (2.991263ms)
+✔ clipboard denial records no export; history failure is not a copy failure (0.751764ms)
+✔ calendar format contract maps stories and reels correctly (0.178525ms)
+✔ original seed bytes unchanged; sixteen originals, fifteen draft candidates (0.746967ms)
+(node:218) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ LAB requires explicit mode and uses no operational service/credential (5.952667ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_transaction (3.123239ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_answers (0.815339ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_answers (0.783061ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_profile (2.671489ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at after_hotel (0.519691ms)
+✔ LAB transaction rollback preserves all state and retry succeeds at before_commit (0.668641ms)
+✔ LAB uncertain response after commit is recovered by identical idempotent retry, no duplicate event (1.143404ms)
+✔ LAB window atomic failure is not partial; retry preserves seven deterministic drafts and human edit (16.382891ms)
+✔ LAB all four audiences get complete distinct seven-date plan (9.813855ms)
+✔ LAB shared export policy blocks revoked facts for get and record, not merely application UI (5.575263ms)
+✔ LAB export history is idempotent and clipboard denial writes nothing; failure rolls back event (4.902336ms)
+✔ LAB DNA reconfirmation increments identity, preserves human text, requires exact repair then review (5.90367ms)
+✔ LAB missing DNA leaves historical drafts and unapproved human edits accessible, not export (5.672822ms)
+✔ LAB stale revision rejects overwrite; A/B and suspended state read/write boundaries stay distinct (12.349188ms)
+✔ LAB JSON atomic snapshot survives restart with revisions, buffers stored server-side and export history (6.797836ms)
+(node:224) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ C4-P1 later text typed during pending save stays editable, byte-exact and recoverable; first response cannot replace it (24.855368ms)
+✔ C4-P1 review intention changed during save is not overwritten by older approval response (7.124819ms)
+✔ C4-P1 newer snapshot during onboarding response stays local with prior expected revision until explicit comparison (3.651662ms)
+✔ C4-P1 typing while remote comparison GET is pending cannot be overwritten by its initial text snapshot (5.763642ms)
+✔ C4-P1 stale export response after newer edit cannot show/copy/register an old export (8.048008ms)
+✔ C4-P2 owner A manual export and remote fields are cleared on B without drafts, with A buffer retained only in A scope (7.500327ms)
+✔ C4-P1 draft context changed before response prevents replacing the new draft (6.261169ms)
+✔ C5 changed DNA while response is pending invalidates a newer checkbox without replacing human text (5.56658ms)
+(node:225) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ LAB HTTP local adapter demonstrates rollback, retry, A/B, exact export, revocation, suspension and restart; not auth/RLS (549.637794ms)
+✔ LAB cannot start by operational config failure or implicit default mode (112.506744ms)
+(node:236) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit null (118.294902ms)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {} (21.430081ms)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {"hotel_id":"11111111-1111-4111-8111-111111111111"} (18.171226ms)
+✔ C21-P1-01 failed DNA read is explicit, not an empty profile (14.567159ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.802914ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.163477ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (4.235367ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.756485ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.739259ms)
+✔ C21-P1-02 independent obsolete occurrence still blocks even when current value contains old (5.728465ms)
+✔ C21-SQL-P1-03 application refuses empty/omitted/extra facts, even exact forged review (2.711188ms)
+✔ C21-SQL-P1-03 candidate derives required facts from server-owned template/version; no empty client loop (0.584186ms)
+✔ SQL trusted template map matches exact approved seed keys; empty, omitted and extra keys fail derived contract (static model, not PostgreSQL) (1.01223ms)
+✔ built daily-prophet-hotels runtime returns explicit 503 with no config, never synthetic login success (642.322775ms)
+✔ reused onboarding awaits one receipt before advancing; actual UF and explicit capacity, no regional guess (1.566242ms)
+✔ Hoje editor keeps local and remote buffers separate, owner-scoped, with explicit decision (0.379602ms)
+✔ Hoje gates initial and new-post eligibility alike and exports only server-verified exact revision (0.324371ms)
+✔ calendar retains monthly read/create UI with awaited owner-scoped server actions and draft-only state (0.250701ms)
+✖ LAB browser source parses, labels fiction and keeps policy server-side; no HTML injection or external request (2.626292ms)
+✔ onboarding preview no longer carries legacy performance/forced-video idea claims (0.561693ms)
+✔ C3-P2 old manual export is cleared on text input, save and conflict decision (0.324692ms)
+ℹ tests 85
+ℹ suites 0
+ℹ pass 84
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 866.842326
+
+✖ failing tests:
+
+test at tests/ui-contract.test.mjs:9:1
+✖ LAB browser source parses, labels fiction and keeps policy server-side; no HTML injection or external request (2.626292ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /api\('export',args\)/. Input:
+
+  "'use strict'\n" +
+    '// Browser UI only. All factual/export policy stays in the shared server-side domain.\n' +
+    "const $=id=>document.getElementById(id),state={owner:'A',w:null,selected:null,expected:1,remote:null,busy:false,profileRevision:0,module:null,exportArgs:null,context:0,intent:0}\n" +
+    "const key=kind=>`hotel-lab:${state.owner}:${state.w?.hotel.id??'none'}:${kind}`\n" +
+    "const editorKey=()=>key('draft:'+state.selected)\n" +
+    "function tell(message){$('message').textContent=message}\n" +
+    "function restore(k){try{return JSON.parse(sessionStorage.getItem(k)??'null')}catch{return null}}\n" +
+    "function keepText(){if(state.selected)sessionStorage.setItem(editorKey(),JSON.stringify({text:$('text').value,expected:state.expected}))}\n" +
+    "function keepProfile(){if(state.w)sessionStorage.setItem(key('profile'),JSON.stringify({text:$('snapshot').value,revision:state.profileRevision,module:state.module}))}\n" +
+    "async function api(route,args={},fault='',owner=state.owner){const response=await fetch('/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner,args,fault})}),body=await response.json();if(!response.ok)throw Error(body.error+': '+body.message);return body}\n" +
+    "async function run(fn){if(state.busy)return;state.busy=true;document.querySelectorAll('button,select').forEach(x=>x.disabled=true);try{await fn()}catch(e){tell(e.message+'\\nTexto/campos locais preservados. Não foi presumido sucesso.')}finally{state.busy=false;document.querySelectorAll('button,select').forEach(x=>x.disabled=false)}}\n" +
+    'function draft(){return state.w?.drafts.find(d=>d.id===state.selected)}\n' +
+    'function capture(){return{owner:state.owner,context:state.context,selected:state.selected,intent:state.intent}}\n' +
+    'function sameContext(shot){return shot.owner===state.owner&&shot.context===state.context&&shot.selected===state.selected}\n' +
+    'function sameIntent(shot){return sameContext(shot)&&shot.intent===state.intent}\n' +
+    "function clearExport(){state.exportArgs=null;$('export-label').hidden=true;$('export-text').value=''}\n" +
+    "function clearRemote(){state.remote=null;$('remote-label').hidden=true;$('remote').value=''}\n" +
+    'function invalidate(){state.intent++;clearExport()}\n' +
+    "function showRemote(){state.remote=draft()??null;$('remote').value=state.remote?.text??'';$('remote-label').hidden=!state.remote}\n" +
+    "function showRemoteProfile(){$('profile-remote').textContent=JSON.stringify({revision:state.w.revision,answers:state.w.answers},null,2);$('profile-remote').hidden=false}\n" +
+    'function choose(id,{fresh=false,preserveEditor=false}={}){\n' +
+    ' const same=id===state.selected;if(state.selected&&!fresh)keepText();if(!same)state.context++;state.selected=id;const d=draft()\n' +
+    " if(!d){clearRemote();clearExport();$('text').value='';$('review').checked=false;$('draft-info').textContent='';return}\n" +
+    " if(!same||!preserveEditor){const buffer=fresh?null:restore(editorKey());$('text').value=buffer?.text??d.text;state.expected=buffer?.expected??d.revision;clearRemote();clearExport();$('review').checked=false}\n" +
+    " $('draft-title').textContent=d.date+' · '+d.title;$('draft-info').textContent=`RASCUNHO salvo r${d.revision}, edição espera r${state.expected}. ${d.intention==='preparar'?'Preparação sem obrigação de publicar':'Sugestão, não agendada'}. ${d.format}, ${d.minutes} minutos.`\n" +
+    " document.querySelectorAll('#cards button').forEach(b=>b.classList.toggle('selected',b.dataset.id===id))\n" +
+    '}\n' +
+    'async function refresh({initial=false,fresh=false,preserveEditor=false,guard=capture()}={}){\n' +
+    " const response=await fetch('/api/workspace?owner='+guard.owner),w=await response.json();if(!sameContext(guard))return false;if(!response.ok)throw Error(w.message)\n" +
+    " if(state.selected&&state.w?.profile?.dna_version!==w.profile?.dna_version){invalidate();$('review').checked=false}\n" +
+    " const changedIntent=state.intent!==guard.intent;state.w=w;$('summary').textContent=`${w.hotel.nome} · ${w.hotel.status} · perfil r${w.revision}`;$('facts').textContent=JSON.stringify(w.profile??{aviso:'DNA ausente; texto histórico preservado, aprovação/exportação negadas.'},null,2);$('events').textContent=JSON.stringify(w.events,null,2)\n" +
+    " if(initial&&!changedIntent){const p=restore(key('profile'));$('snapshot').value=p?.text??JSON.stringify(Object.keys(w.answers).length?w.answers:w.example,null,2);state.profileRevision=p?.revision??w.revision;state.module=p?.module??(w.hotel.complete?null:Math.min(4,w.lastModule+1));keepProfile()}\n" +
+    ' else if(initial&&changedIntent){state.module??=1;keepProfile();showRemoteProfile()}\n' +
+    " $('onboard').textContent=state.module?'Salvar módulo '+state.module:'Perfil concluído; reabra para reconfirmar';$('cards').replaceChildren()\n" +
+    " for(const d of w.drafts){const button=document.createElement('button');button.textContent=`${d.date} · ${d.title} · r${d.revision}`;button.dataset.id=d.id;button.onclick=()=>choose(d.id);$('cards').append(button)}\n" +
+    ' if(w.drafts.length){choose(w.drafts.some(d=>d.id===state.selected)?state.selected:w.drafts[0].id,{fresh:fresh&&!changedIntent,preserveEditor:preserveEditor||changedIntent})}\n' +
+    " else{if(state.selected)state.context++;state.selected=null;state.expected=1;clearRemote();clearExport();$('text').value='';$('review').checked=false;$('draft-info').textContent='';$('draft-title').textContent='Sem janela salva neste proprietário fictício'}\n" +
+    ' return true\n' +
+    '}\n' +
+    "$('snapshot').oninput=()=>{invalidate();keepProfile()};$('text').oninput=()=>{invalidate();keepText();$('review').checked=false};$('review').onchange=()=>{invalidate();keepText()}\n" +
+    "$('owner').onchange=()=>run(async()=>{keepText();keepProfile();state.context++;state.owner=$('owner').value;state.selected=null;state.w=null;state.expected=1;state.profileRevision=0;state.module=null;clearRemote();clearExport();$('text').value='';$('review').checked=false;$('draft-info').textContent='';$('snapshot').value='';$('profile-remote').textContent='';$('profile-remote').hidden=true;$('facts').textContent='';$('events').textContent='';await refresh({initial:true});tell('Proprietário fictício '+state.owner+' selecionado. Isso não é login nem teste de RLS.')})\n" +
+    "$('reload').onclick=()=>run(async()=>{keepText();await refresh();tell('Leitura atualizada; buffers locais mantidos. Compare explicitamente para escolher revisão.')})\n" +
+    "$('onboard').onclick=()=>run(async()=>{\n" +
+    " if(!state.module)throw Error('Clique Reabrir/reconfirmar primeiro.')\n" +
+    " const shot=capture(),args={module:state.module,snapshot:JSON.parse($('snapshot').value),revision:state.profileRevision,hotelId:state.w.hotel.id},attemptKey=key('attempt'),old=restore(attemptKey),signature=JSON.stringify(args)\n" +
+    " let attempt=old;if(old&&old.signature!==signature)throw Error('ATTEMPT_CHANGED: há tentativa anterior com outros campos. Compare a ficha remota e escolha manter local para uma nova tentativa.')\n" +
+    ' if(!attempt){attempt={signature,args:{...args,operationId:crypto.randomUUID()}};sessionStorage.setItem(attemptKey,JSON.stringify(attempt))}\n' +
+    " const receipt=await api('onboarding',attempt.args,$('fault').value,shot.owner),sent=attempt.args\n" +
+    " if(receipt.hotel_id!==sent.hotelId||receipt.module!==sent.module||receipt.revision!==sent.revision+1||receipt.complete!==(sent.module===4)||receipt.operation_id!==sent.operationId)throw Error('INVALID_RECEIPT')\n" +
+    ' if(!sameContext(shot))return\n' +
+    ' await refresh({preserveEditor:true,guard:shot});if(!sameContext(shot))return\n' +
+    " if(!sameIntent(shot)){keepProfile();showRemoteProfile();tell('A ficha enviada foi salva, mas há intenção/edição local posterior. Campos e revisão esperada preservados; compare antes de avançar.');return}\n" +
+    " sessionStorage.removeItem(attemptKey);state.profileRevision=receipt.revision;state.module=receipt.complete?null:receipt.module+1;keepProfile();$('onboard').textContent=state.module?'Salvar módulo '+state.module:'Perfil concluído; reabra para reconfirmar'\n" +
+    " tell(`Recibo confirmado: módulo ${receipt.module}, r${receipt.revision}. ${receipt.complete?'Novo DNA confirmado; rascunhos anteriores preservados.':'Próximo módulo liberado.'}`)\n" +
+    '})\n' +
+    "$('reconfirm').onclick=()=>{invalidate();state.module=1;keepProfile();$('onboard').textContent='Salvar módulo 1';tell('Reconfirmação reaberta. Os fatos atuais só receberão nova identidade após confirmar o módulo 4.')}\n" +
+    "$('load-remote-profile').onclick=()=>run(async()=>{await refresh();$('profile-remote').textContent=JSON.stringify({revision:state.w.revision,answers:state.w.answers},null,2);$('profile-remote').hidden=false;tell('Ficha remota exibida abaixo. Seu JSON local não foi substituído.')})\n" +
+    "$('reapply-profile').onclick=()=>{invalidate();state.profileRevision=state.w.revision;sessionStorage.removeItem(key('attempt'));keepProfile();tell('Campos locais mantidos sobre a revisão remota conhecida. Revise e salve explicitamente; nenhuma escrita automática.')}\n" +
+    "$('window').onclick=()=>run(async()=>{const opKey=key('window-op');let op=sessionStorage.getItem(opKey);if(!op){op=crypto.randomUUID();sessionStorage.setItem(opKey,op)}await api('window',{anchor:state.w.lab_clock,operationId:op});sessionStorage.removeItem(opKey);await refresh();tell('Janela completa lida: sete datas, nenhum post foi publicado.')})\n" +
+    "$('save').onclick=()=>run(async()=>{\n" +
+    " const d=draft();if(!d)throw Error('Selecione rascunho.');keepText();const shot=capture(),submittedKey=editorKey(),args={draftId:d.id,hotelId:state.w.hotel.id,revision:state.expected,text:$('text').value,confirmExact:$('review').checked,expectedDnaVersion:state.w.profile?.dna_version}\n" +
+    " try{await api('save',args,'',shot.owner)}catch(e){if(sameContext(shot)&&e.message.includes('REVISION_CONFLICT'))await compareRemote();throw e}\n" +
+    ' if(!sameContext(shot))return\n' +
+    ' await refresh({preserveEditor:true,guard:shot});if(!sameContext(shot))return\n' +
+    " if(!sameIntent(shot)){keepText();showRemote();tell('A revisão enviada foi salva, mas há intenção/edição local posterior. Seu buffer e revisão esperada continuam aqui; compare e escolha como reaplicar.');return}\n" +
+    " sessionStorage.removeItem(submittedKey);choose(d.id,{fresh:true});tell('Revisão salva. '+(draft().editorial_review?'Aceite exato registrado; ainda não publicado.':'Texto não aprovado, sem exportação.'))\n" +
+    '})\n' +
+    'as'... 3125 more characters
+
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/ui-contract.test.mjs:9:583)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "'use strict'\n// Browser UI only. All factual/export policy stays in the shared server-side domain.\nconst $=id=>document.getElementById(id),state={owner:'A',w:null,selected:null,expected:1,remote:null,busy:false,profileRevision:0,module:null,exportArgs:null,context:0,intent:0}\nconst key=kind=>`hotel-lab:${state.owner}:${state.w?.hotel.id??'none'}:${kind}`\nconst editorKey=()=>key('draft:'+state.selected)\nfunction tell(message){$('message').textContent=message}\nfunction restore(k){try{return JSON.parse(sessionStorage.getItem(k)??'null')}catch{return null}}\nfunction keepText(){if(state.selected)sessionStorage.setItem(editorKey(),JSON.stringify({text:$('text').value,expected:state.expected}))}\nfunction keepProfile(){if(state.w)sessionStorage.setItem(key('profile'),JSON.stringify({text:$('snapshot').value,revision:state.profileRevision,module:state.module}))}\nasync function api(route,args={},fault='',owner=state.owner){const response=await fetch('/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner,args,fault})}),body=await response.json();if(!response.ok)throw Error(body.error+': '+body.message);return body}\nasync function run(fn){if(state.busy)return;state.busy=true;document.querySelectorAll('button,select').forEach(x=>x.disabled=true);try{await fn()}catch(e){tell(e.message+'\\nTexto/campos locais preservados. Não foi presumido sucesso.')}finally{state.busy=false;document.querySelectorAll('button,select').forEach(x=>x.disabled=false)}}\nfunction draft(){return state.w?.drafts.find(d=>d.id===state.selected)}\nfunction capture(){return{owner:state.owner,context:state.context,selected:state.selected,intent:state.intent}}\nfunction sameContext(shot){return shot.owner===state.owner&&shot.context===state.context&&shot.selected===state.selected}\nfunction sameIntent(shot){return sameContext(shot)&&shot.intent===state.intent}\nfunction clearExport(){state.exportArgs=null;$('export-label').hidden=true;$('export-text').value=''}\nfunction clearRemote(){state.remote=null;$('remote-label').hidden=true;$('remote').value=''}\nfunction invalidate(){state.intent++;clearExport()}\nfunction showRemote(){state.remote=draft()??null;$('remote').value=state.remote?.text??'';$('remote-label').hidden=!state.remote}\nfunction showRemoteProfile(){$('profile-remote').textContent=JSON.stringify({revision:state.w.revision,answers:state.w.answers},null,2);$('profile-remote').hidden=false}\nfunction choose(id,{fresh=false,preserveEditor=false}={}){\n const same=id===state.selected;if(state.selected&&!fresh)keepText();if(!same)state.context++;state.selected=id;const d=draft()\n if(!d){clearRemote();clearExport();$('text').value='';$('review').checked=false;$('draft-info').textContent='';return}\n if(!same||!preserveEditor){const buffer=fresh?null:restore(editorKey());$('text').value=buffer?.text??d.text;state.expected=buffer?.expected??d.revision;clearRemote();clearExport();$('review').checked=false}\n $('draft-title').textContent=d.date+' · '+d.title;$('draft-info').textContent=`RASCUNHO salvo r${d.revision}, edição espera r${state.expected}. ${d.intention==='preparar'?'Preparação sem obrigação de publicar':'Sugestão, não agendada'}. ${d.format}, ${d.minutes} minutos.`\n document.querySelectorAll('#cards button').forEach(b=>b.classList.toggle('selected',b.dataset.id===id))\n}\nasync function refresh({initial=false,fresh=false,preserveEditor=false,guard=capture()}={}){\n const response=await fetch('/api/workspace?owner='+guard.owner),w=await response.json();if(!sameContext(guard))return false;if(!response.ok)throw Error(w.message)\n if(state.selected&&state.w?.profile?.dna_version!==w.profile?.dna_version){invalidate();$('review').checked=false}\n const changedIntent=state.intent!==guard.intent;state.w=w;$('summary').textContent=`${w.hotel.nome} · ${w.hotel.status} · perfil r${w.revision}`;$('facts').textContent=JSON.stringify(w.profile??{aviso:'DNA ausente; texto histórico preservado, aprovação/exportação negadas.'},null,2);$('events').textContent=JSON.stringify(w.events,null,2)\n if(initial&&!changedIntent){const p=restore(key('profile'));$('snapshot').value=p?.text??JSON.stringify(Object.keys(w.answers).length?w.answers:w.example,null,2);state.profileRevision=p?.revision??w.revision;state.module=p?.module??(w.hotel.complete?null:Math.min(4,w.lastModule+1));keepProfile()}\n else if(initial&&changedIntent){state.module??=1;keepProfile();showRemoteProfile()}\n $('onboard').textContent=state.module?'Salvar módulo '+state.module:'Perfil concluído; reabra para reconfirmar';$('cards').replaceChildren()\n for(const d of w.drafts){const button=document.createElement('button');button.textContent=`${d.date} · ${d.title} · r${d.revision}`;button.dataset.id=d.id;button.onclick=()=>choose(d.id);$('cards').append(button)}\n if(w.drafts.length){choose(w.drafts.some(d=>d.id===state.selected)?state.selected:w.drafts[0].id,{fresh:fresh&&!changedIntent,preserveEditor:preserveEditor||changedIntent})}\n else{if(state.selected)state.context++;state.selected=null;state.expected=1;clearRemote();clearExport();$('text').value='';$('review').checked=false;$('draft-info').textContent='';$('draft-title').textContent='Sem janela salva neste proprietário fictício'}\n return true\n}\n$('snapshot').oninput=()=>{invalidate();keepProfile()};$('text').oninput=()=>{invalidate();keepText();$('review').checked=false};$('review').onchange=()=>{invalidate();keepText()}\n$('owner').onchange=()=>run(async()=>{keepText();keepProfile();state.context++;state.owner=$('owner').value;state.selected=null;state.w=null;state.expected=1;state.profileRevision=0;state.module=null;clearRemote();clearExport();$('text').value='';$('review').checked=false;$('draft-info').textContent='';$('snapshot').value='';$('profile-remote').textContent='';$('profile-remote').hidden=true;$('facts').textContent='';$('events').textContent='';await refresh({initial:true});tell('Proprietário fictício '+state.owner+' selecionado. Isso não é login nem teste de RLS.')})\n$('reload').onclick=()=>run(async()=>{keepText();await refresh();tell('Leitura atualizada; buffers locais mantidos. Compare explicitamente para escolher revisão.')})\n$('onboard').onclick=()=>run(async()=>{\n if(!state.module)throw Error('Clique Reabrir/reconfirmar primeiro.')\n const shot=capture(),args={module:state.module,snapshot:JSON.parse($('snapshot').value),revision:state.profileRevision,hotelId:state.w.hotel.id},attemptKey=key('attempt'),old=restore(attemptKey),signature=JSON.stringify(args)\n let attempt=old;if(old&&old.signature!==signature)throw Error('ATTEMPT_CHANGED: há tentativa anterior com outros campos. Compare a ficha remota e escolha manter local para uma nova tentativa.')\n if(!attempt){attempt={signature,args:{...args,operationId:crypto.randomUUID()}};sessionStorage.setItem(attemptKey,JSON.stringify(attempt))}\n const receipt=await api('onboarding',attempt.args,$('fault').value,shot.owner),sent=attempt.args\n if(receipt.hotel_id!==sent.hotelId||receipt.module!==sent.module||receipt.revision!==sent.revision+1||receipt.complete!==(sent.module===4)||receipt.operation_id!==sent.operationId)throw Error('INVALID_RECEIPT')\n if(!sameContext(shot))return\n await refresh({preserveEditor:true,guard:shot});if(!sameContext(shot))return\n if(!sameIntent(shot)){keepProfile();showRemoteProfile();tell('A ficha enviada foi salva, mas há intenção/edição local posterior. Campos e revisão esperada preservados; compare antes de avançar.');return}\n sessionStorage.removeItem(attemptKey);state.profileRevision=receipt.revision;state.module=receipt.complete?null:receipt.module+1;keepProfile();$('onboard').textContent=state.module?'Salvar módulo '+state.module:'Perfil concluído; reabra para reconfirmar'\n tell(`Recibo confirmado: módulo ${receipt.module}, r${receipt.revision}. ${receipt.complete?'Novo DNA confirmado; rascunhos anteriores preservados.':'Próximo módulo liberado.'}`)\n})\n$('reconfirm').onclick=()=>{invalidate();state.module=1;keepProfile();$('onboard').textContent='Salvar módulo 1';tell('Reconfirmação reaberta. Os fatos atuais só receberão nova identidade após confirmar o módulo 4.')}\n$('load-remote-profile').onclick=()=>run(async()=>{await refresh();$('profile-remote').textContent=JSON.stringify({revision:state.w.revision,answers:state.w.answers},null,2);$('profile-remote').hidden=false;tell('Ficha remota exibida abaixo. Seu JSON local não foi substituído.')})\n$('reapply-profile').onclick=()=>{invalidate();state.profileRevision=state.w.revision;sessionStorage.removeItem(key('attempt'));keepProfile();tell('Campos locais mantidos sobre a revisão remota conhecida. Revise e salve explicitamente; nenhuma escrita automática.')}\n$('window').onclick=()=>run(async()=>{const opKey=key('window-op');let op=sessionStorage.getItem(opKey);if(!op){op=crypto.randomUUID();sessionStorage.setItem(opKey,op)}await api('window',{anchor:state.w.lab_clock,operationId:op});sessionStorage.removeItem(opKey);await refresh();tell('Janela completa lida: sete datas, nenhum post foi publicado.')})\n$('save').onclick=()=>run(async()=>{\n const d=draft();if(!d)throw Error('Selecione rascunho.');keepText();const shot=capture(),submittedKey=editorKey(),args={draftId:d.id,hotelId:state.w.hotel.id,revision:state.expected,text:$('text').value,confirmExact:$('review').checked,expectedDnaVersion:state.w.profile?.dna_version}\n try{await api('save',args,'',shot.owner)}catch(e){if(sameContext(shot)&&e.message.includes('REVISION_CONFLICT'))await compareRemote();throw e}\n if(!sameContext(shot))return\n await refresh({preserveEditor:true,guard:shot});if(!sameContext(shot))return\n if(!sameIntent(shot)){keepText();showRemote();tell('A revisão enviada foi salva, mas há intenção/edição local posterior. Seu buffer e revisão esperada continuam aqui; compare e escolha como reaplicar.');return}\n sessionStorage.removeItem(submittedKey);choose(d.id,{fresh:true});tell('Revisão salva. '+(draft().editorial_review?'Aceite exato registrado; ainda não publicado.':'Texto não aprovado, sem exportação.'))\n})\nas"... 3125 more characters,
+    expected: /api\('export',args\)/,
+    operator: 'match',
+    diff: 'simple'
+  }

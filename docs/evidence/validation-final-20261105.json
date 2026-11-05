@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "candidate_sha256": "529ee58ca6fe66aedfeadf4bab7663a124c98fddcf0e67631f12b09db3b24f6e",
+  "checks": [
+    {
+      "name": "typecheck",
+      "exit_code": 0,
+      "started": "2026-11-05T18:06:00.843705+00:00",
+      "finished": "2026-11-05T18:06:08.626797+00:00",
+      "log": "{HOTEL_LAB}\\qa-visual-20261104\\save-20261105\\validation-20261105T180559Z\\typecheck.log"
+    },
+    {
+      "name": "build",
+      "exit_code": 0,
+      "started": "2026-11-05T18:06:08.642509+00:00",
+      "finished": "2026-11-05T18:07:12.556748+00:00",
+      "log": "{HOTEL_LAB}\\qa-visual-20261104\\save-20261105\\validation-20261105T180559Z\\build.log"
+    },
+    {
+      "name": "tests",
+      "exit_code": 0,
+      "started": "2026-11-05T18:07:12.562487+00:00",
+      "finished": "2026-11-05T18:07:53.893023+00:00",
+      "log": "{HOTEL_LAB}\\qa-visual-20261104\\save-20261105\\validation-20261105T180559Z\\tests.log"
+    }
+  ],
+  "logs": "{HOTEL_LAB}\\qa-visual-20261104\\save-20261105\\validation-20261105T180559Z",
+  "runtime_versions": {
+    "node": "v24.22.2",
+    "python": "Python 3.12.10"
+  },
+  "finished": "2026-11-05T18:07:54.651735+00:00"
+}

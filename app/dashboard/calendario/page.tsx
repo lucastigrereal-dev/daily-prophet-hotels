@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import {insertCalendar,listCalendar} from '@/lib/hotel/workspace-actions'
 import { useCurrentHotel } from '@/lib/hotel/use-current-hotel'
 import { toast } from 'sonner'
 import { TEMAS, TEMA_LABEL } from '@/lib/content/taxonomy'
@@ -42,21 +42,15 @@ export default function CalendarioPage() {
     hook: '', legenda_completa: '', hashtags: '', status: 'rascunho',
   })
   const [saving, setSaving] = useState(false)
-  const supabase = createClient()
+  const [loadError,setLoadError]=useState<string|null>(null)
 
   async function loadPosts() {
     if (!hotel) { setLoading(false); return }
     setLoading(true)
-    const firstDay = new Date(ano, mes, 1).toISOString().split('T')[0]
-    const lastDay = new Date(ano, mes + 1, 0).toISOString().split('T')[0]
-    const { data } = await supabase.from('calendarios_gerados')
-      .select('*')
-      .eq('hotel_id', hotel.id)
-      .gte('data_post', firstDay)
-      .lte('data_post', lastDay)
-      .order('data_post')
-    setPosts(data || [])
-    setLoading(false)
+    const firstDay=`${ano}-${String(mes+1).padStart(2,'0')}-01`,lastDay=`${ano}-${String(mes+1).padStart(2,'0')}-${String(new Date(ano,mes+1,0).getDate()).padStart(2,'0')}`
+    try{setLoadError(null);setPosts(await listCalendar(firstDay,lastDay))}
+    catch(e){setLoadError(e instanceof Error?e.message:'Não foi possível ler o calendário. A lista anterior foi preservada.')}
+    finally{setLoading(false)}
   }
 
   useEffect(() => {
@@ -95,35 +89,16 @@ export default function CalendarioPage() {
     e.preventDefault()
     setSaving(true)
     if (!hotel) { toast.error('Nenhum hotel cadastrado'); setSaving(false); return }
-    const payload = {
-      hotel_id: hotel.id,
-      data_post: form.data_post,
-      tema: form.tema,
-      formato: form.formato,
-      publico: form.publico,
-      hook: form.hook,
-      legenda_completa: form.legenda_completa,
-      hashtags: form.hashtags ? form.hashtags.split(/[\s,]+/).filter(Boolean) : [],
-      status: form.status,
-      tipo: form.formato,
-      categoria: form.tema,
-    }
-    const { error } = await supabase.from('calendarios_gerados').insert(payload)
-    if (error) {
-      toast.error('Erro ao salvar post')
-    } else {
-      toast.success('Post criado!')
-      setShowModal(false)
-      setForm({ data_post: '', tema: '', formato: 'foto', publico: 'misto', hook: '', legenda_completa: '', hashtags: '', status: 'rascunho' })
-      await loadPosts()
-    }
-    setSaving(false)
+    try{await insertCalendar(form);toast.success('Rascunho confirmado; não foi agendado nem publicado.');setShowModal(false);setForm({data_post:'',tema:'',formato:'foto',publico:'misto',hook:'',legenda_completa:'',hashtags:'',status:'rascunho'});await loadPosts()}
+    catch(e){toast.error(e instanceof Error?e.message:'Não foi possível confirmar. Seus campos foram preservados.')}
+    finally{setSaving(false)}
   }
 
   const postsDiaSelecionado = diaSelecionado ? postsNoDia(diaSelecionado) : []
 
   return (
     <div className="space-y-4">
+      {loadError&&<p role="alert" className="p-3 bg-amber-50 rounded-xl">{loadError}</p>}
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -270,8 +245,8 @@ export default function CalendarioPage() {
 
             <form onSubmit={salvarPost} className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#6B7280] mb-1">Data</label>
-                <input
+                <label htmlFor="calendar-data" className="block text-sm font-medium text-[#6B7280] mb-1">Data</label>
+                <input id="calendar-data"
                   type="date"
                   value={form.data_post}
                   onChange={e => setForm(f => ({ ...f, data_post: e.target.value }))}
@@ -282,8 +257,8 @@ export default function CalendarioPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-[#6B7280] mb-1">Formato</label>
-                  <select
+                  <label htmlFor="calendar-formato" className="block text-sm font-medium text-[#6B7280] mb-1">Formato</label>
+                  <select id="calendar-formato"
                     value={form.formato}
                     onChange={e => setForm(f => ({ ...f, formato: e.target.value }))}
                     className="w-full h-11 px-3 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
@@ -294,8 +269,8 @@ export default function CalendarioPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#6B7280] mb-1">Público</label>
-                  <select
+                  <label htmlFor="calendar-publico" className="block text-sm font-medium text-[#6B7280] mb-1">Público</label>
+                  <select id="calendar-publico"
                     value={form.publico}
                     onChange={e => setForm(f => ({ ...f, publico: e.target.value }))}
                     className="w-full h-11 px-3 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
@@ -310,8 +285,8 @@ export default function CalendarioPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#6B7280] mb-1">Tema</label>
-                <select
+                <label htmlFor="calendar-tema" className="block text-sm font-medium text-[#6B7280] mb-1">Tema</label>
+                <select id="calendar-tema"
                   value={form.tema}
                   onChange={e => setForm(f => ({ ...f, tema: e.target.value }))}
                   className="w-full h-11 px-3 bg-white border border-[#E5E7EB] rounded-lg text-[#1A1D26] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
@@ -325,8 +300,8 @@ export default function CalendarioPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#6B7280] mb-1">Hook</label>
-                <input
+                <label htmlFor="calendar-hook" className="block text-sm font-medium text-[#6B7280] mb-1">Hook</label>
+                <input id="calendar-hook"
                   type="text"
                   value={form.hook}
                   onChange={e => setForm(f => ({ ...f, hook: e.target.value }))}
@@ -336,8 +311,8 @@ export default function CalendarioPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#6B7280] mb-1">Legenda</label>
-                <textarea
+                <label htmlFor="calendar-legenda" className="block text-sm font-medium text-[#6B7280] mb-1">Legenda</label>
+                <textarea id="calendar-legenda"
                   value={form.legenda_completa}
                   onChange={e => setForm(f => ({ ...f, legenda_completa: e.target.value }))}
                   rows={4}
@@ -347,8 +322,8 @@ export default function CalendarioPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#6B7280] mb-1">Hashtags</label>
-                <input
+                <label htmlFor="calendar-hashtags" className="block text-sm font-medium text-[#6B7280] mb-1">Hashtags</label>
+                <input id="calendar-hashtags"
                   type="text"
                   value={form.hashtags}
                   onChange={e => setForm(f => ({ ...f, hashtags: e.target.value }))}

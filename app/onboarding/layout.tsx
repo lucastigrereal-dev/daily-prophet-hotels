@@ -1,4 +1,7 @@
-export default function OnboardingLayout({ children }: { children: React.ReactNode }) {
+import { ownerContext } from '@/lib/hotel/server-access'
+export const dynamic = 'force-dynamic'
+export default async function OnboardingLayout({ children }: { children: React.ReactNode }) {
+  await ownerContext()
   return (
     <div className="min-h-screen bg-[#FAFBFC]">
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB] px-4 py-3">

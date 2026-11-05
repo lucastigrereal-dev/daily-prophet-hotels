@@ -1,0 +1,59 @@
+{
+  "class": "REFERENCE_TO_INDEPENDENT_DISPOSABLE_POSTGRES_RED_NOT_PRODUCT_ACCEPTANCE",
+  "source_path": "/workspace/shared/hotel-pg-qa/runs/run-VTgYZ57w/evidence/result.json",
+  "source_sha256": "e31d4655b09729a89c7938395585ded45f1bcf80d317650a5733682c46c438f3",
+  "started_at_utc": "2026-10-23T16:21:45.678545+00:00",
+  "finished_at_utc": "2026-10-23T16:21:45.883580+00:00",
+  "candidate_commit_tested": "49d7f9fdc596195afc052332a66936eaf69f82d4",
+  "runtime_identity": "PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit\nagent\n\nUTC",
+  "scope": "Two verbatim pure functions; isolated legacy trigger with reduced compatible tables.",
+  "tables_are_reduced_fixture": true,
+  "full_candidate_applied": false,
+  "auth_rls_jwt_rpc_e2e_tested": false,
+  "cases": [
+    {
+      "name": "PG20_reduced_fixture_with_verbatim_trigger",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "status": "PASS"
+    },
+    {
+      "name": "PG21_normal_search_path_positive_control",
+      "exit_code": 0,
+      "stdout": "t",
+      "stderr": "",
+      "status": "PASS"
+    },
+    {
+      "name": "PG22_reset_synthetic_control",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "status": "PASS"
+    },
+    {
+      "name": "PG23_empty_search_path_reproduces_42P01",
+      "exit_code": 3,
+      "stdout": "",
+      "stderr": "ERROR:  42P01: relation \"hotels\" does not exist\nLINE 1: UPDATE hotels SET onboarding_completo = TRUE WHERE id = NEW....\n               ^\nQUERY:  UPDATE hotels SET onboarding_completo = TRUE WHERE id = NEW.hotel_id\nCONTEXT:  PL/pgSQL function public.check_onboarding_complete() line 4 at SQL statement\nLOCATION:  parserOpenTable, parse_relation.c:1449",
+      "expected_sqlstate": "42P01",
+      "status": "PASS"
+    },
+    {
+      "name": "PG24_failed_statement_rolled_back",
+      "exit_code": 0,
+      "stdout": "f\nf|0",
+      "stderr": "",
+      "status": "PASS"
+    },
+    {
+      "name": "PG25_no_auth_schema_or_extra_login_role_created",
+      "exit_code": 0,
+      "stdout": "0\n0",
+      "stderr": "",
+      "status": "PASS"
+    }
+  ],
+  "C7_postgres_GREEN": "PENDING_SEPARATE_INDEPENDENT_RUN_NOT_EXECUTED_BY_WRITER"
+}

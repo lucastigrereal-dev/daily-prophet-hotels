@@ -1,0 +1,30 @@
+{
+  "scope": "Real SQL/RLS and four RPCs with injected synthetic identity; NOT Auth/JWT/SSR/PostgREST",
+  "candidate_commit": "cefb9776cb3ac657a261d5034297091b10fd2320",
+  "started_utc": "2026-10-23T16:51:35.910956+00:00",
+  "finished_utc": "2026-10-23T16:51:36.120193+00:00",
+  "grant_contract_is_harness_only": true,
+  "claims_are_verified_JWT": false,
+  "cross_session_concurrency": "NOT_RUN: whole fixture remains uncommitted",
+  "findings": [
+    {
+      "severity": "NEEDS_REVIEW",
+      "finding": "Owner ALL policy plus fixture UPDATE privilege permits direct paused-to-active change, although RPCs deny paused writes. This is conditional on the declared fixture grant contract, not proof of deployed exposure."
+    }
+  ],
+  "rollback_verified": true,
+  "source_path": "/workspace/shared/hotel-pg-qa/fullsql/runs/run-full-C1rseqN7/evidence/results.json",
+  "source_sha256": "d9ded93f234ed4c03ee86e42b6d15b619b838a84a5137a341557ec68a2ac1caa",
+  "case": {
+    "name": "direct_owner_table_status_update_observation",
+    "status": "PASS",
+    "rows": [
+      [
+        "ativo"
+      ]
+    ]
+  },
+  "classification": "OBSERVED_C7_STATE_GAP_UNDER_FIXTURE_GRANTS_NOT_DEPLOYED_EXPOSURE",
+  "C8_POSTGRES_GREEN": "PENDING_SEPARATE_RUN",
+  "auxiliary_direct_REDs": "PENDING"
+}

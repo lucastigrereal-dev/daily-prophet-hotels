@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect,useRef,useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { saveContentDNA } from '@/lib/hotel/content-dna'
+import {saveOnboarding,resumeOnboarding} from './actions'
+import {UFS,HOTEL_TIMEZONES,hotelTimezone,minimumAccommodation,profileFrom,identity,editorialPreferences,minimumDiagnosis} from '@/lib/hotel/v2/domain'
+import {MinimumDiagnosisFields,type MinimumDiagnosis} from '@/components/hotel/minimum-diagnosis'
+import {EditorialPreferencesFields,EditorialPreferencesSummary,type EditorialAnswers} from '@/components/hotel/editorial-preferences'
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -12,18 +15,21 @@ import { saveContentDNA } from '@/lib/hotel/content-dna'
 type Screen = 'mod1' | 'entrega1' | 'mod2' | 'entrega2' | 'mod3' | 'entrega3' | 'mod4' | 'resultado'
 
 interface M1 {
-  nome: string; cidade: string; regiao: string; tipo: string; tipoLabel: string; tipoEmoji: string
+  timezone:string; nome: string; cidade: string; estado: string; regiao: string; tipo: string; tipoLabel: string; tipoEmoji: string
   quartos: number; categoria: string; ticket_medio: number
   contexto_geo: string; publico_principal: string
 }
-interface M2 {
+interface M2 extends EditorialAnswers {
+  diagnostico?:MinimumDiagnosis
   diferenciais: string[]
   experiencias: string[]
   lugar_fotografado: string
   lugar_bonito: string
   espaco_oculto: string
+  detalhe_confirmado:string;condicoes_confirmadas:string;fatos_validos_ate:string;fatos_confirmados:boolean
 }
 interface M3 {
+  posts_por_semana:number;minutos_disponiveis:number;video_disponivel:boolean
   frequencia_posts: string; usa_ota: string; conhece_origem: string
   fez_publi: string; responsavel_ig: string; maior_desafio: string
 }
@@ -32,12 +38,6 @@ interface M4 { pacotes: string[]; objetivo_principal: string; prazo: string }
 // ─────────────────────────────────────────────
 // CONSTANTS
 // ─────────────────────────────────────────────
-const REGIAO_TO_ESTADO: Record<string, string> = {
-  'Interior SP': 'SP', 'Litoral SP': 'SP', 'Rio de Janeiro': 'RJ',
-  'Minas Gerais': 'MG', 'Nordeste': 'BA', 'Sul': 'PR',
-  'Centro-Oeste': 'GO', 'Outro': 'BR',
-}
-
 const REGIOES = [
   'Interior SP', 'Litoral SP', 'Rio de Janeiro', 'Minas Gerais',
   'Nordeste', 'Sul', 'Centro-Oeste', 'Outro',
@@ -117,7 +117,7 @@ const PUBLICO_PRINCIPAL = [
   { v: 'casal',       e: '💑', l: 'Casais' },
   { v: 'familia',     e: '👨‍👩‍👧', l: 'Família' },
   { v: 'corporativo', e: '👔', l: 'Corporativo' },
-  { v: 'misto',       e: '👥', l: 'Público Misto' },
+  { v: 'aventureiros', e: '🌿', l: 'Aventureiros' },
 ]
 
 const EXPERIENCIAS = [
@@ -185,177 +185,14 @@ const TIPO_TEMAS: Record<string, string[]> = {
 // ─────────────────────────────────────────────
 // INSIGHT GENERATORS
 // ─────────────────────────────────────────────
-function insightsMod2(diferenciais: string[]): string[] {
-  const out: string[] = []
-  const has = (...ks: string[]) => ks.every(k => diferenciais.includes(k))
-  const hasAny = (...ks: string[]) => ks.some(k => diferenciais.includes(k))
+function insightsMod2(diferenciais:string[]):string[]{return ['Itens selecionados são informações autodeclaradas; confirme categoria, condições e validade antes de usar.','Planeje texto ou foto própria conforme seus recursos. Nenhum alcance, reserva ou crescimento é presumido.']}
+function oportunidadesMod3(m3:M3):string[]{return [`Capacidade informada: ${m3.posts_por_semana} sugestões por semana e ${m3.minutos_disponiveis} minutos por conteúdo.`,m3.video_disponivel?'Vídeo disponível por escolha sua; continua opcional e depende de direitos de mídia.':'Sem vídeo: priorize textos e fotos próprias. Não há API de criação obrigatória.']}
+function focoEstrategico(objetivo:string):string{return 'Use o objetivo informado para acompanhar sua rotina. O calendário organiza preparação, não promete seguidores, engajamento ou reservas.'}
+function gerarManchete(m1:M1,m2:M2):string{return `${m1.nome}: perfil informado em ${m1.cidade}/${m1.estado}. As informações e condições precisam de confirmação factual; o diagnóstico não certifica serviços nem resultados.`}
+function gerarAtivos(m2:M2):Array<{emoji:string;label:string;content:string}>{return [...m2.diferenciais.map(k=>DIFERENCIAIS.find(d=>d.k===k)),...m2.experiencias.map(k=>EXPERIENCIAS.find(e=>e.k===k))].filter((v):v is {k:string;e:string;l:string}=>!!v).map(v=>({emoji:v.e,label:v.l,content:'Informado por você: confirme condições e direitos antes de preparar conteúdo.'}))}
+function gerarPerguntas(m2:M2):string[]{return ['O nome e a localização correspondem à categoria divulgada?','O detalhe descrito está confirmado e ainda é válido?','As condições e restrições estão claras, sem amenidades presumidas?','A foto é própria e representa o espaço ou categoria correta?','Há autorização específica para pessoas, imagens ou músicas?','O texto respeita o tempo e os recursos disponíveis?','A revisão exata foi salva antes de exportar?']}
 
-  if (has('vista_mar', 'piscina', 'bar'))
-    out.push('✅ Potencial forte para conteúdo de lifestyle e sundowner')
-  if (has('kids_club', 'piscina', 'all_inclusive'))
-    out.push('✅ Perfil ideal para conteúdo família e experiência completa')
-  if (has('spa', 'banheira', 'vista_serra'))
-    out.push('✅ Posicionamento premium para casais e retiro')
-  if (hasAny('por_do_sol', 'vista_mar', 'vista_serra', 'praia_privativa'))
-    out.push('✅ Potencial visual altíssimo — fotos e reels que convertem')
-  if (hasAny('restaurante', 'all_inclusive', 'adega'))
-    out.push('✅ Conteúdo gastronômico com alto engajamento e partilha')
-  if (hasAny('trilhas', 'natureza', 'piscina_natural'))
-    out.push('✅ Perfil de aventura e natureza — nicho em crescimento no Instagram')
-  if (hasAny('lareira', 'adega', 'musica_ao_vivo'))
-    out.push('✅ Experiências sensoriais únicas para stories e reels autorais')
-  if (diferenciais.length >= 8)
-    out.push('✅ Hotel completo — ampla variedade de temas para calendário 30 dias')
-
-  if (out.length < 2) {
-    out.push('✅ Potencial para conteúdo visual alto com os diferenciais mapeados')
-    out.push('✅ Oportunidade de destacar experiências únicas ao hóspede')
-  }
-  return out.slice(0, 3)
-}
-
-function oportunidadesMod3(m3: M3): string[] {
-  const out: string[] = []
-
-  if (m3.frequencia_posts === 'nunca' || m3.frequencia_posts === 'raramente')
-    out.push('⚠️ Baixa presença digital — hóspedes buscam no Instagram antes de reservar')
-  if (m3.usa_ota === 'sim_muito')
-    out.push('⚠️ Alta dependência de OTAs — cada reserva perde 15-25% de comissão')
-  if (m3.conhece_origem === 'nao')
-    out.push('⚠️ Sem rastreamento de origem — impossível otimizar investimento')
-  if (m3.responsavel_ig === 'ninguem')
-    out.push('⚠️ Perfil abandonado — recuperação rápida com ganhos imediatos')
-  if (m3.maior_desafio === 'nao_gera_reservas')
-    out.push('⚠️ Posts sem conversão — falta estratégia de conteúdo orientado à reserva')
-  if (m3.maior_desafio === 'sem_fotos')
-    out.push('⚠️ Acervo visual limitado — bloqueia crescimento orgânico')
-  if (m3.maior_desafio === 'sem_tempo')
-    out.push('⚠️ Gestão reativa — conteúdo criado na pressa perde qualidade e consistência')
-
-  if (out.length < 2) {
-    out.push('⚠️ Oportunidade de ampliar presença digital com estratégia consistente')
-    out.push('⚠️ Potencial de crescimento orgânico com calendário estruturado')
-  }
-  return out.slice(0, 3)
-}
-
-function focoEstrategico(objetivo: string): string {
-  const map: Record<string, string> = {
-    reservas_diretas: 'CTAs de conversão, links na bio otimizados e conteúdo que gera urgência de reserva direta',
-    seguidores:       'Reels de alto impacto visual, colaborações com microinfluenciadores regionais e conteúdo de destino',
-    engajamento:      'Stories interativos com enquetes, UGC (fotos de hóspedes) e respostas ativas nos comentários',
-    parcerias:        'Posicionamento aspiracional, press kit digital e estratégia de relacionamento com criadores de conteúdo',
-    estrategia:       'Calendário editorial mensal estruturado, métricas de acompanhamento e ciclos de otimização contínua',
-  }
-  return map[objetivo] || 'Plano de conteúdo 360° com base nos seus diferenciais e público-alvo identificados'
-}
-
-// ─────────────────────────────────────────────
-// DIAGNÓSTICO GENERATORS
-// ─────────────────────────────────────────────
-const ATIVO_CONTENT: Record<string, string> = {
-  piscina: 'isso dá foto + reel', vista_mar: 'reel que converte', vista_serra: 'foto sazonal incrível',
-  por_do_sol: 'foto que viraliza', restaurante: 'carrossel + reel', cafe_incluso: 'stories todo dia',
-  spa: 'campanha premium', lareira: 'reel emocional', banheira: 'campanha de casal',
-  kids_club: 'reel + carrossel família', trilhas: 'série de conteúdo', natureza: 'reels autorais',
-  adega: 'harmonização + reels', musica_ao_vivo: 'stories ao vivo', pet_friendly: 'reel que engaja',
-  praia_privativa: 'foto aspiracional', piscina_natural: 'foto viral', bar: 'reel do drink',
-}
-const EXPERIENCIA_CONTENT: Record<string, string> = {
-  day_use: 'campanha de feriado', passeios: 'série de conteúdo', pacote_romantico: 'campanha de casal',
-  pacote_familia: 'campanha de férias', lua_de_mel: 'campanha premium', aniversario: 'campanha de data',
-  eventos: 'carrossel + stories', retiro_wellness: 'campanha de retiro', corporativo_evt: 'conteúdo B2B',
-  jantar_especial: 'reel gastronômico', degustacao: 'reel premium', trilha_guiada: 'reel de aventura',
-}
-
-function gerarManchete(m1: M1, m2: M2): string {
-  const total = m2.diferenciais.length + m2.experiencias.length
-  const pub = { casal: 'casais', familia: 'família', corporativo: 'viagens corporativas', misto: 'todos os perfis' }[m1.publico_principal] || 'seus hóspedes'
-  const geo = { praia: 'à beira-mar', serra: 'na serra', campo: 'no interior', urbano: 'no centro urbano', natureza: 'em meio à natureza' }[m1.contexto_geo] || ''
-  if (total >= 10) return `Você tem ouro nas mãos. ${m1.nome} ${geo} possui ${total} ativos mapeados — conteúdo para meses de Instagram.`
-  if (total >= 5) return `${m1.nome} tem mais conteúdo do que parece. Com ${total} ativos, dá pra postar todo dia com consistência.`
-  return `Seu hotel tem um diferencial claro para ${pub}. Vamos transformar isso em reservas diretas.`
-}
-
-function gerarAtivos(m2: M2): Array<{ emoji: string; label: string; content: string }> {
-  const result: Array<{ emoji: string; label: string; content: string }> = []
-  for (const k of m2.diferenciais) {
-    const d = DIFERENCIAIS.find(x => x.k === k)
-    if (d && ATIVO_CONTENT[k]) result.push({ emoji: d.e, label: d.l, content: ATIVO_CONTENT[k] })
-  }
-  for (const k of m2.experiencias) {
-    const e = EXPERIENCIAS.find(x => x.k === k)
-    if (e && EXPERIENCIA_CONTENT[k]) result.push({ emoji: e.e, label: e.l, content: EXPERIENCIA_CONTENT[k] })
-  }
-  return result
-}
-
-const IDEAS_BY_KEY: Record<string, string> = {
-  piscina: 'Reel da piscina ao entardecer', vista_mar: 'Reel do nascer do sol com vista mar',
-  vista_serra: 'Foto da névoa na serra de manhã', por_do_sol: 'Reel time-lapse do pôr do sol',
-  restaurante: 'Reel do prato principal em close', cafe_incluso: 'Carrossel "Nossa mesa do café da manhã"',
-  spa: 'Reel da sala de massagem iluminada', lareira: 'Reel da lareira acesa à noite',
-  banheira: 'Foto da banheira com pétalas e velas', kids_club: 'Reel do kids club em ação',
-  trilhas: 'Reel de trilha guiada', natureza: 'Reel da fauna local',
-  adega: 'Reel da harmonização de vinhos', musica_ao_vivo: 'Story ao vivo do show',
-  pet_friendly: 'Reel do pet explorando o hotel', praia_privativa: 'Foto aérea da praia privativa',
-  bar: 'Reel do drink sendo preparado no bar', day_use: 'Carrossel "Um dia perfeito de day use"',
-  passeios: 'Carrossel "Roteiro de 1 dia na região"', pacote_romantico: 'Reel "Uma surpresa para seu amor"',
-  lua_de_mel: 'Carrossel "Tudo incluso na lua de mel"', jantar_especial: 'Reel do jantar especial servido',
-  degustacao: 'Reel da harmonização premium', trilha_guiada: 'Reel da trilha com guia local',
-}
-const BASE_IDEAS = [
-  'Carrossel "X razões para fugir da rotina aqui"',
-  'Story com enquete: "Você prefere praia ou piscina?"',
-  'Reel "Chegou, relaxou" — check-in emocional',
-  'Carrossel "Como é um dia completo no hotel"',
-  'Story com avaliação 5★ do Google',
-  'Reel "O que os hóspedes mais amam aqui"',
-  'Carrossel "Como chegar — roteiro de acesso"',
-  'Story com pergunta: "O que você faria no primeiro dia?"',
-  'Reel bastidor da equipe preparando o hotel',
-  'Foto detalhe que poucos hóspedes percebem',
-]
-function gerar20Ideias(m2: M2): string[] {
-  const ideias: string[] = []
-  for (const k of [...m2.diferenciais, ...m2.experiencias]) {
-    if (IDEAS_BY_KEY[k] && !ideias.includes(IDEAS_BY_KEY[k]) && ideias.length < 15) {
-      ideias.push(IDEAS_BY_KEY[k])
-    }
-  }
-  if (m2.lugar_fotografado) ideias.push(`Foto do "${m2.lugar_fotografado}" — o lugar mais fotografado do hotel`)
-  if (m2.espaco_oculto) ideias.push(`Reel revelação: "${m2.espaco_oculto} — poucos sabem que existe aqui"`)
-  for (const idea of BASE_IDEAS) {
-    if (ideias.length >= 20) break
-    if (!ideias.includes(idea)) ideias.push(idea)
-  }
-  return ideias.slice(0, 20)
-}
-
-function gerarPlano14Dias(m1: M1, m2: M2): Array<{ dia: number; formato: string; tema: string; descricao: string }> {
-  const hasCafe = m2.diferenciais.includes('cafe_incluso')
-  const hasPiscina = m2.diferenciais.includes('piscina')
-  const hasVista = m2.diferenciais.some(d => ['vista_mar', 'vista_serra', 'por_do_sol'].includes(d))
-  const hasRest = m2.diferenciais.includes('restaurante')
-  const hasLareira = m2.diferenciais.includes('lareira')
-  const hasSpa = m2.diferenciais.includes('spa')
-  return [
-    { dia: 1,  formato: 'Reel',      tema: 'Abertura',      descricao: `"Você ainda não veio pra ${m1.nome}?"` },
-    { dia: 2,  formato: 'Foto',      tema: hasCafe ? 'Café da Manhã' : 'Acomodação', descricao: hasCafe ? 'Mesa farta do café da manhã' : 'Suíte com melhor ângulo' },
-    { dia: 3,  formato: 'Carrossel', tema: 'Destino',       descricao: `"O que fazer em ${m1.cidade} em 1 fim de semana"` },
-    { dia: 4,  formato: 'Story',     tema: 'Engajamento',   descricao: 'Enquete interativa — deixe o público escolher' },
-    { dia: 5,  formato: 'Foto',      tema: hasPiscina ? 'Piscina' : 'Área externa', descricao: hasPiscina ? 'Piscina ao entardecer' : 'Área de lazer ao fim de tarde' },
-    { dia: 6,  formato: 'Reel',      tema: 'Check-in',      descricao: '"Chegou e relaxou" — experiência emocional' },
-    { dia: 7,  formato: 'Carrossel', tema: 'Prova Social',  descricao: '"O que nossos hóspedes dizem de nós"' },
-    { dia: 8,  formato: 'Foto',      tema: hasVista ? 'Vista' : 'Detalhe', descricao: hasVista ? 'Vista privilegiada ao pôr do sol' : 'Detalhe exclusivo que poucos percebem' },
-    { dia: 9,  formato: 'Story',     tema: 'CTA',           descricao: 'Avaliação 5★ compartilhada + link na bio' },
-    { dia: 10, formato: 'Reel',      tema: hasRest ? 'Gastronomia' : hasLareira ? 'Ambiente' : 'Destaque', descricao: hasRest ? 'Prato especial sendo preparado' : hasLareira ? 'Lareira acesa à noite' : `Destaque exclusivo do ${m1.nome}` },
-    { dia: 11, formato: 'Carrossel', tema: 'Educativo',     descricao: '"Como escolher o quarto ideal pra você"' },
-    { dia: 12, formato: 'Foto',      tema: hasSpa ? 'Spa' : 'Detalhe',  descricao: hasSpa ? 'Ambiente do spa iluminado' : 'Ângulo especial do hotel' },
-    { dia: 13, formato: 'Story',     tema: 'Urgência',      descricao: '"Últimas vagas do mês — reserve pelo link na bio"' },
-    { dia: 14, formato: 'Reel',      tema: 'Fechamento',    descricao: '"Você merece uma pausa. Venha."' },
-  ]
-}
+function gerarPlano7Dias(m1:M1,m2:M2):Array<{dia:number;formato:string;tema:string;descricao:string}>{return ['Confirme fatos e condições','Prepare foto própria da categoria correta','Revise a localização informada','Convide o público a compartilhar dúvidas','Confira o texto e os direitos da mídia','Adapte um rascunho à sua rotina','Revise a próxima semana sem prometer reserva'].map((descricao,i)=>({dia:i+1,formato:'Texto',tema:'Preparação',descricao}))}
 
 // ─────────────────────────────────────────────
 // HELPERS
@@ -378,243 +215,76 @@ export default function OnboardingPage() {
   const [postsSugestoes, setPostsSugestoes] = useState<any[]>([])
 
   const [m1, setM1] = useState<M1>({
-    nome: '', cidade: '', regiao: '', tipo: '', tipoLabel: '', tipoEmoji: '',
+    timezone:'', nome: '', cidade: '', estado: '', regiao: '', tipo: '', tipoLabel: '', tipoEmoji: '',
     quartos: 20, categoria: '3', ticket_medio: 0,
     contexto_geo: '', publico_principal: '',
   })
   const [m2, setM2] = useState<M2>({
+    tom:'',temas_vetados:[],vetos_confirmados:false,
     diferenciais: [], experiencias: [],
-    lugar_fotografado: '', lugar_bonito: '', espaco_oculto: '',
+    lugar_fotografado: '', lugar_bonito: '', espaco_oculto: '',detalhe_confirmado:'',condicoes_confirmadas:'',fatos_validos_ate:'',fatos_confirmados:false,
   })
   const [m3, setM3] = useState<M3>({
-    frequencia_posts: '', usa_ota: '', conhece_origem: '',
+    posts_por_semana:3,minutos_disponiveis:10,video_disponivel:false,frequencia_posts: '', usa_ota: '', conhece_origem: '',
     fez_publi: '', responsavel_ig: '', maior_desafio: '',
   })
   const [m4, setM4] = useState<M4>({ pacotes: [], objetivo_principal: '', prazo: '' })
 
-  const router = useRouter()
-  const supabase = createClient()
-
-  function go(next: Screen) {
-    setVisible(false)
-    setTimeout(() => { setScreen(next); setVisible(true) }, 250)
-  }
-
-  // ── Módulo 1: criar hotel ──
-  async function saveM1(): Promise<string | null> {
-    setSaving(true)
-    try {
-      const { data: userData } = await supabase.auth.getUser()
-      if (!userData.user) { toast.error('Faça login primeiro'); return null }
-
-      const { data: hotel, error } = await supabase
-        .from('hotels')
-        .insert({
-          nome: m1.nome,
-          cidade: m1.cidade,
-          estado: REGIAO_TO_ESTADO[m1.regiao] || 'BR',
-          regiao: m1.regiao,
-          tipo: mapTipo(m1.tipo),
-          classificacao: Number(m1.categoria),
-          numero_quartos: m1.quartos,
-          ticket_medio_diaria: m1.ticket_medio,
-          status: 'onboarding',
-          owner_id: userData.user.id,
-        })
-        // contexto_geo e publico_principal ficam no onboarding_respostas
-        .select('id')
-        .single()
-
-      if (error || !hotel) { toast.error('Não foi possível salvar o hotel. Tente novamente.'); return null }
-
-      // salva modulo_1 em background
-      supabase.from('onboarding_respostas').insert({
-        hotel_id: hotel.id,
-        respostas: { modulo_1: m1 },
-      }).then(() => {})
-
-      setHotelId(hotel.id)
-      return hotel.id
-    } finally {
-      setSaving(false)
+  const [resuming,setResuming]=useState(true)
+  const [saveError,setSaveError]=useState<string|null>(null)
+  const screenRef=useRef<HTMLDivElement|null>(null)
+  useEffect(()=>{if(!resuming)screenRef.current?.focus()},[screen,resuming])
+  const errorRef=useRef<HTMLParagraphElement|null>(null)
+  useEffect(()=>{if(saveError)errorRef.current?.focus()},[saveError])
+  const [actorId,setActorId]=useState<string|null>(null)
+  const [remote,setRemote]=useState<Awaited<ReturnType<typeof resumeOnboarding>>|null>(null)
+  const revision=useRef(0),stableHotelId=useRef<string|null>(null),pending=useRef<Record<number,string>>({}),busy=useRef(false)
+  function applyAnswers(r:Record<string,any>){if(r.modulo_1)setM1(v=>({...v,...r.modulo_1}));if(r.modulo_2)setM2(v=>({...v,...r.modulo_2}));if(r.modulo_3)setM3(v=>({...v,...r.modulo_3}));if(r.modulo_4)setM4(v=>({...v,...r.modulo_4}))}
+  useEffect(()=>{let active=true;resumeOnboarding().then(row=>{
+    if(!active)return
+    setActorId(row.actor_id);stableHotelId.current=row.hotel_id;setHotelId(row.hotel_id);revision.current=row.revision;applyAnswers(row.answers)
+    let buffer:any=null;try{buffer=JSON.parse(sessionStorage.getItem('hotel-onboarding:'+row.actor_id)??'null')}catch{}
+    if(!buffer?.answers||(row.hotel_id&&buffer.hotelId!==row.hotel_id))buffer=null
+    if(buffer?.answers&&(!row.hotel_id||buffer.hotelId===row.hotel_id)){
+      applyAnswers(buffer.answers);stableHotelId.current=buffer.hotelId??row.hotel_id;setHotelId(stableHotelId.current)
+      if(Number.isInteger(buffer.revision))revision.current=buffer.revision
+      if(buffer.pending&&typeof buffer.pending==='object')pending.current=buffer.pending
+      if(buffer.revision!==row.revision){setRemote(row);setSaveError('Seu rascunho local foi preservado. Compare a revisão remota antes de substituir.')}
     }
+    const bufferedScreen=buffer?.screen
+    if(['mod1','entrega1','mod2','entrega2','mod3','entrega3','mod4','resultado'].includes(bufferedScreen))setScreen(bufferedScreen==='resultado'&&!row.complete?'mod2':bufferedScreen)
+    else setScreen(row.complete?'resultado':row.last_module===1?'mod2':row.last_module===2?'mod3':row.last_module===3||row.last_module===4?'mod4':'mod1')
+    if(row.complete){try{hotelTimezone((buffer?.answers??row.answers).modulo_1?.timezone)}catch{setScreen('mod1');setSaveError('Confirme o fuso da hospedagem no módulo 1. Os campos e textos anteriores foram preservados.');return}try{editorialPreferences(row.answers.modulo_2);minimumDiagnosis(row.answers.modulo_2?.diagnostico);profileFrom(row.answers,row.hotel_id,row.revision);if(buffer)editorialPreferences(buffer.answers.modulo_2??row.answers.modulo_2)}catch{setScreen('mod2');setSaveError('Confirme tom e vetos no módulo 2, incluindo os mínimos do diagnóstico, antes de concluir a reconfirmação. O perfil e os textos anteriores foram preservados.')}}
+  }).catch(err=>{if(active)setSaveError(err instanceof Error?err.message:'Não foi possível retomar. Nenhum perfil padrão foi usado.')}).finally(()=>{if(active)setResuming(false)});return()=>{active=false}},[])
+  useEffect(()=>{if(!actorId||resuming)return;sessionStorage.setItem('hotel-onboarding:'+actorId,JSON.stringify({hotelId:stableHotelId.current,revision:revision.current,pending:pending.current,screen,answers:{modulo_1:m1,modulo_2:m2,modulo_3:m3,modulo_4:m4}}))},[m1,m2,m3,m4,screen,saving,remote,saveError,actorId,resuming])
+  function go(next:Screen){setScreen(next);setVisible(true)}
+  async function saveModule(module:number,next:Screen){
+    if(busy.current||resuming)return
+    busy.current=true;setSaving(true);setSaveError(null)
+    try{
+      identity(m1);hotelTimezone(m1.timezone);const hid=stableHotelId.current??crypto.randomUUID();stableHotelId.current=hid;pending.current[module]??=crypto.randomUUID()
+      const result=await saveOnboarding({hotelId:hid,module,revision:revision.current,operationId:pending.current[module],snapshot:{modulo_1:{...m1,tipo_db:mapTipo(m1.tipo)},modulo_2:m2,modulo_3:m3,modulo_4:m4}})
+      revision.current=result.revision;setHotelId(result.hotel_id);delete pending.current[module];setRemote(null);go(next)
+    }catch(err){const message=err instanceof Error?err.message:'Ainda não conseguimos confirmar o salvamento. Seus campos permanecem aqui.';setSaveError(message);toast.error(message);if(message.includes('REVISION_CONFLICT')||message.includes('IDEMPOTENCY_CONFLICT')){try{setRemote(await resumeOnboarding())}catch{}}}
+    finally{busy.current=false;setSaving(false)}
   }
-
-  // ── Módulo 2: salvar diferenciais em onboarding_respostas ──
-  async function saveM2(hid: string) {
-    await supabase.from('onboarding_respostas').upsert({
-      hotel_id: hid,
-      respostas: { modulo_1: m1, modulo_2: m2 },
-    }, { onConflict: 'hotel_id' })
-  }
-
-  // ── Módulo 3: salvar auditoria de marketing ──
-  async function saveM3(hid: string) {
-    const oportunidades = oportunidadesMod3(m3)
-    await supabase.from('onboarding_respostas').upsert({
-      hotel_id: hid,
-      respostas: {
-        modulo_1: m1,
-        modulo_2: m2,
-        modulo_3: m3,
-        classificacao_gerada: { oportunidades },
-      },
-    }, { onConflict: 'hotel_id' })
-  }
-
-  // ── Módulo 4: salvar objetivos + finalizar hotel + buscar sugestões ──
-  async function saveM4(hid: string) {
-    setSaving(true)
-    try {
-      const classificacao = {
-        perfil: `${m1.tipoEmoji} ${m1.tipoLabel} • ${m1.regiao} • ${CATEGORIAS.find(c => c.v === m1.categoria)?.l}`,
-        pontos_fortes: insightsMod2(m2.diferenciais),
-        oportunidades: oportunidadesMod3(m3),
-        foco: focoEstrategico(m4.objetivo_principal),
-      }
-
-      const dueAt = new Date()
-      dueAt.setDate(dueAt.getDate() + 30)
-
-      await Promise.all([
-        supabase.from('onboarding_respostas').upsert({
-          hotel_id: hid,
-          respostas: {
-            modulo_1: m1, modulo_2: m2, modulo_3: m3, modulo_4: m4,
-            classificacao_gerada: classificacao,
-          },
-          completado_em: new Date().toISOString(),
-        }, { onConflict: 'hotel_id' }),
-        supabase.from('hotels')
-          .update({ status: 'ativo', onboarding_completo: true })
-          .eq('id', hid),
-        // Starter Kit: primeira missao ativada automaticamente
-        supabase.from('hotel_missoes').insert({
-          hotel_id: hid,
-          tipo: 'calendario_mensal',
-          titulo: 'Calendario Editorial do Mes',
-          descricao: 'Planejar e publicar posts 3x por semana durante 30 dias',
-          objetivo: 'Consistencia e presenca digital',
-          status: 'em_andamento',
-          progresso: 0,
-          started_at: new Date().toISOString(),
-          due_at: dueAt.toISOString(),
-        }),
-        // Starter Kit: log de execucao
-        supabase.from('hotel_execution_log').insert({
-          hotel_id: hid,
-          acao: 'onboarding_completo',
-          categoria: 'onboarding',
-          detalhes: { objetivo: m4.objetivo_principal, prazo: m4.prazo },
-          pontos: 10,
-        }),
-      ])
-
-      // ── Content DNA automático baseado no perfil do hotel ──
-      const tipoTemas = TIPO_TEMAS[m1.tipo] || ['destino', 'experiencias']
-      const difTemas = m2.diferenciais.map(k => DIF_TO_TEMA[k]).filter(Boolean)
-      const temasUnicos = [...new Set([...tipoTemas, ...difTemas])].slice(0, 6)
-      const formatos = ['praia', 'serra', 'natureza'].includes(m1.contexto_geo)
-        ? ['reel', 'foto', 'carrossel']
-        : ['carrossel', 'reel', 'foto']
-
-      await saveContentDNA(hid, {
-        publico_primario: m1.publico_principal || 'misto',
-        temas_preferidos: temasUnicos,
-        formatos_preferidos: formatos,
-      })
-
-      // ── Missões automáticas baseadas no diagnóstico do M3 ──
-      const dueAt30 = new Date(); dueAt30.setDate(dueAt30.getDate() + 30)
-      const dueAt14 = new Date(); dueAt14.setDate(dueAt14.getDate() + 14)
-      const dueAt7  = new Date(); dueAt7.setDate(dueAt7.getDate() + 7)
-
-      const missaoAuto = []
-      if (m3.usa_ota === 'sim_muito') {
-        missaoAuto.push(supabase.from('hotel_missoes').insert({
-          hotel_id: hid, tipo: 'reducao_ota', status: 'em_andamento', progresso: 0,
-          titulo: 'Redução de OTA: Canal Direto',
-          descricao: 'Reduzir dependência de Booking/Airbnb gerando reservas diretas via Instagram',
-          objetivo: 'Reduzir comissão de OTA em 20% nos próximos 21 dias',
-          started_at: new Date().toISOString(), due_at: dueAt30.toISOString(),
-        }))
-      }
-      if (m3.responsavel_ig === 'ninguem') {
-        missaoAuto.push(supabase.from('hotel_missoes').insert({
-          hotel_id: hid, tipo: 'bio_perfil', status: 'em_andamento', progresso: 0,
-          titulo: 'Bio e Perfil Profissional',
-          descricao: 'Otimizar bio, foto de perfil e destaques do Instagram',
-          objetivo: 'Perfil profissional ativo em 7 dias',
-          started_at: new Date().toISOString(), due_at: dueAt7.toISOString(),
-        }))
-      }
-      if (m3.frequencia_posts === 'nunca' || m3.frequencia_posts === 'raramente') {
-        missaoAuto.push(supabase.from('hotel_missoes').insert({
-          hotel_id: hid, tipo: 'coleta_depoimentos', status: 'em_andamento', progresso: 0,
-          titulo: 'Coleta de Depoimentos',
-          descricao: 'Coletar 5 depoimentos reais de hóspedes para publicar como prova social',
-          objetivo: '5 avaliações publicadas em 14 dias',
-          started_at: new Date().toISOString(), due_at: dueAt14.toISOString(),
-        }))
-      }
-      if (missaoAuto.length > 0) await Promise.allSettled(missaoAuto)
-
-      // ── Posts sugestão (para Raio-X) ──
-      const temas = TIPO_TEMAS[m1.tipo] || ['destino', 'experiencias', 'checkin']
-      const { data: posts } = await supabase
-        .from('benchmarks_posts')
-        .select('id, tema, formato, hook, legenda_completa, qualidade_score')
-        .in('tema', temas)
-        .eq('ativo', true)
-        .order('qualidade_score', { ascending: false })
-        .limit(6)
-
-      setPostsSugestoes(posts || [])
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  // ── handlers de cada módulo ──
-  async function handleM1() {
-    if (!m1.nome || !m1.cidade || !m1.regiao || !m1.tipo) {
-      toast.error('Preencha todos os campos obrigatórios')
-      return
-    }
-    const hid = await saveM1()
-    if (!hid) return
-    go('entrega1')
-  }
-
-  async function handleM2() {
-    if (hotelId) saveM2(hotelId) // non-blocking
-    go('entrega2')
-  }
-
-  async function handleM3() {
-    if (!m3.frequencia_posts || !m3.responsavel_ig) {
-      toast.error('Responda as perguntas obrigatórias')
-      return
-    }
-    if (hotelId) saveM3(hotelId) // non-blocking
-    go('entrega3')
-  }
-
-  async function handleM4() {
-    if (!m4.objetivo_principal || !m4.prazo) {
-      toast.error('Selecione objetivo e prazo')
-      return
-    }
-    if (!hotelId) { toast.error('Erro: hotel não encontrado'); return }
-    await saveM4(hotelId)
-    go('resultado')
-  }
+  async function handleM1(){await saveModule(1,'entrega1')}
+  async function handleM2(){await saveModule(2,'entrega2')}
+  async function handleM3(){await saveModule(3,'entrega3')}
+  async function handleM4(){await saveModule(4,'resultado')}
 
   const moduloAtual = screenToModulo(screen)
   const progress = screen === 'resultado' ? 100 : (moduloAtual / 4) * 100
 
   return (
     <div className="space-y-5">
+      {resuming&&<p role="status">Retomando seu diagnóstico confirmado...</p>}
+      {screen==='resultado'&&<button type="button" onClick={()=>{setScreen('mod1');setSaveError(null)}} className="w-full p-4 border rounded-xl font-semibold text-left">Revisar e reconfirmar meu negócio e fatos. Planos e textos anteriores serão preservados.</button>}
+      {screen==='resultado'&&<button type="button" onClick={()=>{setScreen('mod2');setSaveError(null)}} className="w-full p-4 border rounded-xl font-semibold text-left">Editar tom e vetos. Conclua a reconfirmação para ativar o novo DNA.</button>}
+      {saveError&&<p ref={errorRef} tabIndex={-1} role="alert" className="p-3 rounded-xl bg-amber-50 text-amber-900 focus-visible:outline-2">{saveError}</p>}
+      {remote&&<section aria-label="Conflito de diagnóstico" className="border rounded-xl p-3 space-y-3"><p>Revisão remota r{remote.revision}, sem apagar seus campos locais.</p><EditorialPreferencesSummary tone={remote.answers.modulo_2?.tom??''} avoid={remote.answers.modulo_2?.temas_vetados??[]}/><textarea aria-label="Dados remotos do diagnóstico" readOnly rows={8} value={JSON.stringify(remote.answers,null,2)} className="w-full p-3 border rounded-xl"/><button type="button" onClick={()=>{revision.current=remote.revision;stableHotelId.current=remote.hotel_id??stableHotelId.current;setHotelId(stableHotelId.current);pending.current={};setRemote(null);setSaveError('Campos locais mantidos. Revise antes de salvar explicitamente sobre a revisão remota.')}} className="p-3 border rounded-lg">Manter meus campos e usar a revisão remota esperada; salvar depois</button><button type="button" onClick={()=>{applyAnswers(remote.answers);revision.current=remote.revision;stableHotelId.current=remote.hotel_id??stableHotelId.current;pending.current={};setRemote(null);setSaveError('Dados remotos disponíveis carregados. Campos ainda não enviados foram mantidos como rascunho.')}} className="p-3 border rounded-lg">Carregar dados remotos disponíveis</button></section>}
+      {!actorId&&!resuming&&<button type="button" onClick={()=>window.location.reload()} className="p-3 border rounded-lg">Retentar leitura segura antes de editar</button>}
+      <fieldset disabled={saving||resuming||!actorId} aria-busy={saving||resuming} className="min-w-0 space-y-5">
       {/* ── Progress bar ── */}
       {screen !== 'resultado' && (
         <div className="space-y-1.5">
@@ -643,6 +313,7 @@ export default function OnboardingPage() {
 
       {/* ── Screens com fade ── */}
       <div
+        ref={screenRef} tabIndex={-1} role="group" aria-label="Etapa do diagnóstico"
         className={`transition-all duration-[250ms] ${
           visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
         }`}
@@ -672,6 +343,7 @@ export default function OnboardingPage() {
           <Resultado m1={m1} m2={m2} m3={m3} m4={m4} posts={postsSugestoes} hotelId={hotelId} />
         )}
       </div>
+      </fieldset>
     </div>
   )
 }
@@ -685,7 +357,7 @@ function Modulo1({
   data: M1; setData: (d: M1) => void; onNext: () => void; saving: boolean
 }) {
   const set = (k: keyof M1, v: any) => setData({ ...data, [k]: v })
-  const canNext = !!(data.nome && data.cidade && data.regiao && data.tipo && data.contexto_geo && data.publico_principal)
+  const canNext = !!(data.timezone && data.nome && data.cidade && data.estado && data.regiao && data.tipo && data.contexto_geo && data.publico_principal)
 
   return (
     <div className="space-y-5">
@@ -701,11 +373,11 @@ function Modulo1({
 
       {/* Nome */}
       <div>
-        <label className="block text-sm font-medium text-[#6B7280] mb-1.5">
+        <label htmlFor="onboarding-nome" className="block text-sm font-medium text-[#6B7280] mb-1.5">
           Nome do hotel <span className="text-red-500">*</span>
         </label>
         <input
-          value={data.nome}
+          id="onboarding-nome" value={data.nome}
           onChange={e => set('nome', e.target.value)}
           placeholder="Ex: Pousada Villa do Sol"
           className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-xl text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] transition-colors"
@@ -714,24 +386,26 @@ function Modulo1({
 
       {/* Cidade */}
       <div>
-        <label className="block text-sm font-medium text-[#6B7280] mb-1.5">
+        <label htmlFor="onboarding-cidade" className="block text-sm font-medium text-[#6B7280] mb-1.5">
           Cidade <span className="text-red-500">*</span>
         </label>
         <input
-          value={data.cidade}
+          id="onboarding-cidade" value={data.cidade}
           onChange={e => set('cidade', e.target.value)}
-          placeholder="Ex: Búzios"
+          placeholder="Ex: Natal"
           className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-xl text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] transition-colors"
         />
       </div>
 
+      <label className="block" htmlFor="hotel-timezone">Fuso horário confirmado *<select id="hotel-timezone" value={data.timezone??''} onChange={e=>set('timezone',e.target.value)} className="w-full h-11 px-4 border rounded-xl"><option value="">Selecione o fuso da hospedagem</option>{HOTEL_TIMEZONES.map(zone=><option key={zone} value={zone}>{zone}</option>)}</select></label>
+      <div><label htmlFor="hotel-uf" className="block text-sm font-medium mb-1.5">UF confirmada *</label><select id="hotel-uf" value={data.estado} onChange={e=>set('estado',e.target.value)} className="w-full h-11 px-4 border rounded-xl"><option value="">Selecione a UF, sem inferir pela região</option>{UFS.map(uf=><option key={uf} value={uf}>{uf}</option>)}</select></div>
       {/* Região */}
       <div>
-        <label className="block text-sm font-medium text-[#6B7280] mb-1.5">
+        <label htmlFor="onboarding-regiao" className="block text-sm font-medium text-[#6B7280] mb-1.5">
           Região <span className="text-red-500">*</span>
         </label>
         <select
-          value={data.regiao}
+          id="onboarding-regiao" value={data.regiao}
           onChange={e => set('regiao', e.target.value)}
           className="w-full h-11 px-4 bg-white border border-[#E5E7EB] rounded-xl text-[#1A1D26] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
         >
@@ -750,7 +424,7 @@ function Modulo1({
             <button
               key={t.v}
               type="button"
-              onClick={() => setData({ ...data, tipo: t.v, tipoLabel: t.l, tipoEmoji: t.e })}
+              aria-pressed={data.tipo===t.v} onClick={() => setData({ ...data, tipo: t.v, tipoLabel: t.l, tipoEmoji: t.e })}
               className={`flex items-center gap-2.5 px-3 py-3 rounded-xl text-sm text-left transition-all border ${
                 data.tipo === t.v
                   ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold shadow-sm'
@@ -771,7 +445,7 @@ function Modulo1({
         </label>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
           {CONTEXTO_GEO.map(c => (
-            <button key={c.v} type="button" onClick={() => set('contexto_geo', c.v)}
+            <button key={c.v} type="button" aria-pressed={data.contexto_geo===c.v} onClick={() => set('contexto_geo', c.v)}
               className={`flex flex-col items-center gap-1 py-2.5 rounded-xl text-xs transition-all border ${
                 data.contexto_geo === c.v
                   ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold shadow-sm'
@@ -791,7 +465,7 @@ function Modulo1({
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {PUBLICO_PRINCIPAL.map(p => (
-            <button key={p.v} type="button" onClick={() => set('publico_principal', p.v)}
+            <button key={p.v} type="button" aria-pressed={data.publico_principal===p.v} onClick={() => set('publico_principal', p.v)}
               className={`flex items-center gap-2 px-3 py-3 rounded-xl text-sm transition-all border ${
                 data.publico_principal === p.v
                   ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B] font-semibold shadow-sm'
@@ -806,12 +480,12 @@ function Modulo1({
 
       {/* Quartos — slider */}
       <div>
-        <label className="block text-sm font-medium text-[#6B7280] mb-2">
+        <label htmlFor="onboarding-quartos" className="block text-sm font-medium text-[#6B7280] mb-2">
           Número de quartos:{' '}
           <span className="text-[#B8860B] font-bold">{data.quartos}</span>
         </label>
         <input
-          type="range"
+          id="onboarding-quartos" type="range"
           min={1}
           max={200}
           value={data.quartos}
@@ -831,7 +505,7 @@ function Modulo1({
             <button
               key={c.v}
               type="button"
-              onClick={() => set('categoria', c.v)}
+              aria-pressed={data.categoria===c.v} onClick={() => set('categoria', c.v)}
               className={`px-4 py-3 rounded-xl text-sm font-medium text-left transition-all border ${
                 data.categoria === c.v
                   ? 'bg-[#FFF8E7] border-[#B8860B] text-[#B8860B]'
@@ -846,7 +520,7 @@ function Modulo1({
 
       {/* Ticket médio */}
       <div>
-        <label className="block text-sm font-medium text-[#6B7280] mb-1.5">
+        <label htmlFor="onboarding-ticket" className="block text-sm font-medium text-[#6B7280] mb-1.5">
           Ticket médio diária casal (R$)
         </label>
         <div className="relative">
@@ -855,7 +529,7 @@ function Modulo1({
           </span>
           <input
             type="number"
-            value={data.ticket_medio || ''}
+            id="onboarding-ticket" value={data.ticket_medio || ''}
             onChange={e => set('ticket_medio', Number(e.target.value))}
             placeholder="0"
             className="w-full h-11 pl-10 pr-4 bg-white border border-[#E5E7EB] rounded-xl text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B] transition-colors"
@@ -932,6 +606,7 @@ function Modulo2({
     setData({ ...data, experiencias: arr })
   }
   const totalAtivos = data.diferenciais.length + data.experiencias.length
+  let editorialValid=false;try{editorialPreferences(data);minimumDiagnosis(data.diagnostico);minimumAccommodation(data);editorialValid=true}catch{}
 
   return (
     <div className="space-y-5">
@@ -998,14 +673,14 @@ function Modulo2({
         </div>
         {[
           { field: 'lugar_fotografado' as keyof M2, label: 'Qual o lugar mais fotografado pelos hóspedes?', placeholder: 'Ex: a piscina com vista, a varanda do quarto...' },
-          { field: 'lugar_bonito'     as keyof M2, label: 'Qual o espaço mais bonito do hotel?',             placeholder: 'Ex: o jardim à noite, o deck do pôr do sol...' },
+          { field: 'lugar_bonito'     as keyof M2, label: 'Categoria ou experiência a apresentar (obrigatório)',             placeholder: 'Ex: o jardim à noite, o deck do pôr do sol...' },
           { field: 'espaco_oculto'   as keyof M2, label: 'Tem algo especial que quase ninguém mostra?',      placeholder: 'Ex: a adega particular, a trilha secreta...' },
         ].map(({ field, label, placeholder }) => (
           <div key={field}>
-            <label className="block text-xs font-medium text-[#6B7280] mb-1">{label}</label>
+            <label htmlFor={'onboarding-'+field} className="block text-xs font-medium text-[#6B7280] mb-1">{label}</label>
             <input
               type="text"
-              value={data[field] as string}
+              id={'onboarding-'+field} value={data[field] as string}
               onChange={e => setData({ ...data, [field]: e.target.value })}
               placeholder={placeholder}
               className="w-full h-10 px-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg text-sm text-[#1A1D26] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40 focus:border-[#B8860B]"
@@ -1014,11 +689,18 @@ function Modulo2({
         ))}
       </div>
 
+      <div className="space-y-3 p-4 border rounded-xl"><h3 className="font-semibold">Fatos para os rascunhos</h3><p className="text-sm">Sem confirmação, modelos afetados ficam indisponíveis. Não afirme preço, nota ou disponibilidade.</p>
+        <label className="block">Descrição factual da categoria ou experiência (obrigatório)<input value={data.detalhe_confirmado} onChange={e=>setData({...data,detalhe_confirmado:e.target.value})} className="w-full p-3 border rounded-lg" placeholder="Ex.: mesa de apoio na acomodação Jardim"/></label>
+        <label className="block">Condições confirmadas<input value={data.condicoes_confirmadas} onChange={e=>setData({...data,condicoes_confirmadas:e.target.value})} className="w-full p-3 border rounded-lg" placeholder="Consulte a categoria e o que está incluído"/></label>
+        <label className="block">Reconfirmar fatos até<input type="date" value={data.fatos_validos_ate} onChange={e=>setData({...data,fatos_validos_ate:e.target.value})} className="w-full p-3 border rounded-lg"/></label>
+        <label className="flex gap-2"><input type="checkbox" checked={data.fatos_confirmados} onChange={e=>setData({...data,fatos_confirmados:e.target.checked})}/>Confirmo estes dados e revisarei condições e mídia antes de usar.</label></div>
+      <MinimumDiagnosisFields value={data.diagnostico} onChange={diagnostico=>setData({...data,diagnostico})}/>
+      <EditorialPreferencesFields value={data} onChange={editorial=>setData({...data,...editorial})}/>
       <div className="flex gap-3">
         <button onClick={onBack} className="px-5 py-3.5 bg-[#F3F4F6] text-[#6B7280] font-medium rounded-xl hover:bg-[#E5E7EB] transition-colors">
           Voltar
         </button>
-        <button onClick={onNext} className="flex-1 py-3.5 bg-[#B8860B] hover:brightness-110 text-white font-bold rounded-xl transition-all">
+        <button onClick={onNext} disabled={!editorialValid} className="flex-1 py-3.5 bg-[#B8860B] hover:brightness-110 disabled:opacity-50 text-white font-bold rounded-xl transition-all">
           Ver Análise →
         </button>
       </div>
@@ -1038,6 +720,7 @@ function Entrega2({ m2, onNext }: { m2: M2; onNext: () => void }) {
 
   return (
     <div className="space-y-4">
+      <div className="p-4 border rounded-xl bg-white"><EditorialPreferencesSummary tone={m2.tom} avoid={m2.temas_vetados}/></div>
       <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
         <p className="text-sm font-semibold text-[#1A1D26] mb-3">
           Seus principais diferenciais identificados:
@@ -1194,6 +877,7 @@ function Modulo3({
         </div>
       ))}
 
+      <div className="space-y-3 p-4 border rounded-xl"><label className="block">Publicações possíveis por semana (sete datas não obrigam sete posts)<input type="number" min="1" max="7" value={data.posts_por_semana} onChange={e=>setData({...data,posts_por_semana:Number(e.target.value)})} className="w-full p-3 border rounded-lg"/></label><label className="block">Minutos disponíveis por conteúdo<input type="number" min="5" max="120" value={data.minutos_disponiveis} onChange={e=>setData({...data,minutos_disponiveis:Number(e.target.value)})} className="w-full p-3 border rounded-lg"/></label><label className="flex gap-2"><input type="checkbox" checked={data.video_disponivel} onChange={e=>setData({...data,video_disponivel:e.target.checked})}/>Tenho vídeo próprio/licenciado e posso filmar.</label></div>
       <div className="flex gap-3">
         <button
           onClick={onBack}
@@ -1387,8 +1071,8 @@ function Resultado({
 
   const manchete = gerarManchete(m1, m2)
   const ativos = gerarAtivos(m2)
-  const ideias = gerar20Ideias(m2)
-  const plano = gerarPlano14Dias(m1, m2)
+  const ideias = gerarPerguntas(m2)
+  const plano = gerarPlano7Dias(m1, m2)
   const oportunidades = oportunidadesMod3(m3)
   const foco = focoEstrategico(m4.objetivo_principal)
   const obj = OBJETIVOS.find(o => o.v === m4.objetivo_principal)
@@ -1402,6 +1086,7 @@ function Resultado({
 
   return (
     <div className="space-y-5 pb-6">
+      <section aria-label="Tom e vetos do diagnóstico" className="p-4 border rounded-xl bg-white"><EditorialPreferencesSummary tone={m2.tom} avoid={m2.temas_vetados}/><p className="mt-2 text-sm">A mudança de DNA orienta sugestões futuras. Textos já editados precisam de comparação e revisão humana.</p></section>
       {/* Cabeçalho celebratório */}
       <div className="text-center pt-2">
         <div className="inline-flex items-center gap-2 bg-[#FFF8E7] border border-[#B8860B]/30 text-[#B8860B] px-5 py-2.5 rounded-full text-sm font-bold shadow-sm">
@@ -1411,7 +1096,7 @@ function Resultado({
 
       {/* Manchete de encantamento */}
       <div className="bg-gradient-to-br from-[#FFF8E7] to-[#FFF3CD] border border-[#B8860B]/20 rounded-2xl p-5 shadow-sm">
-        <p className="text-xs text-[#B8860B] font-bold uppercase tracking-wider mb-2">Diagnóstico</p>
+        <p className="text-xs text-[#B8860B] font-bold uppercase tracking-wider mb-2">Perfil e preparação, não certificação factual</p>
         <p className="text-base font-bold text-[#1A1D26] leading-snug">{manchete}</p>
         <div className="flex flex-wrap gap-2 mt-3">
           <span className="text-xs bg-white/80 text-[#92660A] border border-[#B8860B]/20 px-3 py-1 rounded-full font-medium">
@@ -1442,13 +1127,13 @@ function Resultado({
         </div>
       )}
 
-      {/* Abas — Ativos / 20 Ideias / Plano 14 dias */}
+      {/* Abas — Ativos / Perguntas / Prévia de preparação: 7 dias */}
       <div>
         <div className="flex gap-1 bg-[#F3F4F6] p-1 rounded-xl mb-3">
           {([
-            { id: 'ativos', label: `Ouro (${ativos.length})` },
-            { id: 'ideias', label: '20 Ideias' },
-            { id: 'plano',  label: 'Plano 14d' },
+            { id: 'ativos', label: `Informados (${ativos.length})` },
+            { id: 'ideias', label: 'Perguntas' },
+            { id: 'plano',  label: 'Prévia 7d' },
           ] as const).map(t => (
             <button key={t.id} onClick={() => setAbaAtiva(t.id)}
               className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all ${
@@ -1476,7 +1161,7 @@ function Resultado({
           </div>
         )}
 
-        {/* Aba: 20 Ideias */}
+        {/* Aba: Perguntas */}
         {abaAtiva === 'ideias' && (
           <div className="space-y-2">
             {ideias.map((ideia, i) => (
@@ -1490,7 +1175,7 @@ function Resultado({
           </div>
         )}
 
-        {/* Aba: Plano 14 dias */}
+        {/* Aba: Prévia de preparação: 7 dias */}
         {abaAtiva === 'plano' && (
           <div className="space-y-2">
             {plano.map(d => (

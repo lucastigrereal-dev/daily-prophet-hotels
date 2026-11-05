@@ -1,0 +1,59 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> daily-prophet-hotels@1.0.0 test
+> node --test tests/*.test.mjs
+
+(node:25) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ application source with synthetic IO exports only exact reviewed current facts, not an external-service test (36.271352ms)
+✔ application export refuses changed text, changed DNA, quarantined template and cross-owner ID (10.834019ms)
+✔ application revision confirmation binds profile actually read; stale expected revision preserves DB (3.529529ms)
+✔ application suspended state allows authorized historical read but denies edit/export/history write (1.584778ms)
+✔ four SDK entrypoints share explicit config; zero stories survives nullish mapping (0.721038ms)
+✔ SQL is explicitly candidate only; static contract covers versions, status, receipt, old fields and calendar format (0.476736ms)
+(node:26) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ missing/invalid operational config never becomes synthetic success (1.694771ms)
+✔ Natal/RN stays RN; region cannot supply a state (0.346203ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.169421ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.302337ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.132025ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.228088ms)
+✔ valid public configuration is explicit; no operational fallback (0.204923ms)
+✔ owner A/B, expired session and ambiguous owner fail closed (0.23606ms)
+✔ suspension/state prevents writes and onboarding reactivation: pausado (0.224322ms)
+✔ suspension/state prevents writes and onboarding reactivation: cancelado (0.187918ms)
+✔ suspension/state prevents writes and onboarding reactivation: arquivado (0.218334ms)
+✔ suspension/state prevents writes and onboarding reactivation: revogado (0.106638ms)
+✔ suspension/state prevents writes and onboarding reactivation: suspenso (0.083514ms)
+✔ suspension/state prevents writes and onboarding reactivation: unknown (0.057065ms)
+✔ suspension/state prevents writes and onboarding reactivation: undefined (0.163562ms)
+✔ active vs onboarding vs readonly authority is explicit (0.269148ms)
+✔ admin requires trusted explicit app_metadata; not user_metadata or users.role (0.1821ms)
+✔ DNA absence is distinct from error; resolved SDK errors and rejection propagate (0.485089ms)
+✔ onboarding receipt binds owner/hotel, exact next revision, module, operation and boolean completion (0.900204ms)
+✔ effective DNA identity changes only by confirmed revision; all form audiences have a week (20.148497ms)
+✔ seven dates are deterministic, distinct and capacity-respecting, without forced video or fabricated claims (4.607175ms)
+✔ origin missing is a contract error; unknown rights and quarantine never become recommendations (0.67533ms)
+✔ facts must be true-boolean confirmed with source and date; veto/capacity apply on every call (0.914945ms)
+✔ complete matching finds week that greedy selection misses (1.253617ms)
+✔ truly impossible matching throws without partial result (1.401887ms)
+✔ export needs exact revision, text, facts and current actor; edit invalidates confirmation (3.387879ms)
+✔ changed still-confirmed fact, revoked/expired fact, source/version change all block old text export (7.128069ms)
+✔ manual factual repair preserves text and requires explicit review; stale embedded fact and unsupported claims reject (2.871313ms)
+✔ conflict comparison keeps byte-exact local buffer until explicit resolution (0.16916ms)
+✔ clipboard denial records no export; history failure is not a copy failure (0.399502ms)
+✔ calendar format contract maps stories and reels correctly (0.122632ms)
+✔ original seed bytes unchanged; sixteen originals, fifteen draft candidates (0.642822ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 522.3164

@@ -1,0 +1,72 @@
+✖ C8B static onboarding_respostas insert and update check both old/new hotel ownership and writable states (1.501735ms)
+✖ C8B static hotel_content_preferences insert and update check both old/new hotel ownership and writable states (0.165686ms)
+✖ C8B static operational log insertion requires owner active, with no new SELECT/ALL/update policy (0.213807ms)
+✔ C8B preserves exact C8A RPC/state policy, C7 repair and historical/C6 migrations (0.680317ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 98.623348
+
+✖ failing tests:
+
+test at tests/aux-state-policy-migration.test.mjs:10:73
+✖ C8B static onboarding_respostas insert and update check both old/new hotel ownership and writable states (1.501735ms)
+  AssertionError [ERR_ASSERTION]: C8B requires a NEW migration after preserved C8A
+      at read (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:7:24)
+      at policies (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:8:32)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:10:191)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/aux-state-policy-migration.test.mjs:10:73
+✖ C8B static hotel_content_preferences insert and update check both old/new hotel ownership and writable states (0.165686ms)
+  AssertionError [ERR_ASSERTION]: C8B requires a NEW migration after preserved C8A
+      at read (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:7:24)
+      at policies (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:8:32)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:10:191)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/aux-state-policy-migration.test.mjs:11:1
+✖ C8B static operational log insertion requires owner active, with no new SELECT/ALL/update policy (0.213807ms)
+  AssertionError [ERR_ASSERTION]: C8B requires a NEW migration after preserved C8A
+      at read (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:7:24)
+      at policies (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:8:32)
+      at TestContext.<anonymous> (file:///workspace/shared/hotel-recomposed-candidate/tests/aux-state-policy-migration.test.mjs:11:122)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

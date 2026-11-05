@@ -1,0 +1,75 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> daily-prophet-hotels@1.0.0 test
+> node --test tests/*.test.mjs
+
+(node:27) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ application source with synthetic IO exports only exact reviewed current facts, not an external-service test (26.605046ms)
+✔ application export refuses changed text, changed DNA, quarantined template and cross-owner ID (8.193272ms)
+✔ application revision confirmation binds profile actually read; stale expected revision preserves DB (2.523292ms)
+✔ application suspended state allows authorized historical read but denies edit/export/history write (1.61717ms)
+✔ four SDK entrypoints share explicit config; zero stories survives nullish mapping (0.457683ms)
+✔ SQL is explicitly candidate only; static contract covers versions, status, receipt, old fields and calendar format (0.33667ms)
+(node:28) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ missing/invalid operational config never becomes synthetic success (1.373641ms)
+✔ Natal/RN stays RN; region cannot supply a state (0.229307ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.147934ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.182176ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.116617ms)
+✔ configuration missing, placeholder, insecure or secret is rejected without echo (0.214605ms)
+✔ valid public configuration is explicit; no operational fallback (0.19849ms)
+✔ owner A/B, expired session and ambiguous owner fail closed (0.245723ms)
+✔ suspension/state prevents writes and onboarding reactivation: pausado (0.233664ms)
+✔ suspension/state prevents writes and onboarding reactivation: cancelado (0.202567ms)
+✔ suspension/state prevents writes and onboarding reactivation: arquivado (0.113942ms)
+✔ suspension/state prevents writes and onboarding reactivation: revogado (0.069205ms)
+✔ suspension/state prevents writes and onboarding reactivation: suspenso (0.098249ms)
+✔ suspension/state prevents writes and onboarding reactivation: unknown (0.056105ms)
+✔ suspension/state prevents writes and onboarding reactivation: undefined (0.060311ms)
+✔ active vs onboarding vs readonly authority is explicit (0.210909ms)
+✔ admin requires trusted explicit app_metadata; not user_metadata or users.role (0.209117ms)
+✔ DNA absence is distinct from error; resolved SDK errors and rejection propagate (0.293334ms)
+✔ onboarding receipt binds owner/hotel, exact next revision, module, operation and boolean completion (0.695494ms)
+✔ effective DNA identity changes only by confirmed revision; all form audiences have a week (16.574549ms)
+✔ seven dates are deterministic, distinct and capacity-respecting, without forced video or fabricated claims (4.297531ms)
+✔ origin missing is a contract error; unknown rights and quarantine never become recommendations (0.94376ms)
+✔ facts must be true-boolean confirmed with source and date; veto/capacity apply on every call (0.87765ms)
+✔ complete matching finds week that greedy selection misses (0.473568ms)
+✔ truly impossible matching throws without partial result (1.310946ms)
+✔ export needs exact revision, text, facts and current actor; edit invalidates confirmation (3.219337ms)
+✔ changed still-confirmed fact, revoked/expired fact, source/version change all block old text export (3.133778ms)
+✔ manual factual repair preserves text and requires explicit review; stale embedded fact and unsupported claims reject (2.979003ms)
+✔ conflict comparison keeps byte-exact local buffer until explicit resolution (0.174695ms)
+✔ clipboard denial records no export; history failure is not a copy failure (0.331072ms)
+✔ calendar format contract maps stories and reels correctly (0.154814ms)
+✔ original seed bytes unchanged; sixteen originals, fifteen draft candidates (0.656885ms)
+(node:29) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/shared/hotel-recomposed-candidate/lib/hotel/v2/domain.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/shared/hotel-recomposed-candidate/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit null (100.497257ms)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {} (18.740642ms)
+✔ C21-P1-01 missing/invalid profile preserves saved draft and unapproved edit {"hotel_id":"11111111-1111-4111-8111-111111111111"} (20.078218ms)
+✔ C21-P1-01 failed DNA read is explicit, not an empty profile (13.316174ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.924731ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.295587ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (4.572838ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.680181ms)
+✔ C21-P1-02 current expanded/case/Unicode/spacing fact is reviewable without rewriting (2.680581ms)
+✔ C21-P1-02 independent obsolete occurrence still blocks even when current value contains old (2.625858ms)
+✔ C21-SQL-P1-03 application refuses empty/omitted/extra facts, even exact forged review (6.516752ms)
+✔ C21-SQL-P1-03 candidate derives required facts from server-owned template/version; no empty client loop (0.48209ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 50
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 477.454639

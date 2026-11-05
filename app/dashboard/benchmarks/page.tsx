@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import {copyWithFeedback} from '@/lib/hotel/v2/domain'
 
 const TEMAS = [
   'all_inclusive','aventura','bastidores','cafe_da_manha','casamento','checkin',
@@ -90,9 +91,8 @@ export default function BenchmarksPage() {
     loadLegendas()
   }, [temaSelecionado])
 
-  function copiar(l: Legenda) {
-    navigator.clipboard.writeText(`${l.hook}\n\n${l.legenda_completa}\n\n${l.cta}\n\n${(l.hashtags || []).join(' ')}`)
-    toast.success('Legenda copiada!')
+  async function copiar(l: Legenda) {
+    await copyWithFeedback(`${l.hook}\n\n${l.legenda_completa}\n\n${l.cta}\n\n${(l.hashtags || []).join(' ')}`,text=>navigator.clipboard.writeText(text),()=>toast.success('Texto copiado para revisão.'),()=>toast.error('Cópia não confirmada. Tente novamente.'))
   }
 
   if (loading) {
